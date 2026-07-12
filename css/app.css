@@ -17,6 +17,7 @@
   --red:        #B23A2E;   /* London Underground red, muted */
   --sage:       #7B8A70;
   --brass:      #A2814B;
+  --time:       #8A6A38;   /* legible brass — reserved for clock times */
   --line:       rgba(36, 33, 26, 0.15);
   --line-soft:  rgba(36, 33, 26, 0.08);
   --shadow:     rgba(36, 33, 26, 0.10);
@@ -49,6 +50,7 @@
     --red:        #D3705F;
     --sage:       #9DAB90;
     --brass:      #C7A56A;
+    --time:       #CBAA6E;
     --line:       rgba(236, 227, 210, 0.16);
     --line-soft:  rgba(236, 227, 210, 0.07);
     --shadow:     rgba(0, 0, 0, 0.35);
@@ -59,13 +61,13 @@
 :root[data-theme="dark"] {
   --paper:#15130E; --paper-2:#1C1912; --paper-3:#221E16; --stone:#2B2619;
   --ink:#ECE3D2; --ink-soft:#C4BAA6; --ink-faint:#8B8271; --red:#D3705F;
-  --sage:#9DAB90; --brass:#C7A56A; --line:rgba(236,227,210,.16);
+  --sage:#9DAB90; --brass:#C7A56A; --time:#CBAA6E; --line:rgba(236,227,210,.16);
   --line-soft:rgba(236,227,210,.07); --shadow:rgba(0,0,0,.35); --stamp:#C4544A;
 }
 :root[data-theme="light"] {
   --paper:#F2ECDF; --paper-2:#EAE1D0; --paper-3:#E3D8C4; --stone:#D6CCB9;
   --ink:#24211A; --ink-soft:#4C463B; --ink-faint:#8C8474; --red:#B23A2E;
-  --sage:#7B8A70; --brass:#A2814B; --line:rgba(36,33,26,.15);
+  --sage:#7B8A70; --brass:#A2814B; --time:#8A6A38; --line:rgba(36,33,26,.15);
   --line-soft:rgba(36,33,26,.08); --shadow:rgba(36,33,26,.10); --stamp:#B23A2E;
 }
 
@@ -255,6 +257,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .route { list-style: none; margin: 0; padding: 0; text-align: center; }
 .route__stop { position: relative; padding: 0.15rem 0; }
+.route__time { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  color: var(--time); margin-bottom: 0.4rem; }
 .route__dot { width: 7px; height: 7px; border-radius: 50%;
   background: var(--paper); border: 1.5px solid var(--ink-faint);
   margin: 0 auto; position: relative; z-index: 2; }
@@ -265,10 +269,30 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .route__link { width: 1px; height: 1.9rem; background: var(--line); margin: 0.5rem auto; }
 
 /* ============================================================
+   The shape of the day — a quiet timeline
+   ============================================================ */
+.rhythm { margin: 0.4rem 0 0.5rem; }
+.rhythm__track { position: relative; height: 2px; background: var(--line);
+  margin: 0.9rem 0.3rem 0; }
+.rhythm__dot { position: absolute; top: 50%; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--ink-soft); transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 3px var(--paper); }
+.rhythm__tick { position: absolute; top: -5px; height: 12px; width: 1px;
+  background: var(--line); }
+.rhythm__ends { display: flex; justify-content: space-between; margin-top: 0.7rem;
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em; color: var(--time); }
+.rhythm__periods { position: relative; height: 1rem; margin-top: 0.25rem; }
+.rhythm__period { position: absolute; transform: translateX(-50%); white-space: nowrap;
+  font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ink-faint); }
+
+/* ============================================================
    Stops — the destinations
    ============================================================ */
 .stop { padding: 2.2rem 0; border-top: 1px solid var(--line); }
 .stop:first-of-type { border-top: none; }
+.stop__time { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  color: var(--time); margin-bottom: 0.5rem; }
 .stop__top { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
 .stop__name { font-family: var(--display); font-weight: 500;
   font-size: 1.9rem; line-height: 1.1; margin: 0; }
@@ -308,6 +332,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .notecard__label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em;
   text-transform: uppercase; color: var(--ink-faint); display: flex; gap: 0.7rem; align-items: center; }
 .notecard__glyph { color: var(--red); }
+.notecard__time { margin-left: auto; letter-spacing: 0.14em; color: var(--time); }
 .notecard__title { font-family: var(--display); font-weight: 500;
   font-size: 1.7rem; line-height: 1.15; margin: 0.7rem 0 0; }
 .notecard__place { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.05em;

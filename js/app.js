@@ -48,6 +48,7 @@
     shop: "Shopping", gem: "Hidden gem", slow: "Slow moment", reflection: "Reflection",
   }[type] || type);
   const MUSE = new Set(["photo", "design", "slow", "reflection"]);
+  const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
 
   /* ---- the pressed stamp artwork ---- */
   function stampSVG(day) {
@@ -115,6 +116,7 @@
       factRow("Accessibility", stop.access, true),
     ].join("");
     s.innerHTML = `
+      ${stop.time ? `<div class="stop__time">${stop.time}</div>` : ""}
       <div class="stop__top">
         <h3 class="stop__name">${stop.name}</h3>
         <span class="stop__kind">${stop.kind || ""}</span>
@@ -136,7 +138,7 @@
       ? `<div class="maplinks"><a class="maplink maplink--apple" href="${note.apple}" target="_blank" rel="noopener">${ICON.apple} Apple&nbsp;Maps</a><a class="maplink" href="${note.google}" target="_blank" rel="noopener">${ICON.map} Google&nbsp;Maps</a></div>`
       : "";
     n.innerHTML = `
-      <div class="notecard__label"><span class="notecard__glyph">${glyphFor(note.type)}</span>${labelFor(note.type)}</div>
+      <div class="notecard__label"><span class="notecard__glyph">${glyphFor(note.type)}</span>${labelFor(note.type)}${note.time ? `<span class="notecard__time">${note.time}</span>` : ""}</div>
       <h3 class="notecard__title">${note.title}</h3>
       ${place}
       <p class="notecard__body">${note.body}</p>
@@ -151,13 +153,55 @@
     const ol = el("ol", "route");
     day.route.forEach((r, i) => {
       const li = el("li", "route__stop");
-      li.innerHTML = `<div class="route__dot"></div>
+      li.innerHTML = `${r.time ? `<div class="route__time">${r.time}</div>` : ""}
+        <div class="route__dot"></div>
         <div class="route__name">${r.name}</div>
         <div class="route__note">${r.note || ""}</div>`;
       ol.appendChild(li);
       if (i < day.route.length - 1) ol.appendChild(el("li", "route__link"));
     });
     wrap.appendChild(ol);
+    return wrap;
+  }
+
+  // "The shape of the day" — a quiet timeline read from the route's times.
+  function rhythmEl(day) {
+    const items = (day.route || []).filter((r) => r.time);
+    if (items.length < 2) return null;
+    const mins = items.map((r) => toMin(r.time));
+    const lo = Math.min(...mins), hi = Math.max(...mins), span = (hi - lo) || 1;
+    const pos = (m) => ((m - lo) / span) * 100;
+
+    const wrap = el("div", "rise");
+    wrap.appendChild(el("div", "sectlabel", "The shape of the day"));
+    const r = el("div", "rhythm");
+
+    const dots = items.map((it) =>
+      `<span class="rhythm__dot" style="left:${pos(toMin(it.time))}%" title="${it.time} · ${it.name}"></span>`
+    ).join("");
+    // faint boundary ticks where a period begins, if the day crosses it
+    const bounds = [[720, "Noon"], [1020, "5pm"], [1260, "9pm"]];
+    const ticks = bounds
+      .filter(([m]) => m > lo && m < hi)
+      .map(([m]) => `<span class="rhythm__tick" style="left:${pos(m)}%"></span>`)
+      .join("");
+
+    // period captions, placed over the part of the day they actually cover
+    const periods = [
+      ["Morning", 0, 720], ["Afternoon", 720, 1020],
+      ["Evening", 1020, 1260], ["Night", 1260, 1560],
+    ];
+    const caps = periods.map(([name, a, b]) => {
+      const s = Math.max(a, lo), e = Math.min(b, hi);
+      if (e <= s) return "";
+      return `<span class="rhythm__period" style="left:${(pos(s) + pos(e)) / 2}%">${name}</span>`;
+    }).join("");
+
+    r.innerHTML = `
+      <div class="rhythm__track">${ticks}${dots}</div>
+      <div class="rhythm__ends"><span>${items[0].time}</span><span>${items[items.length - 1].time}</span></div>
+      <div class="rhythm__periods">${caps}</div>`;
+    wrap.appendChild(r);
     return wrap;
   }
 
@@ -266,6 +310,9 @@
       <div class="strip__row"><span class="strip__k">Today</span><span class="strip__v mission">${day.mission}</span></div>
       <div class="strip__row"><span class="strip__k">Weather</span><span class="strip__v">${day.weather}</span></div>
       <div class="strip__row"><span class="strip__k">Budget</span><span class="strip__v">${day.budget}</span></div>`));
+
+    const rhythm = rhythmEl(day);
+    if (rhythm) c.appendChild(rhythm);
 
     c.appendChild(routeEl(day));
 
