@@ -67,7 +67,7 @@ window.JOURNAL = {
         {
           "type": "reflection",
           "title": "Permission",
-          "body": "No plans tonight. No relationship decisions. No replying to anything. You have crossed an ocean; the only correct response to that is a pillow."
+          "body": "No plans tonight. No replying to anything. You have crossed an ocean; the only correct response to that is a pillow."
         }
       ]
     },
