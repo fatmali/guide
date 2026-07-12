@@ -1,0 +1,468 @@
+@import url("../assets/fonts.css");
+
+/* ============================================================
+   THE LONDON JOURNAL
+   Paper, ink, and margins. Typography does the talking.
+   ============================================================ */
+
+:root {
+  /* Warm paper / charcoal ink — the daylight edition */
+  --paper:      #F2ECDF;
+  --paper-2:    #EAE1D0;
+  --paper-3:    #E3D8C4;
+  --stone:      #D6CCB9;
+  --ink:        #24211A;
+  --ink-soft:   #4C463B;
+  --ink-faint:  #8C8474;
+  --red:        #B23A2E;   /* London Underground red, muted */
+  --sage:       #7B8A70;
+  --brass:      #A2814B;
+  --line:       rgba(36, 33, 26, 0.15);
+  --line-soft:  rgba(36, 33, 26, 0.08);
+  --shadow:     rgba(36, 33, 26, 0.10);
+
+  --stamp:      var(--red);
+
+  /* Type */
+  --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --body:    "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Rhythm */
+  --measure: 34rem;         /* editorial column */
+  --gutter: clamp(1.4rem, 5vw, 3.75rem);
+  --masthead-h: 3.25rem;
+  --spine-h: 3.5rem;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:      #15130E;
+    --paper-2:    #1C1912;
+    --paper-3:    #221E16;
+    --stone:      #2B2619;
+    --ink:        #ECE3D2;
+    --ink-soft:   #C4BAA6;
+    --ink-faint:  #8B8271;
+    --red:        #D3705F;
+    --sage:       #9DAB90;
+    --brass:      #C7A56A;
+    --line:       rgba(236, 227, 210, 0.16);
+    --line-soft:  rgba(236, 227, 210, 0.07);
+    --shadow:     rgba(0, 0, 0, 0.35);
+    --stamp:      #C4544A;
+  }
+}
+/* Explicit user toggle wins in both directions */
+:root[data-theme="dark"] {
+  --paper:#15130E; --paper-2:#1C1912; --paper-3:#221E16; --stone:#2B2619;
+  --ink:#ECE3D2; --ink-soft:#C4BAA6; --ink-faint:#8B8271; --red:#D3705F;
+  --sage:#9DAB90; --brass:#C7A56A; --line:rgba(236,227,210,.16);
+  --line-soft:rgba(236,227,210,.07); --shadow:rgba(0,0,0,.35); --stamp:#C4544A;
+}
+:root[data-theme="light"] {
+  --paper:#F2ECDF; --paper-2:#EAE1D0; --paper-3:#E3D8C4; --stone:#D6CCB9;
+  --ink:#24211A; --ink-soft:#4C463B; --ink-faint:#8C8474; --red:#B23A2E;
+  --sage:#7B8A70; --brass:#A2814B; --line:rgba(36,33,26,.15);
+  --line-soft:rgba(36,33,26,.08); --shadow:rgba(36,33,26,.10); --stamp:#B23A2E;
+}
+
+/* ---------- reset-ish ---------- */
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01", "cv05";
+  overflow: hidden;                 /* the pager scrolls, not the body */
+  /* faint paper grain */
+  background-image:
+    radial-gradient(circle at 15% 12%, var(--line-soft) 0.5px, transparent 0.5px),
+    radial-gradient(circle at 62% 78%, var(--line-soft) 0.5px, transparent 0.5px);
+  background-size: 3px 3px, 4px 4px;
+}
+a { color: inherit; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+::selection { background: var(--red); color: var(--paper); }
+
+/* ============================================================
+   Masthead
+   ============================================================ */
+.masthead {
+  position: fixed; inset: 0 0 auto 0; height: var(--masthead-h); z-index: 40;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--gutter);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line-soft);
+}
+.masthead__mark {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+.masthead__mark b { color: var(--red); font-weight: 500; }
+.masthead__right { display: flex; align-items: center; gap: 1rem; }
+.masthead__day {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink-faint);
+}
+.iconbtn {
+  width: 2rem; height: 2rem; display: grid; place-items: center;
+  border-radius: 50%; color: var(--ink-soft);
+  transition: color .3s var(--ease), background .3s var(--ease);
+}
+.iconbtn:hover { color: var(--ink); background: var(--line-soft); }
+.iconbtn svg { width: 1.05rem; height: 1.05rem; }
+
+/* ============================================================
+   Pager — horizontal, page-turning
+   ============================================================ */
+.pager {
+  display: flex; height: 100%;
+  overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.pager::-webkit-scrollbar { display: none; }
+
+.page {
+  flex: 0 0 100%; width: 100%; height: 100%;
+  scroll-snap-align: start; scroll-snap-stop: always;
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: none;
+  padding: calc(var(--masthead-h) + clamp(1.2rem, 4vh, 2.6rem)) 0
+           calc(var(--spine-h) + 3.5rem);
+}
+.page::-webkit-scrollbar { display: none; }
+
+.col {
+  width: min(100% - var(--gutter) * 2, var(--measure));
+  margin: 0 auto;
+}
+
+/* ============================================================
+   Reveal motion
+   ============================================================ */
+.rise { opacity: 0; transform: translateY(14px); }
+.page.is-active .rise {
+  opacity: 1; transform: none;
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+}
+.page.is-active .rise:nth-child(2) { transition-delay: .05s; }
+.page.is-active .rise:nth-child(3) { transition-delay: .10s; }
+.page.is-active .rise:nth-child(4) { transition-delay: .15s; }
+
+/* ============================================================
+   Cover
+   ============================================================ */
+.cover { text-align: center; display: flex; flex-direction: column;
+  min-height: calc(100% - var(--masthead-h) - var(--spine-h));
+  justify-content: center; padding-bottom: 8vh; }
+.cover__kicker {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.34em;
+  text-transform: uppercase; color: var(--red); margin-bottom: 2.2rem;
+}
+.cover__title {
+  font-family: var(--display); font-weight: 500;
+  font-size: clamp(3.6rem, 15vw, 7rem); line-height: 0.92;
+  letter-spacing: -0.01em; margin: 0;
+}
+.cover__title em { font-style: italic; color: var(--ink-soft); }
+.cover__rule { width: 44px; height: 1px; background: var(--red); margin: 2.4rem auto; }
+.cover__dates {
+  font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+.cover__dates span { color: var(--ink-faint); }
+.cover__colophon {
+  max-width: 26rem; margin: 3.2rem auto 0; font-family: var(--display);
+  font-size: 1.32rem; line-height: 1.5; font-style: italic; color: var(--ink-soft);
+}
+.cover__hint {
+  margin-top: 3rem; font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint);
+  display: inline-flex; align-items: center; gap: .6rem;
+}
+.cover__hint .arrow { animation: nudge 2.6s var(--ease) infinite; }
+@keyframes nudge { 0%,100%{transform:translateX(0)} 50%{transform:translateX(5px)} }
+
+/* ============================================================
+   Day header
+   ============================================================ */
+.dayhead { margin-bottom: 2.6rem; }
+.dayhead__kicker {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--red);
+  display: flex; align-items: baseline; gap: 1rem;
+}
+.dayhead__kicker .date { color: var(--ink-faint); margin-left: auto; }
+.dayhead__title {
+  font-family: var(--display); font-weight: 500;
+  font-size: clamp(2.8rem, 9vw, 4.4rem); line-height: 0.98;
+  letter-spacing: -0.01em; margin: 1.1rem 0 0;
+}
+.dayhead__weekday { font-family: var(--display); font-style: italic;
+  color: var(--ink-faint); font-size: 1.1rem; }
+.dayhead__dek {
+  font-family: var(--display); font-size: 1.5rem; line-height: 1.42;
+  color: var(--ink-soft); margin: 1.3rem 0 0; max-width: 30rem;
+}
+
+/* ============================================================
+   Meta strip — mission / weather / budget
+   ============================================================ */
+.strip {
+  display: grid; grid-template-columns: 1fr; gap: 0;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  margin: 2.8rem 0;
+}
+.strip__row { padding: 1.05rem 0; border-bottom: 1px solid var(--line-soft);
+  display: grid; grid-template-columns: 6.5rem 1fr; gap: 1rem; align-items: baseline; }
+.strip__row:last-child { border-bottom: none; }
+.strip__k { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-faint); padding-top: .2rem; }
+.strip__v { color: var(--ink-soft); font-size: 0.97rem; }
+.strip__v.mission { color: var(--ink); font-family: var(--display);
+  font-size: 1.28rem; line-height: 1.4; }
+
+/* ============================================================
+   Section label (running heads)
+   ============================================================ */
+.sectlabel {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.26em;
+  text-transform: uppercase; color: var(--ink-faint);
+  display: flex; align-items: center; gap: 1rem;
+  margin: 3.4rem 0 1.6rem;
+}
+.sectlabel::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+/* ============================================================
+   Route diagram — beautiful enough to print
+   ============================================================ */
+.why {
+  font-family: var(--display); font-style: italic; font-size: 1.24rem;
+  line-height: 1.5; color: var(--ink-soft); margin: 0 0 2.4rem;
+  padding-left: 1.2rem; border-left: 2px solid var(--red);
+}
+.route { list-style: none; margin: 0; padding: 0; text-align: center; }
+.route__stop { position: relative; padding: 0.15rem 0; }
+.route__dot { width: 7px; height: 7px; border-radius: 50%;
+  background: var(--paper); border: 1.5px solid var(--ink-faint);
+  margin: 0 auto; position: relative; z-index: 2; }
+.route__name { font-family: var(--display); font-size: 1.55rem; line-height: 1.2;
+  margin: 0.35rem 0 0.15rem; }
+.route__note { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.05em;
+  color: var(--ink-faint); max-width: 22rem; margin: 0 auto; line-height: 1.5; }
+.route__link { width: 1px; height: 1.9rem; background: var(--line); margin: 0.5rem auto; }
+
+/* ============================================================
+   Stops — the destinations
+   ============================================================ */
+.stop { padding: 2.2rem 0; border-top: 1px solid var(--line); }
+.stop:first-of-type { border-top: none; }
+.stop__top { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.stop__name { font-family: var(--display); font-weight: 500;
+  font-size: 1.9rem; line-height: 1.1; margin: 0; }
+.stop__kind { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-faint); white-space: nowrap; padding-top: .5rem; }
+.stop__note { color: var(--ink-soft); margin: 0.9rem 0 1.3rem; }
+
+.facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.1rem 1.6rem;
+  border-top: 1px solid var(--line-soft); padding-top: 1rem; }
+.fact { padding: 0.35rem 0; }
+.fact__k { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink-faint); display: block; }
+.fact__v { font-size: 0.9rem; color: var(--ink-soft); }
+.fact--wide { grid-column: 1 / -1; }
+
+.tube { display: inline-flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.tube__station { color: var(--ink); font-weight: 500; }
+.line-chip { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.08em;
+  padding: 0.08rem 0.4rem; border-radius: 2px; color: #fff; white-space: nowrap; }
+
+.maplinks { display: flex; gap: 0.6rem; margin-top: 1.1rem; flex-wrap: wrap; }
+.maplink {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; text-decoration: none; color: var(--ink-soft);
+  border: 1px solid var(--line); border-radius: 999px; padding: 0.55rem 1rem;
+  display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px;
+  transition: border-color .3s var(--ease), color .3s var(--ease), background .3s var(--ease);
+}
+.maplink:hover { border-color: var(--ink); color: var(--ink); }
+.maplink svg { width: 0.85rem; height: 0.85rem; }
+.maplink--apple:hover { border-color: var(--red); color: var(--red); }
+
+/* ============================================================
+   Editorial note cards (coffee, design, photo, etc.)
+   ============================================================ */
+.notecard { padding: 1.9rem 0; border-top: 1px solid var(--line); }
+.notecard__label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ink-faint); display: flex; gap: 0.7rem; align-items: center; }
+.notecard__glyph { color: var(--red); }
+.notecard__title { font-family: var(--display); font-weight: 500;
+  font-size: 1.7rem; line-height: 1.15; margin: 0.7rem 0 0; }
+.notecard__place { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.05em;
+  color: var(--sage); margin-top: 0.35rem; }
+.notecard__body { color: var(--ink-soft); margin: 0.85rem 0 0; }
+.notecard__body + .maplinks { margin-top: 1rem; }
+
+/* pull-quote treatment for photo / design / slow / reflection */
+.notecard--muse .notecard__body {
+  font-family: var(--display); font-size: 1.4rem; line-height: 1.5;
+  color: var(--ink); font-style: italic;
+}
+
+/* ============================================================
+   Margin note (journal)
+   ============================================================ */
+.margin { margin: 3.2rem 0 0; }
+.margin__label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.8rem; }
+.margin textarea {
+  width: 100%; min-height: 5.5rem; resize: vertical;
+  background: repeating-linear-gradient(var(--paper), var(--paper) 1.85rem, var(--line-soft) 1.85rem, var(--line-soft) calc(1.85rem + 1px));
+  line-height: 1.9rem; border: none; border-top: 1px solid var(--line);
+  padding: 0.3rem 0; color: var(--ink); font-family: var(--display);
+  font-size: 1.25rem; outline: none;
+}
+.margin textarea::placeholder { color: var(--ink-faint); font-style: italic; }
+
+/* ============================================================
+   Stamp (signature feature) — passport pressing
+   ============================================================ */
+.stampzone { text-align: center; margin: 4rem 0 1rem; }
+.stampzone__hint { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-faint); margin-bottom: 1.4rem; }
+.stampbtn {
+  --s: 118px;
+  width: var(--s); height: var(--s); border-radius: 50%;
+  border: 1.5px dashed var(--line); position: relative; margin: 0 auto;
+  display: grid; place-items: center; color: var(--ink-faint);
+  transition: border-color .3s var(--ease), color .3s var(--ease), transform .2s var(--ease);
+}
+.stampbtn:hover { border-color: var(--ink-faint); color: var(--ink-soft); transform: scale(1.02); }
+.stampbtn__txt { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.14em;
+  text-transform: uppercase; line-height: 1.5; }
+
+/* the pressed stamp */
+.stamp {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  color: var(--stamp); pointer-events: none;
+}
+.stamp svg { width: 100%; height: 100%; }
+.is-stamped .stampbtn { border-color: transparent; }
+.is-stamped .stampbtn__txt { display: none; }
+
+@keyframes stamp-press {
+  0%   { opacity: 0; transform: scale(1.9) rotate(-14deg); }
+  55%  { opacity: 1; transform: scale(0.88) rotate(-8deg); }
+  70%  { transform: scale(1.04) rotate(-8deg); }
+  100% { opacity: 0.92; transform: scale(1) rotate(-8deg); }
+}
+.stamp--animate { animation: stamp-press 0.5s var(--ease) forwards; }
+.stamp--static { opacity: 0.92; transform: rotate(-8deg); }
+
+/* ============================================================
+   Spine navigation (bottom)
+   ============================================================ */
+.spine {
+  position: fixed; inset: auto 0 0 0; height: var(--spine-h); z-index: 40;
+  display: flex; align-items: center; justify-content: center; gap: 0.15rem;
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  backdrop-filter: blur(8px); border-top: 1px solid var(--line-soft);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.spine__tab {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-faint);
+  padding: 0.5rem 0.7rem; min-width: 44px; min-height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  position: relative; transition: color .3s var(--ease);
+}
+.spine__tab.is-current { color: var(--red); }
+.spine__tab.is-done::after {
+  content: ""; position: absolute; bottom: 0.55rem; left: 50%; transform: translateX(-50%);
+  width: 3px; height: 3px; border-radius: 50%; background: var(--sage);
+}
+.spine__sep { width: 1px; height: 0.9rem; background: var(--line); }
+
+/* ============================================================
+   Passport overlay
+   ============================================================ */
+.sheet {
+  position: fixed; inset: 0; z-index: 60; background: var(--paper);
+  display: flex; flex-direction: column; opacity: 0; visibility: hidden;
+  transition: opacity .45s var(--ease), visibility .45s var(--ease);
+  overflow-y: auto;
+}
+.sheet.is-open { opacity: 1; visibility: visible; }
+.sheet__bar { position: sticky; top: 0; display: flex; align-items: center;
+  justify-content: space-between; padding: 1.1rem var(--gutter);
+  background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line-soft); z-index: 2; }
+.sheet__title { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--ink-soft); }
+.sheet__body { width: min(100% - var(--gutter)*2, 40rem); margin: 0 auto; padding: 2.5rem 0 5rem; }
+
+.passport__intro { font-family: var(--display); font-style: italic; font-size: 1.5rem;
+  line-height: 1.5; color: var(--ink-soft); text-align: center; margin: 1rem auto 2.6rem; max-width: 26rem; }
+.pages { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.pp {
+  aspect-ratio: 1 / 1.15; border: 1px solid var(--line); border-radius: 4px;
+  background: var(--paper-2); position: relative; display: grid; place-items: center; padding: 1rem;
+  overflow: hidden;
+}
+.pp__num { position: absolute; top: 0.6rem; left: 0.7rem; font-family: var(--mono);
+  font-size: 0.55rem; letter-spacing: 0.15em; color: var(--ink-faint); text-transform: uppercase; }
+.pp__stamp { width: 74%; color: var(--stamp); opacity: 0.9; transform: rotate(-7deg); }
+.pp__stamp svg { width: 100%; }
+.pp--empty .pp__stamp { display: none; }
+.pp__wait { font-family: var(--display); font-style: italic; color: var(--ink-faint); font-size: 1.1rem; text-align: center; }
+
+/* ============================================================
+   Hunt list (shopping)
+   ============================================================ */
+.hunt { list-style: none; margin: 0; padding: 0; }
+.hunt__item { display: flex; align-items: flex-start; gap: 1rem; padding: 1.2rem 0;
+  border-top: 1px solid var(--line); cursor: pointer; }
+.hunt__box { flex: 0 0 auto; width: 1.4rem; height: 1.4rem; border: 1.5px solid var(--ink-faint);
+  border-radius: 3px; margin-top: 0.2rem; display: grid; place-items: center;
+  transition: border-color .3s var(--ease), background .3s var(--ease); }
+.hunt__box svg { width: 0.95rem; height: 0.95rem; color: var(--paper); opacity: 0; transform: scale(.5);
+  transition: opacity .25s var(--ease), transform .25s var(--ease); }
+.hunt__item.is-checked .hunt__box { background: var(--sage); border-color: var(--sage); }
+.hunt__item.is-checked .hunt__box svg { opacity: 1; transform: none; }
+.hunt__label { font-family: var(--display); font-size: 1.5rem; line-height: 1.2; transition: color .3s var(--ease); }
+.hunt__hint { font-size: 0.82rem; color: var(--ink-faint); margin-top: 0.15rem; }
+.hunt__item.is-checked .hunt__label { color: var(--ink-faint); text-decoration: line-through;
+  text-decoration-color: var(--sage); text-decoration-thickness: 1px; }
+
+/* ============================================================
+   Misc
+   ============================================================ */
+.endnote { text-align: center; font-family: var(--display); font-style: italic;
+  color: var(--ink-faint); font-size: 1.2rem; margin: 3rem 0 1rem; }
+
+@media (max-width: 460px) {
+  body { font-size: 16px; }
+  .facts { grid-template-columns: 1fr; }
+  .strip__row { grid-template-columns: 5rem 1fr; }
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+  .pager { scroll-behavior: auto; }
+  .rise { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .stamp--animate { animation: none; opacity: 0.92; transform: rotate(-8deg); }
+  .cover__hint .arrow { animation: none; }
+}
