@@ -1,7 +1,6 @@
 # The London Journal
 
-A premium, offline-first travel companion for four slow days in London —
-16–19 July, then a train to York. Built for one traveller, by hand.
+A premium, offline-first travel companion for four slow days in London, then a train to York. Built for one traveller, by hand.
 
 Not an itinerary generator. It reads like a beautifully set city guide:
 paper, ink, editorial margins, and notes written in the voice of an
