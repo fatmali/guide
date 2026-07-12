@@ -287,6 +287,52 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   text-transform: uppercase; color: var(--ink-faint); }
 
 /* ============================================================
+   Wayfinder — the one quietly "live" element on the page
+   ============================================================ */
+.upnext {
+  margin: 2.6rem 0 0.5rem; padding: 1.5rem 1.5rem 1.6rem;
+  border: 1px solid var(--line); border-radius: 6px;
+  background: var(--paper-2);
+  position: relative;
+}
+.upnext::before {
+  content: ""; position: absolute; left: 0; top: 1.5rem; bottom: 1.5rem; width: 2px;
+  background: var(--red); border-radius: 2px;
+}
+.upnext__label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ink-faint); display: flex; align-items: center; gap: 0.6rem; }
+.upnext__glyph { color: var(--red); font-size: 0.85rem; }
+.upnext__lede { color: var(--ink-soft); margin: 0.9rem 0 0; font-size: 0.96rem; }
+.upnext__near { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.04em;
+  color: var(--ink-faint); margin-top: 0.9rem; }
+.upnext__near b { color: var(--ink-soft); font-weight: 500; }
+.upnext__name { font-family: var(--display); font-weight: 500; font-size: 2rem; line-height: 1.08;
+  margin: 0.25rem 0 0; }
+.upnext__meta { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.04em;
+  color: var(--time); margin-top: 0.6rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.upnext .maplinks { margin-top: 1.1rem; }
+.upnext__go { border-color: var(--red); background: var(--red); color: var(--paper); }
+.upnext__go:hover { background: var(--red); color: var(--paper); opacity: 0.9; }
+.upnext__then { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.06em;
+  color: var(--ink-faint); margin-top: 1.1rem; padding-top: 0.9rem; border-top: 1px solid var(--line-soft); }
+.upnext__btn {
+  margin-top: 1.2rem; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--paper); background: var(--red);
+  padding: 0.85rem 1.4rem; border-radius: 999px; min-height: 44px;
+  transition: opacity .3s var(--ease), transform .2s var(--ease);
+}
+.upnext__btn:hover { opacity: 0.9; }
+.upnext__btn:active { transform: scale(0.98); }
+.upnext__fine { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.08em;
+  color: var(--ink-faint); margin: 0.9rem 0 0; }
+.upnext__relink {
+  margin-top: 1.1rem; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink-faint); min-height: 44px;
+  display: inline-flex; align-items: center;
+}
+.upnext__relink:hover { color: var(--ink-soft); }
+
+/* ============================================================
    Stops — the destinations
    ============================================================ */
 .stop { padding: 2.2rem 0; border-top: 1px solid var(--line); }

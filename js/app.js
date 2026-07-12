@@ -50,6 +50,33 @@
   const MUSE = new Set(["photo", "design", "slow", "reflection"]);
   const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
 
+  /* ---- geography, for the wayfinder ---- */
+  const haversine = (a, b) => {
+    const R = 6371000, rad = (x) => (x * Math.PI) / 180;
+    const dLat = rad(b.lat - a.lat), dLng = rad(b.lng - a.lng);
+    const h = Math.sin(dLat / 2) ** 2 +
+      Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  };
+  const fmtDist = (m) =>
+    m < 950 ? `${Math.round(m / 10) * 10} m`
+    : m < 10000 ? `${(m / 1000).toFixed(1)} km`
+    : `${Math.round(m / 1000).toLocaleString()} km`;
+  const walkMin = (m) => Math.max(1, Math.round(m / 80)); // ~4.8 km/h
+  const dirApple = (s) => `https://maps.apple.com/?daddr=${s.lat},${s.lng}&dirflg=w`;
+  const dirGoogle = (s) => `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&travelmode=walking`;
+
+  // every stop, flattened in trip order, tagged with its day
+  const ALL_STOPS = [];
+  J.days.forEach((d) => (d.stops || []).forEach((s) => {
+    if (s.lat != null) ALL_STOPS.push(Object.assign({ dayId: d.id, dayLabel: d.kicker }, s));
+  }));
+
+  const lineChips = (lines) => (lines || []).map((ln) => {
+    const [bg, fg] = LINE[ln] || ["#888", "#fff"];
+    return `<span class="line-chip" style="background:${bg};color:${fg}">${ln}</span>`;
+  }).join(" ");
+
   /* ---- the pressed stamp artwork ---- */
   function stampSVG(day) {
     return `<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" aria-hidden="true">
@@ -205,6 +232,101 @@
     return wrap;
   }
 
+  /* ==========================================================
+     Wayfinder — "up next" from where you actually are
+     Position is held in memory only; never stored, never sent.
+     ========================================================== */
+  let userPos = null;
+  let wfStatus = "idle";       // idle | locating | located | denied | unavailable
+  const upnextCards = [];
+
+  function upNextCard(day) {
+    const card = el("section", "upnext rise");
+    card.setAttribute("aria-live", "polite");
+    upnextCards.push({ el: card, dayId: day.id });
+    return card;
+  }
+
+  function wayfinderData() {
+    if (!userPos) return null;
+    let here = ALL_STOPS[0], best = Infinity;
+    ALL_STOPS.forEach((s) => { const d = haversine(userPos, s); if (d < best) { best = d; here = s; } });
+    const idx = ALL_STOPS.indexOf(here);
+    const next = ALL_STOPS[idx + 1] || null;
+    return {
+      here, hereDist: best, next,
+      nextDist: next ? haversine(userPos, next) : null,
+      then: ALL_STOPS.slice(idx + 2, idx + 4),
+      far: best > 25000,
+    };
+  }
+
+  function renderUpNext(data) {
+    const g = `<span class="upnext__glyph">◎</span>`;
+    if (wfStatus === "locating") {
+      return `<div class="upnext__label">${g}Finding you</div>
+        <p class="upnext__lede">One moment — taking a reading…</p>`;
+    }
+    if (wfStatus === "denied" || wfStatus === "unavailable") {
+      const why = wfStatus === "denied"
+        ? "Location's switched off — no trouble at all."
+        : "Couldn't take a reading just now.";
+      return `<div class="upnext__label">${g}Where next</div>
+        <p class="upnext__lede">${why} Follow the route below — the walking times are already written in. You can switch it on whenever.</p>
+        <button class="upnext__btn" data-loc>Try again</button>`;
+    }
+    if (wfStatus === "located" && data) {
+      if (data.far) {
+        const first = ALL_STOPS[0];
+        return `<div class="upnext__label">${g}Not in London yet</div>
+          <p class="upnext__lede">You're about ${fmtDist(data.hereDist)} out. This wakes up once you land. When you're ready, the four days begin here —</p>
+          <h3 class="upnext__name">${first.name}</h3>
+          <div class="upnext__meta">Nearest Tube · ${first.tube} ${lineChips(first.lines)}</div>
+          <div class="maplinks"><a class="maplink maplink--apple" href="${dirApple(first)}" target="_blank" rel="noopener">${ICON.map} Directions</a></div>
+          <button class="upnext__relink" data-loc>Refresh</button>`;
+      }
+      if (!data.next) {
+        return `<div class="upnext__label">${g}Journey's end</div>
+          <div class="upnext__near">Nearest you · ${data.here.name} · ${fmtDist(data.hereDist)}</div>
+          <p class="upnext__lede">This is where London hands you to the train. Window seat, left-hand side, going north.</p>
+          <button class="upnext__relink" data-loc>Refresh</button>`;
+      }
+      const n = data.next;
+      return `<div class="upnext__label">${g}Up next</div>
+        <div class="upnext__near">You're nearest <b>${data.here.name}</b> · ${fmtDist(data.hereDist)} away</div>
+        <h3 class="upnext__name">${n.name}</h3>
+        <div class="upnext__meta">${walkMin(data.nextDist)} min walk · ${fmtDist(data.nextDist)}${n.tube ? " · " + n.tube : ""} ${lineChips(n.lines)}</div>
+        <div class="maplinks">
+          <a class="maplink maplink--apple upnext__go" href="${dirApple(n)}" target="_blank" rel="noopener">${ICON.apple} Walk there</a>
+          <a class="maplink" href="${dirGoogle(n)}" target="_blank" rel="noopener">${ICON.map} Google</a>
+        </div>
+        ${data.then.length ? `<div class="upnext__then">Then · ${data.then.map((s) => s.name).join(" · ")}</div>` : ""}
+        <button class="upnext__relink" data-loc>Refresh</button>`;
+    }
+    return `<div class="upnext__label">${g}Where next</div>
+      <p class="upnext__lede">Turn on location and the guide points you to your next stop — the walk, the way there, and what follows.</p>
+      <button class="upnext__btn" data-loc>Find my place</button>
+      <p class="upnext__fine">Stays on your phone. Nothing leaves it.</p>`;
+  }
+
+  function paintUpNext() {
+    const html = renderUpNext(wayfinderData());
+    upnextCards.forEach(({ el: card }) => {
+      card.innerHTML = html;
+      card.querySelectorAll("[data-loc]").forEach((b) => b.addEventListener("click", locate));
+    });
+  }
+
+  function locate() {
+    if (!navigator.geolocation) { wfStatus = "unavailable"; paintUpNext(); return; }
+    wfStatus = "locating"; paintUpNext();
+    navigator.geolocation.getCurrentPosition(
+      (p) => { userPos = { lat: p.coords.latitude, lng: p.coords.longitude }; wfStatus = "located"; store.set("locOptIn", true); paintUpNext(); },
+      (err) => { wfStatus = err && err.code === 1 ? "denied" : "unavailable"; paintUpNext(); },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+    );
+  }
+
   function stampZone(day) {
     const zone = el("div", "stampzone rise");
     const done = !!stampState[day.id];
@@ -314,6 +436,8 @@
     const rhythm = rhythmEl(day);
     if (rhythm) c.appendChild(rhythm);
 
+    if (day.id !== "arrival") c.appendChild(upNextCard(day));
+
     c.appendChild(routeEl(day));
 
     if (day.stops && day.stops.length) {
@@ -341,6 +465,10 @@
   J.days.forEach((d) => pager.appendChild(dayPage(d)));
   pager.appendChild(huntPage());
   pages.push(...pager.querySelectorAll(".page"));
+
+  // wayfinder: render idle cards; if she's opted in before, pick up where she is
+  paintUpNext();
+  if (store.get("locOptIn", false)) locate();
 
   /* ==========================================================
      Spine navigation

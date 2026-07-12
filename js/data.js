@@ -1,7 +1,8 @@
 /* The London Journal — trip content.
    Written in the voice of an architect friend who quietly knows London.
    Every place is real; every note is a small opinion.
-   Times are gentle suggestions — a shape for the day, not a schedule to obey. */
+   Times are gentle suggestions — a shape for the day, not a schedule to obey.
+   Stop coordinates power the location-aware wayfinder. */
 
 window.JOURNAL = {
   "meta": {
@@ -147,7 +148,9 @@ window.JOURNAL = {
           "access": "Flat, paved paths throughout. Step-free.",
           "apple": "https://maps.apple.com/?q=St%20James's%20Park%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=St%20James's%20Park%20London",
-          "note": "Enter from the Victoria side and walk the lake's south edge toward the palace. There's a small bridge in the middle — stand on it and look east for one of the best sightlines in London: Whitehall's rooftops arranged like a stage set. The pelicans are real, and older than you."
+          "note": "Enter from the Victoria side and walk the lake's south edge toward the palace. There's a small bridge in the middle — stand on it and look east for one of the best sightlines in London: Whitehall's rooftops arranged like a stage set. The pelicans are real, and older than you.",
+          "lat": 51.5024,
+          "lng": -0.1347
         },
         {
           "time": "10:15",
@@ -167,7 +170,9 @@ window.JOURNAL = {
           "access": "Wide open forecourt, level. Crowds cluster at the railings.",
           "apple": "https://maps.apple.com/?q=Buckingham%20Palace%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Buckingham%20Palace%20London",
-          "note": "You've already seen it a thousand times, so give it thirty real seconds instead of thirty photos. Stand back by the Victoria Memorial where the whole facade composes. The Changing of the Guard is a scrum by 11am — the idea of it is better than the reality."
+          "note": "You've already seen it a thousand times, so give it thirty real seconds instead of thirty photos. Stand back by the Victoria Memorial where the whole facade composes. The Changing of the Guard is a scrum by 11am — the idea of it is better than the reality.",
+          "lat": 51.5014,
+          "lng": -0.1419
         },
         {
           "time": "10:45",
@@ -187,7 +192,9 @@ window.JOURNAL = {
           "access": "Step-free entrance via North Green; ask a marshal.",
           "apple": "https://maps.apple.com/?q=Westminster%20Abbey%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Westminster%20Abbey%20London",
-          "note": "You don't have to go in to be moved by it. Walk the north face slowly and look up — the flying buttresses are doing visible, honest work, holding the whole weight sideways so the walls can dissolve into glass. Eight hundred years of coronations, and it still feels like it's leaning toward the sky."
+          "note": "You don't have to go in to be moved by it. Walk the north face slowly and look up — the flying buttresses are doing visible, honest work, holding the whole weight sideways so the walls can dissolve into glass. Eight hundred years of coronations, and it still feels like it's leaning toward the sky.",
+          "lat": 51.4994,
+          "lng": -0.1273
         },
         {
           "time": "11:45",
@@ -207,7 +214,9 @@ window.JOURNAL = {
           "access": "Bridge has wide level pavements; busy.",
           "apple": "https://maps.apple.com/?q=Westminster%20Bridge%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Westminster%20Bridge%20London",
-          "note": "Cross to the middle of Westminster Bridge before you look back. Elizabeth Tower (everyone calls it Big Ben — technically that's just the bell) photographs best from here, with the river giving it room. Time it near the hour if you can; the bells over water is a sound you'll keep."
+          "note": "Cross to the middle of Westminster Bridge before you look back. Elizabeth Tower (everyone calls it Big Ben — technically that's just the bell) photographs best from here, with the river giving it room. Time it near the hour if you can; the bells over water is a sound you'll keep.",
+          "lat": 51.5007,
+          "lng": -0.1246
         },
         {
           "time": "12:15",
@@ -227,7 +236,9 @@ window.JOURNAL = {
           "access": "Long, flat, step-free promenade. The best walking in London.",
           "apple": "https://maps.apple.com/?q=South%20Bank%20London%20Queen's%20Walk",
           "google": "https://www.google.com/maps/search/?api=1&query=South%20Bank%20London%20Queen's%20Walk",
-          "note": "Now you're on the good side of the river — the side that gets to look at all the famous things. Walk east with the water on your right. Second-hand book stalls under Waterloo Bridge, skateboarders in the concrete undercroft, the whole city posing across the water. This is the stretch to slow down on."
+          "note": "Now you're on the good side of the river — the side that gets to look at all the famous things. Walk east with the water on your right. Second-hand book stalls under Waterloo Bridge, skateboarders in the concrete undercroft, the whole city posing across the water. This is the stretch to slow down on.",
+          "lat": 51.5062,
+          "lng": -0.1147
         },
         {
           "time": "14:45",
@@ -245,7 +256,9 @@ window.JOURNAL = {
           "access": "Covent Garden station has lifts but brutal queues — exit at Leicester Square and walk.",
           "apple": "https://maps.apple.com/?q=Covent%20Garden%20Piazza%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Covent%20Garden%20Piazza%20London",
-          "note": "Cross back over Waterloo Bridge (best view in London — stop in the middle, both directions) and come inland. The old market hall is glass and iron, built for cabbages, now for buskers. The classical musicians play in the lower courtyard where the acoustics are engineered; stand at the balcony rail above them."
+          "note": "Cross back over Waterloo Bridge (best view in London — stop in the middle, both directions) and come inland. The old market hall is glass and iron, built for cabbages, now for buskers. The classical musicians play in the lower courtyard where the acoustics are engineered; stand at the balcony rail above them.",
+          "lat": 51.5123,
+          "lng": -0.1226
         },
         {
           "time": "16:00",
@@ -263,7 +276,9 @@ window.JOURNAL = {
           "access": "Cobbles underfoot — beautiful, but watch heels and wheels.",
           "apple": "https://maps.apple.com/?q=Seven%20Dials%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Seven%20Dials%20London",
-          "note": "Seven streets meet at a single sundial pillar, laid out in 1690s so more corner shops could pay rent. Stand at the centre and turn slowly; every street frames a different view. Choosing Keeping (stationery so good it aches) is a few steps down Tower Street."
+          "note": "Seven streets meet at a single sundial pillar, laid out in 1690s so more corner shops could pay rent. Stand at the centre and turn slowly; every street frames a different view. Choosing Keeping (stationery so good it aches) is a few steps down Tower Street.",
+          "lat": 51.5145,
+          "lng": -0.1281
         }
       ],
       "notes": [
@@ -422,7 +437,9 @@ window.JOURNAL = {
           "access": "Mostly level; the old market is cobbled and tight when busy.",
           "apple": "https://maps.apple.com/?q=Borough%20Market%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Borough%20Market%20London",
-          "note": "Skip the first bakery. Walk deeper, past the obvious doughnut queue, into the Green Market where the traders shout in earnest. Kappacasein's raclette and their cheese toastie — melted Montgomery cheddar on Poilâne — is one of the great vegetarian lunches in the city. Buy whatever smells impossible to ignore."
+          "note": "Skip the first bakery. Walk deeper, past the obvious doughnut queue, into the Green Market where the traders shout in earnest. Kappacasein's raclette and their cheese toastie — melted Montgomery cheddar on Poilâne — is one of the great vegetarian lunches in the city. Buy whatever smells impossible to ignore.",
+          "lat": 51.5055,
+          "lng": -0.091
         },
         {
           "time": "10:30",
@@ -441,7 +458,9 @@ window.JOURNAL = {
           "access": "Step-free via the north door.",
           "apple": "https://maps.apple.com/?q=Southwark%20Cathedral%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Southwark%20Cathedral%20London",
-          "note": "Right beside the market and almost always empty. Gothic, cool, quiet — the retrochoir is 13th-century and the light comes in sideways. A place to eat your market haul on a bench in the churchyard and let your ears rest."
+          "note": "Right beside the market and almost always empty. Gothic, cool, quiet — the retrochoir is 13th-century and the light comes in sideways. A place to eat your market haul on a bench in the churchyard and let your ears rest.",
+          "lat": 51.5061,
+          "lng": -0.0902
         },
         {
           "time": "11:15",
@@ -460,7 +479,9 @@ window.JOURNAL = {
           "access": "Thames Path is step-free; the bridge itself has lifts to the walkways.",
           "apple": "https://maps.apple.com/?q=Tower%20Bridge%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Tower%20Bridge%20London",
-          "note": "Walk to it along the south bank so it grows in front of you. Everyone mistakes it for Victorian stone — it's a steel frame in a Gothic costume, 1894 engineering dressed up so it wouldn't offend the Tower next door. Look for where the paint meets the rivets and the disguise shows."
+          "note": "Walk to it along the south bank so it grows in front of you. Everyone mistakes it for Victorian stone — it's a steel frame in a Gothic costume, 1894 engineering dressed up so it wouldn't offend the Tower next door. Look for where the paint meets the rivets and the disguise shows.",
+          "lat": 51.5055,
+          "lng": -0.0754
         },
         {
           "time": "14:00",
@@ -480,7 +501,9 @@ window.JOURNAL = {
           "access": "Lifts to all floors; the timber staircases are the point but there are alternatives.",
           "apple": "https://maps.apple.com/?q=Liberty%20London%20Great%20Marlborough%20Street",
           "google": "https://www.google.com/maps/search/?api=1&query=Liberty%20London%20Great%20Marlborough%20Street",
-          "note": "Built in 1924 from the timbers of two Royal Navy warships, which is why it creaks and leans like a galleon. The atria are small on purpose — you're meant to feel you've wandered into someone's beautiful, overstuffed house. Go up to the haberdashery and fabric floors even if you buy nothing; the way the light drops through the wells is the best free architecture today."
+          "note": "Built in 1924 from the timbers of two Royal Navy warships, which is why it creaks and leans like a galleon. The atria are small on purpose — you're meant to feel you've wandered into someone's beautiful, overstuffed house. Go up to the haberdashery and fabric floors even if you buy nothing; the way the light drops through the wells is the best free architecture today.",
+          "lat": 51.5137,
+          "lng": -0.141
         },
         {
           "time": "15:00",
@@ -500,7 +523,9 @@ window.JOURNAL = {
           "access": "Pedestrianised, level.",
           "apple": "https://maps.apple.com/?q=Carnaby%20Street%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Carnaby%20Street%20London",
-          "note": "Cut through Kingly Court on the way — a three-tier courtyard of small shops and terraces stacked like a wedding cake. Carnaby itself is quick: a hit of colour and 60s ghosts, then keep moving before it tries to sell you a slogan tee."
+          "note": "Cut through Kingly Court on the way — a three-tier courtyard of small shops and terraces stacked like a wedding cake. Carnaby itself is quick: a hit of colour and 60s ghosts, then keep moving before it tries to sell you a slogan tee.",
+          "lat": 51.513,
+          "lng": -0.1388
         },
         {
           "time": "15:45",
@@ -520,7 +545,9 @@ window.JOURNAL = {
           "access": "Full step-free access, lifts, calm hour early morning.",
           "apple": "https://maps.apple.com/?q=Selfridges%20Oxford%20Street%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Selfridges%20Oxford%20Street%20London",
-          "note": "Save this for last because it's the loudest instrument. Harry Gordon Selfridge invented the idea that a shop could be theatre — put the perfume by the door in 1909 so the street would smell of it, made the windows a show. The beauty hall is where your signature-perfume hunt ends. Lakeland's West End branch is a short hop for your mum's baking supplies."
+          "note": "Save this for last because it's the loudest instrument. Harry Gordon Selfridge invented the idea that a shop could be theatre — put the perfume by the door in 1909 so the street would smell of it, made the windows a show. The beauty hall is where your signature-perfume hunt ends. Lakeland's West End branch is a short hop for your mum's baking supplies.",
+          "lat": 51.5145,
+          "lng": -0.1526
         }
       ],
       "notes": [
@@ -669,7 +696,9 @@ window.JOURNAL = {
           "access": "Lifts all the way up; fully step-free; airport-style security at entry.",
           "apple": "https://maps.apple.com/?q=Sky%20Garden%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Sky%20Garden%20London",
-          "note": "The 'Walkie-Talkie' building's public garden, thirty-five floors up and completely free if you book ahead — the ticket most tourists never realise exists. Go to the top open terrace and look east: you can see the whole argument of London, the medieval street plan still legible under the glass towers. Book the earliest slot for clean air."
+          "note": "The 'Walkie-Talkie' building's public garden, thirty-five floors up and completely free if you book ahead — the ticket most tourists never realise exists. Go to the top open terrace and look east: you can see the whole argument of London, the medieval street plan still legible under the glass towers. Book the earliest slot for clean air.",
+          "lat": 51.5111,
+          "lng": -0.0837
         },
         {
           "time": "11:00",
@@ -688,7 +717,9 @@ window.JOURNAL = {
           "access": "Cobbled and gently sloped; covered.",
           "apple": "https://maps.apple.com/?q=Leadenhall%20Market%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Leadenhall%20Market%20London",
-          "note": "A Victorian covered market in cream, maroon and gold — 1881 ironwork so ornate it feels theatrical, which is why they filmed Diagon Alley here. On a Saturday it's near-empty and yours. Stand in the crossing under the central dome and look up at the painted ceiling; the whole thing is a jewel box built to sell poultry."
+          "note": "A Victorian covered market in cream, maroon and gold — 1881 ironwork so ornate it feels theatrical, which is why they filmed Diagon Alley here. On a Saturday it's near-empty and yours. Stand in the crossing under the central dome and look up at the painted ceiling; the whole thing is a jewel box built to sell poultry.",
+          "lat": 51.5129,
+          "lng": -0.0836
         },
         {
           "time": "11:45",
@@ -706,7 +737,9 @@ window.JOURNAL = {
           "access": "Step-free entry at the south churchyard; the dome climb is 528 steps, no lift.",
           "apple": "https://maps.apple.com/?q=St%20Paul's%20Cathedral%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=St%20Paul's%20Cathedral%20London",
-          "note": "Wren's dome, the one that survived the Blitz in the famous photograph. Walk the full circle of the churchyard before you decide to go in — the dome reads completely differently from the back, where the crowds aren't. If you do go up, the Whispering Gallery is an acoustic magic trick: a word breathed at the wall travels 30 metres round to the far side."
+          "note": "Wren's dome, the one that survived the Blitz in the famous photograph. Walk the full circle of the churchyard before you decide to go in — the dome reads completely differently from the back, where the crowds aren't. If you do go up, the Whispering Gallery is an acoustic magic trick: a word breathed at the wall travels 30 metres round to the far side.",
+          "lat": 51.5138,
+          "lng": -0.0984
         },
         {
           "time": "12:45",
@@ -725,7 +758,9 @@ window.JOURNAL = {
           "access": "Level, step-free, gentle ramp both ends.",
           "apple": "https://maps.apple.com/?q=Millennium%20Bridge%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Millennium%20Bridge%20London",
-          "note": "Foster's steel blade, famous for wobbling on opening day in 2000 until they had to damp it — the synchronised sway of thousands of feet, a physics lesson nobody designed for. Stand at the north end and frame St Paul's dome dead-centre down the line of the bridge. Then walk across to the Tate Modern side and look back; it's the best composed view of the cathedral in London."
+          "note": "Foster's steel blade, famous for wobbling on opening day in 2000 until they had to damp it — the synchronised sway of thousands of feet, a physics lesson nobody designed for. Stand at the north end and frame St Paul's dome dead-centre down the line of the bridge. Then walk across to the Tate Modern side and look back; it's the best composed view of the cathedral in London.",
+          "lat": 51.5096,
+          "lng": -0.0985
         },
         {
           "time": "15:00",
@@ -746,7 +781,9 @@ window.JOURNAL = {
           "access": "The famous long room is up a few steps; main floor is level.",
           "apple": "https://maps.apple.com/?q=Daunt%20Books%20Marylebone%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Daunt%20Books%20Marylebone%20London",
-          "note": "An Edwardian bookshop with a long oak gallery, stained glass at the end, and a skylight that turns the whole room amber in late afternoon. It's arranged by *country* rather than genre — the novel, the history and the cookbook of a place shelved together — which is the most quietly radical idea in bookselling. This is where the one book on your hunt list belongs."
+          "note": "An Edwardian bookshop with a long oak gallery, stained glass at the end, and a skylight that turns the whole room amber in late afternoon. It's arranged by *country* rather than genre — the novel, the history and the cookbook of a place shelved together — which is the most quietly radical idea in bookselling. This is where the one book on your hunt list belongs.",
+          "lat": 51.5219,
+          "lng": -0.1524
         },
         {
           "time": "20:00",
@@ -764,7 +801,9 @@ window.JOURNAL = {
           "access": "The summit path is a steady grass-and-tarmac climb; benches on the way.",
           "apple": "https://maps.apple.com/?q=Primrose%20Hill%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Primrose%20Hill%20London",
-          "note": "The best free view in London and the one Londoners keep for themselves. From the top the whole skyline lines up — the City clusters left, the Eye and Westminster to the right, everything you walked through this week held in one frame. Get there 40 minutes before sunset, sit on the grass, and watch the lights come up. There's a poem carved on the summit stone; find it."
+          "note": "The best free view in London and the one Londoners keep for themselves. From the top the whole skyline lines up — the City clusters left, the Eye and Westminster to the right, everything you walked through this week held in one frame. Get there 40 minutes before sunset, sit on the grass, and watch the lights come up. There's a poem carved on the summit stone; find it.",
+          "lat": 51.5393,
+          "lng": -0.16
         }
       ],
       "notes": [
@@ -912,7 +951,9 @@ window.JOURNAL = {
           "access": "Fully step-free; assistance bookable with LNER in advance.",
           "apple": "https://maps.apple.com/?q=King's%20Cross%20Station%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=King's%20Cross%20Station%20London",
-          "note": "Before the platform, look up in the western departures concourse — the 2012 semi-circular white lattice roof fans out from a single point like a held breath. It's next door to St Pancras, whose red-brick Gothic is the exact opposite argument. Two centuries of station-building, side by side. Then find your seat on the left going north, and watch England turn green."
+          "note": "Before the platform, look up in the western departures concourse — the 2012 semi-circular white lattice roof fans out from a single point like a held breath. It's next door to St Pancras, whose red-brick Gothic is the exact opposite argument. Two centuries of station-building, side by side. Then find your seat on the left going north, and watch England turn green.",
+          "lat": 51.532,
+          "lng": -0.1233
         }
       ],
       "notes": [
