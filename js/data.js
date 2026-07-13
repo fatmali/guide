@@ -383,7 +383,7 @@ window.JOURNAL = {
       "weather": "Warm, 23° / 15°. Markets are best before the lunch rush swallows them.",
       "budget": "≈ £70 — market grazing £18, coffee £4, lunch £16, dinner £22, plus whatever the shops do to you.",
       "mission": "Eat with your nose. Then study how London sells beautiful things — the architecture of desire, from Liberty's timber to Selfridges' theatre.",
-      "routeWhy": "Start east and low at Borough Market, when the traders are unpacking and it still belongs to cooks rather than tourists. Walk it off along the river to Tower Bridge, then one Tube west to the shops. The afternoon has a single fixed point — a 6:30 slot at Frameless — so arrange the rest around it: Liberty's calm rooms and Carnaby's noise, then drop south to Harrods for the food halls, double back up to Selfridges, and finish with the eight-minute walk to Marble Arch. The immersive gallery is the day's last act, and dinner waits for after the lights.",
+      "routeWhy": "Start east and low at Borough Market, when the traders are unpacking and it still belongs to cooks rather than tourists. Walk it off along the river to Tower Bridge, then one Tube west to the shops. The evening ends on a booked note — the last slot at Frameless, in at half-eight — so lay the rest out ahead of it: Liberty's calm rooms and Carnaby's noise, south to Harrods for the food halls, back up to Selfridges, an early dinner near Marble Arch, and then the immersive gallery at its emptiest to close the night.",
       "route": [
         {
           "time": "09:00",
@@ -423,17 +423,17 @@ window.JOURNAL = {
         {
           "time": "17:15",
           "name": "Selfridges",
-          "note": "Back north. The theatre of it, then west."
+          "note": "Back north. The theatre of it."
         },
         {
           "time": "18:30",
-          "name": "→ Frameless",
-          "note": "Eight minutes to Marble Arch. The 6:30 slot."
+          "name": "Dinner, near Marble Arch",
+          "note": "Eat before the gallery, not after."
         },
         {
-          "time": "20:15",
-          "name": "Dinner, near Marble Arch",
-          "note": "After the lights. Warm and unhurried."
+          "time": "20:30",
+          "name": "→ Frameless",
+          "note": "The last slot. In at half-eight."
         }
       ],
       "stops": [
@@ -587,22 +587,22 @@ window.JOURNAL = {
           "lng": -0.1526
         },
         {
-          "time": "18:30",
+          "time": "20:30",
           "lat": 51.5133,
           "lng": -0.159,
           "name": "Frameless",
           "kind": "Immersive art",
           "address": "6 Marble Arch, London W1H 7AP",
-          "hours": "Daily, timed entry; last admission 20:30 — book ahead",
+          "hours": "Daily, timed entry; you're on the last one, 20:30 (90 min inside)",
           "duration": "90 min",
           "tube": "Marble Arch",
           "lines": [
             "Central"
           ],
-          "walkFromPrev": "8 min west from Selfridges",
+          "walkFromPrev": "5 min from dinner, on Marble Arch",
           "walkDistance": "600 m",
           "access": "Fully step-free, lifts; dim rooms with projected light and sound that can be intense — quieter slots exist.",
-          "note": "Four rooms where the frame — and with it the whole polite museum ritual of standing the right distance from a rectangle — simply dissolves. Famous paintings are taken apart into floor-to-ceiling projection that moves, breathes and reacts to you, so the work stops being an object on a wall and becomes the room you're standing in. Go with your HCI eyes open: watch how people move when nothing tells them where to stand or which way to face. Ninety minutes inside, and the right last act before dinner.",
+          "note": "Four rooms where the frame — and with it the whole polite museum ritual of standing the right distance from a rectangle — simply dissolves. Famous paintings are taken apart into floor-to-ceiling projection that moves, breathes and reacts to you, so the work stops being an object on a wall and becomes the room you're standing in. Go with your HCI eyes open: watch how people move when nothing tells them where to stand or which way to face. On the last slot the rooms are at their emptiest — ninety minutes of moving light to end the night on.",
           "apple": "https://maps.apple.com/?q=Frameless%20Marble%20Arch%2C%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Frameless%20Marble%20Arch%2C%20London"
         }
@@ -637,10 +637,10 @@ window.JOURNAL = {
         },
         {
           "type": "dinner",
-          "time": "20:15",
+          "time": "18:30",
           "title": "Dinner",
           "place": "Roti Chai, off Portman Square",
-          "body": "Five minutes from Frameless and exactly the right speed for after — a modern Indian 'railway canteen' downstairs, a calmer dining room above, and vegetarian dishes that steal the show: the bhel, the paneer, the dosa. Warm, unfussy, and open late enough for a half-eight table once the lights let you go.",
+          "body": "Five minutes from Frameless, and the right thing to do before it rather than after — a modern Indian 'railway canteen' downstairs, a calmer dining room above, and vegetarian dishes that steal the show: the bhel, the paneer, the dosa. Warm and unfussy; eat well, then walk round the corner for the last slot.",
           "apple": "https://maps.apple.com/?q=Roti%20Chai%20Marylebone%2C%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Roti%20Chai%20Marylebone%2C%20London"
         },
