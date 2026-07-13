@@ -193,6 +193,88 @@
     return wrap;
   }
 
+  // A hand-drawn-feeling route map, projected from the stops' real coordinates.
+  // Pure SVG from data we already hold — works fully offline, no tiles.
+  function dayMapEl(day) {
+    const pts = (day.stops || []).filter((s) => s.lat != null);
+    if (pts.length < 2) return null;
+
+    const W = 100, H = 62, m = 12;                    // viewBox + inner margin
+    const midLat = pts.reduce((a, s) => a + s.lat, 0) / pts.length;
+    const kx = Math.cos((midLat * Math.PI) / 180);    // compress lng to match lat on the ground
+    const wx = (s) => s.lng * kx, wy = (s) => -s.lat; // north up
+    const xs = pts.map(wx), ys = pts.map(wy);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs);
+    const y0 = Math.min(...ys), y1 = Math.max(...ys);
+    const spanX = Math.max(x1 - x0, 1e-5), spanY = Math.max(y1 - y0, 1e-5);
+    const scale = Math.min((W - 2 * m) / spanX, (H - 2 * m) / spanY);
+    const offX = (W - spanX * scale) / 2, offY = (H - spanY * scale) / 2;
+    const px = (s) => offX + (wx(s) - x0) * scale;
+    const py = (s) => offY + (wy(s) - y0) * scale;
+    const P = pts.map((s) => ({ x: px(s), y: py(s), name: s.name }));
+
+    const line = P.map((p, i) => (i ? "L" : "M") + p.x.toFixed(1) + " " + p.y.toFixed(1)).join(" ");
+
+    // a "nice" round scale bar
+    const mPerUnit = 111320 / scale;
+    const target = 26 * mPerUnit;
+    const nice = [100, 200, 300, 500, 1000, 2000, 3000, 5000, 10000]
+      .reduce((a, b) => (Math.abs(b - target) < Math.abs(a - target) ? b : a));
+    const barU = nice / mPerUnit;
+    const barLabel = nice < 1000 ? nice + " m" : nice / 1000 + " km";
+
+    const dots = P.map((p, i) => {
+      const start = i === 0;
+      return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${start ? 1.8 : 1.3}"
+        style="fill:${start ? "var(--red)" : "var(--paper)"};stroke:var(--red);stroke-width:${start ? 0 : 0.7}"/>`;
+    }).join("");
+
+    // greedy label placement so numbers splay out of tight clusters instead of stacking
+    const overlaps = (a, b) => !(a.x + a.w < b.x || b.x + b.w < a.x || a.y + a.h < b.y || b.y + b.h < a.y);
+    const dotZones = P.map((p) => ({ x: p.x - 2, y: p.y - 2, w: 4, h: 4 }));
+    const placed = [];
+    const cand = [[2.3, 1.1, "start"], [-2.3, 1.1, "end"], [0, -2, "middle"], [0, 4, "middle"],
+      [2.3, -1.6, "start"], [-2.3, -1.6, "end"], [2.3, 3.6, "start"], [-2.3, 3.6, "end"]];
+    const nums = P.map((p, i) => {
+      const label = String(i + 1);
+      const w = label.length * 1.8 + 0.6, h = 3;
+      let ch = null;
+      for (const [dx, dy, anchor] of cand) {
+        const bx = anchor === "end" ? p.x + dx - w : anchor === "middle" ? p.x + dx - w / 2 : p.x + dx;
+        const box = { x: bx, y: p.y + dy - 2.4, w, h };
+        if (!placed.some((q) => overlaps(box, q)) && !dotZones.some((q) => overlaps(box, q))) { ch = { dx, dy, anchor, box }; break; }
+      }
+      if (!ch) ch = { dx: 2.3, dy: 1.1, anchor: "start", box: { x: p.x + 2.3, y: p.y - 1.3, w, h } };
+      placed.push(ch.box);
+      return `<text x="${(p.x + ch.dx).toFixed(1)}" y="${(p.y + ch.dy).toFixed(1)}" text-anchor="${ch.anchor}"
+        style="fill:var(--ink-soft);font-family:var(--mono);font-size:2.8px">${label}</text>`;
+    }).join("");
+
+    const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Map of ${day.title}'s route">
+      <path d="${line}" style="fill:none;stroke:var(--ink-faint);stroke-width:0.5;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1.7 1.5"/>
+      ${dots}${nums}
+      <g style="stroke:var(--ink-faint);stroke-width:0.45">
+        <line x1="5" y1="${H - 4}" x2="${(5 + barU).toFixed(1)}" y2="${H - 4}"/>
+        <line x1="5" y1="${H - 5}" x2="5" y2="${H - 3}"/>
+        <line x1="${(5 + barU).toFixed(1)}" y1="${H - 5}" x2="${(5 + barU).toFixed(1)}" y2="${H - 3}"/>
+      </g>
+      <text x="5" y="${H - 5.5}" style="fill:var(--ink-faint);font-family:var(--mono);font-size:2.5px;letter-spacing:0.1px">${barLabel}</text>
+      <g transform="translate(${W - 5} 5)">
+        <line x1="0" y1="1.5" x2="0" y2="6" style="stroke:var(--ink-faint);stroke-width:0.45"/>
+        <path d="M0 0 L-1.2 1.9 L1.2 1.9 Z" style="fill:var(--red)"/>
+        <text x="0" y="9.5" text-anchor="middle" style="fill:var(--ink-faint);font-family:var(--mono);font-size:2.7px">N</text>
+      </g>
+    </svg>`;
+
+    const legend = P.map((p, i) =>
+      `<li><b>${i + 1}</b> ${p.name.split(/[,&]/)[0].trim()}</li>`).join("");
+
+    const wrap = el("div", "rise");
+    wrap.appendChild(el("div", "sectlabel", "The day, mapped"));
+    wrap.appendChild(el("figure", "daymap", `${svg}<ul class="daymap__key">${legend}</ul>`));
+    return wrap;
+  }
+
   // "The shape of the day" — a quiet timeline read from the route's times.
   function rhythmEl(day) {
     const items = (day.route || []).filter((r) => r.time);
@@ -456,6 +538,9 @@
 
     const rhythm = rhythmEl(day);
     if (rhythm) c.appendChild(rhythm);
+
+    const dmap = dayMapEl(day);
+    if (dmap) c.appendChild(dmap);
 
     if (day.id !== "arrival") c.appendChild(upNextCard(day));
 
