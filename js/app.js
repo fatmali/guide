@@ -66,10 +66,10 @@
   const dirApple = (s) => `https://maps.apple.com/?daddr=${s.lat},${s.lng}&dirflg=w`;
   const dirGoogle = (s) => `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&travelmode=walking`;
 
-  // every stop, flattened in trip order, tagged with its day
+  // every stop, flattened in trip order, tagged with its day and city
   const ALL_STOPS = [];
   J.days.forEach((d) => (d.stops || []).forEach((s) => {
-    if (s.lat != null) ALL_STOPS.push(Object.assign({ dayId: d.id, dayLabel: d.kicker }, s));
+    if (s.lat != null) ALL_STOPS.push(Object.assign({ dayId: d.id, city: d.city || "London" }, s));
   }));
 
   const lineChips = (lines) => (lines || []).map((ln) => {
@@ -84,7 +84,7 @@
       <circle cx="60" cy="60" r="45" stroke-width="1"/>
       <path id="tp-${day.id}" d="M60,60 m-33,0 a33,33 0 1,1 66,0 a33,33 0 1,1 -66,0" fill="none" stroke="none"/>
       <text font-family="IBM Plex Mono, monospace" font-size="7.5" letter-spacing="2.5" fill="currentColor" stroke="none">
-        <textPath href="#tp-${day.id}" startOffset="0%">· LONDON · ${day.date.toUpperCase()} · ADMITTED ·</textPath>
+        <textPath href="#tp-${day.id}" startOffset="0%">· ${(day.city || "London").toUpperCase()} · ${day.date.toUpperCase()} · ADMITTED ·</textPath>
       </text>
       <text x="60" y="52" text-anchor="middle" font-family="Cormorant Garamond, serif" font-style="italic" font-size="19" fill="currentColor" stroke="none">${day.title.split(" ")[0]}</text>
       <text x="60" y="70" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" letter-spacing="2" fill="currentColor" stroke="none">${day.date.replace(/ /g, " ")}</text>
@@ -121,20 +121,22 @@
     return `<div class="fact${wide ? " fact--wide" : ""}"><span class="fact__k">${k}</span><span class="fact__v">${v}</span></div>`;
   }
 
-  function tubeFact(stop) {
-    if (!stop.tube) return "";
-    const chips = (stop.lines || []).map((ln) => {
-      const [bg, fg] = LINE[ln] || ["#888", "#fff"];
-      return `<span class="line-chip" style="background:${bg};color:${fg}">${ln}</span>`;
-    }).join(" ");
-    return `<div class="fact fact--wide"><span class="fact__k">Nearest Tube</span>
-      <span class="fact__v tube"><span class="tube__station">${stop.tube}</span> ${chips}</span></div>`;
+  function transitFact(stop) {
+    // London stops ride the Underground; York & Edinburgh are walked.
+    if (stop.tube) {
+      return `<div class="fact fact--wide"><span class="fact__k">Nearest Tube</span>
+        <span class="fact__v tube"><span class="tube__station">${stop.tube}</span> ${lineChips(stop.lines)}</span></div>`;
+    }
+    if (stop.transit) {
+      return `<div class="fact fact--wide"><span class="fact__k">Getting there</span><span class="fact__v">${stop.transit}</span></div>`;
+    }
+    return "";
   }
 
   function stopEl(stop) {
     const s = el("article", "stop rise");
     const facts = [
-      tubeFact(stop),
+      transitFact(stop),
       factRow("Walk from previous", stop.walkFromPrev),
       factRow("Walking distance", stop.walkDistance),
       factRow("Visit for", stop.duration),
@@ -251,12 +253,15 @@
     if (!userPos) return null;
     let here = ALL_STOPS[0], best = Infinity;
     ALL_STOPS.forEach((s) => { const d = haversine(userPos, s); if (d < best) { best = d; here = s; } });
-    const idx = ALL_STOPS.indexOf(here);
-    const next = ALL_STOPS[idx + 1] || null;
+    // "up next" stays within the city you're actually in — never suggest
+    // walking the 300 miles between London, York and Edinburgh.
+    const cityStops = ALL_STOPS.filter((s) => s.city === here.city);
+    const idx = cityStops.indexOf(here);
+    const next = cityStops[idx + 1] || null;
     return {
       here, hereDist: best, next,
       nextDist: next ? haversine(userPos, next) : null,
-      then: ALL_STOPS.slice(idx + 2, idx + 4),
+      then: cityStops.slice(idx + 2, idx + 4),
       far: best > 25000,
     };
   }
@@ -278,24 +283,31 @@
     if (wfStatus === "located" && data) {
       if (data.far) {
         const first = ALL_STOPS[0];
+        const firstTransit = first.tube ? `Nearest Tube · ${first.tube} ${lineChips(first.lines)}` : (first.transit || "");
         return `<div class="upnext__label">${g}Not in London yet</div>
-          <p class="upnext__lede">You're about ${fmtDist(data.hereDist)} out. This wakes up once you land. When you're ready, the four days begin here —</p>
+          <p class="upnext__lede">You're about ${fmtDist(data.hereDist)} out. This wakes up once you land. When you're ready, the week begins here —</p>
           <h3 class="upnext__name">${first.name}</h3>
-          <div class="upnext__meta">Nearest Tube · ${first.tube} ${lineChips(first.lines)}</div>
+          <div class="upnext__meta">${firstTransit}</div>
           <div class="maplinks"><a class="maplink maplink--apple" href="${dirApple(first)}" target="_blank" rel="noopener">${ICON.map} Directions</a></div>
           <button class="upnext__relink" data-loc>Refresh</button>`;
       }
       if (!data.next) {
-        return `<div class="upnext__label">${g}Journey's end</div>
-          <div class="upnext__near">Nearest you · ${data.here.name} · ${fmtDist(data.hereDist)}</div>
-          <p class="upnext__lede">This is where London hands you to the train. Window seat, left-hand side, going north.</p>
+        const order = ["London", "York", "Edinburgh"];
+        const onward = order[order.indexOf(data.here.city) + 1];
+        const lede = onward
+          ? `You've walked all of ${data.here.city}. From here the train carries you north — ${onward} is waiting.`
+          : "This is the end of the line. Window seat for the way home, and a short list of what you'll come back for.";
+        return `<div class="upnext__label">${g}${onward ? data.here.city + " · done" : "Journey's end"}</div>
+          <div class="upnext__near">You're nearest <b>${data.here.name}</b> · ${fmtDist(data.hereDist)} away</div>
+          <p class="upnext__lede">${lede}</p>
           <button class="upnext__relink" data-loc>Refresh</button>`;
       }
       const n = data.next;
+      const nTransit = n.tube ? " · " + n.tube : (n.transit ? " · " + n.transit : "");
       return `<div class="upnext__label">${g}Up next</div>
         <div class="upnext__near">You're nearest <b>${data.here.name}</b> · ${fmtDist(data.hereDist)} away</div>
         <h3 class="upnext__name">${n.name}</h3>
-        <div class="upnext__meta">${walkMin(data.nextDist)} min walk · ${fmtDist(data.nextDist)}${n.tube ? " · " + n.tube : ""} ${lineChips(n.lines)}</div>
+        <div class="upnext__meta">${walkMin(data.nextDist)} min walk · ${fmtDist(data.nextDist)}${nTransit} ${n.lines ? lineChips(n.lines) : ""}</div>
         <div class="maplinks">
           <a class="maplink maplink--apple upnext__go" href="${dirApple(n)}" target="_blank" rel="noopener">${ICON.apple} Walk there</a>
           <a class="maplink" href="${dirGoogle(n)}" target="_blank" rel="noopener">${ICON.map} Google</a>
@@ -474,26 +486,35 @@
      Spine navigation
      ========================================================== */
   const spine = $("#spine");
+  const spineTrack = el("div", "spine__track");
+  spine.appendChild(spineTrack);
   pages.forEach((page, i) => {
-    if (i > 0) spine.appendChild(el("span", "spine__sep"));
+    if (i > 0) spineTrack.appendChild(el("span", "spine__sep"));
     const tab = el("button", "spine__tab", page.dataset.nav);
     tab.dataset.idx = i;
     if (page.dataset.dayId && stampState[page.dataset.dayId]) tab.classList.add("is-done");
     tab.addEventListener("click", () => goTo(i));
-    spine.appendChild(tab);
+    spineTrack.appendChild(tab);
   });
   // passport tab
-  spine.appendChild(el("span", "spine__sep"));
+  spineTrack.appendChild(el("span", "spine__sep"));
   const ppTab = el("button", "spine__tab", "✦");
   ppTab.setAttribute("aria-label", "Open passport");
   ppTab.addEventListener("click", openPassport);
-  spine.appendChild(ppTab);
+  spineTrack.appendChild(ppTab);
 
-  const tabs = [...spine.querySelectorAll(".spine__tab")].slice(0, pages.length);
+  const tabs = [...spineTrack.querySelectorAll(".spine__tab")].slice(0, pages.length);
 
   function goTo(i) {
     pages[i].scrollIntoView({ behavior: "smooth", inline: "start" });
     pages[i].focus?.({ preventScroll: true });
+  }
+  // keep the current tab within view on the scrollable spine
+  function centerSpine(i) {
+    const t = tabs[i];
+    if (!t || spine.scrollWidth <= spine.clientWidth + 1) return;
+    const tr = t.getBoundingClientRect(), sr = spine.getBoundingClientRect();
+    spine.scrollBy({ left: (tr.left + tr.width / 2) - (sr.left + sr.width / 2), behavior: "smooth" });
   }
   function markSpineDone() {
     pages.forEach((page, i) => {
@@ -513,11 +534,12 @@
         const i = pages.indexOf(e.target);
         current = i;
         tabs.forEach((t, ti) => t.classList.toggle("is-current", ti === i));
+        centerSpine(i);
         mastDay.textContent = e.target === pages[0] ? "Cover"
           : e.target.dataset.nav === "Hunt" ? "Hunt list"
-          : e.target.dataset.dayId ? J.days.find((d) => d.id === e.target.dataset.dayId).date
-          : e.target.dataset.nav;
-        // reset internal scroll of newly-entered page for a clean top
+          : e.target.dataset.dayId
+            ? (() => { const d = J.days.find((x) => x.id === e.target.dataset.dayId); return `${d.city} · ${d.date}`; })()
+            : e.target.dataset.nav;
       }
     });
   }, { root: pager, threshold: [0.55] });
