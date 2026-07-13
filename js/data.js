@@ -383,7 +383,7 @@ window.JOURNAL = {
       "weather": "Warm, 23° / 15°. Markets are best before the lunch rush swallows them.",
       "budget": "≈ £70 — market grazing £18, coffee £4, lunch £16, dinner £22, plus whatever the shops do to you.",
       "mission": "Eat with your nose. Then study how London sells beautiful things — the architecture of desire, from Liberty's timber to Selfridges' theatre.",
-      "routeWhy": "Start east and low, at Borough Market, when the traders are unpacking and it still belongs to cooks rather than tourists. Walk it off to Tower Bridge along the river, then take one Tube (London Bridge → Bond Street) straight to the shopping. Do the shops in the order of least to most overwhelming: Liberty's calm rooms first, Carnaby's noise second, Selfridges' cathedral last. From Selfridges it's a short Tube south to Harrods — the grandest food halls in the city — and dinner in hushed Belgravia, a few streets on.",
+      "routeWhy": "Start east and low, at Borough Market, when the traders are unpacking and it still belongs to cooks rather than tourists. Walk it off to Tower Bridge along the river, then take one Tube (London Bridge → Bond Street) straight to the shopping. Do the shops in the order of least to most overwhelming: Liberty's calm rooms first, Carnaby's noise second, Selfridges' cathedral last. From Selfridges, step west to Frameless at Marble Arch — an immersive art gallery for the design-minded — then south to Harrods for the grandest food halls in the city, and dinner in hushed Belgravia.",
       "route": [
         {
           "time": "09:00",
@@ -422,11 +422,16 @@ window.JOURNAL = {
         },
         {
           "time": "16:45",
+          "name": "→ Frameless",
+          "note": "West to Marble Arch. The frame dissolves."
+        },
+        {
+          "time": "18:30",
           "name": "→ Harrods",
           "note": "One Tube south. The food halls, not the crowds."
         },
         {
-          "time": "19:00",
+          "time": "20:00",
           "name": "Belgravia dinner",
           "note": "Quiet luxury, a few streets from Harrods."
         }
@@ -563,6 +568,26 @@ window.JOURNAL = {
         },
         {
           "time": "16:45",
+          "lat": 51.5133,
+          "lng": -0.159,
+          "name": "Frameless",
+          "kind": "Immersive art",
+          "address": "6 Marble Arch, London W1H 7AP",
+          "hours": "Daily, timed entry; late slots into the evening — book ahead",
+          "duration": "75–90 min",
+          "tube": "Marble Arch",
+          "lines": [
+            "Central"
+          ],
+          "walkFromPrev": "8 min west from Selfridges",
+          "walkDistance": "600 m",
+          "access": "Fully step-free, lifts; dim rooms with projected light and sound that can be intense — quieter slots exist.",
+          "note": "Four rooms where the frame — and with it the whole polite museum ritual of standing the right distance from a rectangle — simply dissolves. Famous paintings are taken apart into floor-to-ceiling projection that moves, breathes and reacts to you, so the work stops being an object on a wall and becomes the room you're standing in. Go with your HCI eyes open: watch how people move when nothing tells them where to stand or which way to face. Ten minutes from Selfridges, and a genuinely different way of seeing — book a late-afternoon slot.",
+          "apple": "https://maps.apple.com/?q=Frameless%20Marble%20Arch%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Frameless%20Marble%20Arch%2C%20London"
+        },
+        {
+          "time": "18:30",
           "lat": 51.4994,
           "lng": -0.1632,
           "name": "Harrods",
@@ -636,7 +661,7 @@ window.JOURNAL = {
         {
           "type": "design",
           "title": "Design safari",
-          "body": "Borough Market: notice how smell becomes navigation. You don't read signs here — you follow woodsmoke to the chorizo, sweetness to the doughnuts. The market has no wayfinding system because the food *is* the wayfinding. Then at Selfridges, watch the floor plan: the confusing, mazelike layout isn't a failure, it's the Gruen Transfer — you came for one thing and the architecture is gently disorienting you into wandering."
+          "body": "Borough Market: notice how smell becomes navigation. You don't read signs here — you follow woodsmoke to the chorizo, sweetness to the doughnuts. The market has no wayfinding system because the food *is* the wayfinding. Then at Selfridges, watch the floor plan: the confusing, mazelike layout isn't a failure, it's the Gruen Transfer — you came for one thing and the architecture is gently disorienting you into wandering. And at Frameless, the sharpest observation of the day: remove the frame and you remove the rules — no correct distance, no single viewpoint — and watch how differently people behave in a room with no edges to orient them."
         },
         {
           "type": "shop",
