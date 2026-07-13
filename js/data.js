@@ -669,36 +669,41 @@ window.JOURNAL = {
       "date": "18 July",
       "weekday": "Saturday",
       "title": "The City & the View",
-      "dek": "The oldest square mile, seen from the top down and the ground up — ending on a hill where London lays itself out for you.",
+      "dek": "A Saturday that starts west among the market stalls, then hands you the oldest square mile from the top down and the ground up — and ends on a hill where London lays itself out for you.",
       "weather": "Bright, 24° / 16°. The clearest evening of the trip, if you're lucky — and Primrose Hill knows it.",
       "budget": "≈ £45 — Sky Garden free (book ahead), coffee £4, lunch £15, books £20, sunset picnic £12.",
       "mission": "See the City from above before you walk through it. Read the skyline as a timeline. End the day on the grass with the whole thing glowing.",
-      "routeWhy": "Book the first Sky Garden slot so you get the view before the haze and the crowds — start high, then descend into the streets you were just looking down on. Leadenhall and St Paul's are a tight walk apart, so no Tube in the City at all. Cross Millennium Bridge on foot for the framed St Paul's shot, then Tube north to Marylebone for Daunt Books in the late afternoon. Save Primrose Hill for last because west-facing sunset is the whole point, and it's a short hop from Daunt.",
+      "routeWhy": "Today has one deliberate cross-town hop in it, and Portobello on a Saturday earns it. Start west and early with the antiques market, before it becomes impassable, then take a single Tube east and drop into the City for the top-down, bottom-up half — Sky Garden's view, then St Paul's and the river. Swing back west to Daunt Books in the afternoon and finish due north on Primrose Hill for the sunset. West, east, then home to the northwest: one big loop, and the only long Tube ride of the week.",
       "route": [
         {
-          "time": "10:00",
-          "name": "Sky Garden",
-          "note": "First slot. Free. Book it now."
+          "time": "08:30",
+          "name": "Portobello Market",
+          "note": "Saturday's the day. Go early, go deep."
         },
         {
-          "time": "11:00",
+          "time": "11:15",
+          "name": "Sky Garden",
+          "note": "One Tube east. Book the late-morning slot."
+        },
+        {
+          "time": "12:00",
           "name": "Leadenhall Market",
           "note": "Down the lift, into Diagon Alley."
         },
         {
-          "time": "11:45",
+          "time": "12:45",
           "name": "St Paul's",
-          "note": "Walk to it; let the dome grow."
+          "note": "Let the dome grow as you walk to it."
         },
         {
-          "time": "12:45",
+          "time": "13:30",
           "name": "Millennium Bridge",
           "note": "The framed view. Don't rush across."
         },
         {
-          "time": "15:00",
+          "time": "15:30",
           "name": "Daunt Books, Marylebone",
-          "note": "One Tube north. Then the long room."
+          "note": "West again. The long oak room."
         },
         {
           "time": "20:00",
@@ -708,7 +713,29 @@ window.JOURNAL = {
       ],
       "stops": [
         {
-          "time": "10:00",
+          "time": "08:30",
+          "lat": 51.5165,
+          "lng": -0.2045,
+          "name": "Portobello Road & Notting Hill",
+          "kind": "Market & neighbourhood",
+          "address": "Portobello Rd, London W11",
+          "hours": "Antiques market Sat from ~8am; general market daily",
+          "duration": "2 hr",
+          "tube": "Notting Hill Gate",
+          "lines": [
+            "Central",
+            "Circle",
+            "District"
+          ],
+          "walkFromPrev": "Start at Notting Hill Gate, walk downhill",
+          "walkDistance": "—",
+          "access": "A long, gently sloping street; cobbled in stretches; heaving by 11am on a Saturday.",
+          "note": "Saturday is the day — the antiques dealers are out at dawn and the market runs the full length of Portobello Road. Go early, before eleven, while you can still move. Start up at Notting Hill Gate among the sherbet-coloured terraces, drift downhill through the silver and the old prints, and cut along Blenheim Crescent for the Notting Hill Bookshop (yes, that one) and up Lancaster Road for the brightest houses. Buy one small beautiful old thing, then let the crowds have it.",
+          "apple": "https://maps.apple.com/?q=Portobello%20Road%20Notting%20Hill%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Portobello%20Road%20Notting%20Hill%2C%20London"
+        },
+        {
+          "time": "11:15",
           "name": "Sky Garden",
           "kind": "Viewpoint",
           "address": "1 Sky Garden Walk, London EC3M 8AF",
@@ -724,12 +751,12 @@ window.JOURNAL = {
           "access": "Lifts all the way up; fully step-free; airport-style security at entry.",
           "apple": "https://maps.apple.com/?q=Sky%20Garden%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Sky%20Garden%20London",
-          "note": "The 'Walkie-Talkie' building's public garden, thirty-five floors up and completely free if you book ahead — the ticket most tourists never realise exists. Go to the top open terrace and look east: you can see the whole argument of London, the medieval street plan still legible under the glass towers. Book the earliest slot for clean air.",
+          "note": "The 'Walkie-Talkie' building's public garden, thirty-five floors up and completely free if you book ahead — the ticket most tourists never realise exists. Go to the top open terrace and look east: you can see the whole argument of London, the medieval street plan still legible under the glass towers. Book a late-morning slot — you're arriving from the market, and the light's still clean before noon.",
           "lat": 51.5111,
           "lng": -0.0837
         },
         {
-          "time": "11:00",
+          "time": "12:00",
           "name": "Leadenhall Market",
           "kind": "Architecture",
           "address": "Gracechurch St, London EC3V 1LT",
@@ -750,7 +777,7 @@ window.JOURNAL = {
           "lng": -0.0836
         },
         {
-          "time": "11:45",
+          "time": "12:45",
           "name": "St Paul's Cathedral",
           "kind": "Architecture",
           "address": "St Paul's Churchyard, London EC4M 8AD",
@@ -770,7 +797,7 @@ window.JOURNAL = {
           "lng": -0.0984
         },
         {
-          "time": "12:45",
+          "time": "13:30",
           "name": "Millennium Bridge",
           "kind": "Bridge",
           "address": "Thames Embankment, London EC4V 3QH",
@@ -791,7 +818,7 @@ window.JOURNAL = {
           "lng": -0.0985
         },
         {
-          "time": "15:00",
+          "time": "15:30",
           "name": "Daunt Books, Marylebone",
           "kind": "Bookshop",
           "address": "84 Marylebone High St, London W1U 4QW",
@@ -894,7 +921,7 @@ window.JOURNAL = {
           "type": "shop",
           "title": "Shopping",
           "place": "Daunt Books + Marylebone High Street",
-          "body": "Marylebone High Street is the gentlest shopping in London — a village pretending to be in a capital. Daunt for the book. The Conran Shop and a scatter of independents for the thoughtful-object category. This is a browse, not a hunt.",
+          "body": "Portobello first, for one small beautiful old thing among the stalls — a print, a bit of silver, a worn hardback. Marylebone High Street is the gentlest shopping in London — a village pretending to be in a capital. Daunt for the book. The Conran Shop and a scatter of independents for the thoughtful-object category. This is a browse, not a hunt.",
           "apple": "https://maps.apple.com/?q=Marylebone%20High%20Street%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Marylebone%20High%20Street%20London"
         },
@@ -926,63 +953,36 @@ window.JOURNAL = {
       "date": "19 July",
       "weekday": "Sunday",
       "title": "The Slow Goodbye",
-      "dek": "No monuments today. A favourite café, an aimless walk, the last small purchases, and a train north.",
+      "dek": "No monuments, and no wandering with a suitcase. A last coffee, a proper breakfast, and an easy train north — London signed off gently.",
       "weather": "Soft, 21° / 14°. Sunday-quiet. London at its most forgivable.",
       "budget": "≈ £40 — long breakfast £16, coffee £4, last things £20, and a train already booked.",
-      "mission": "Return to one thing you loved instead of chasing something new. Leave a little in reserve, so London stays somewhere you didn't finish.",
+      "mission": "Don't chase a final sight with your bags in tow. A calm breakfast, an early train, and the good sense to leave a little of London unseen — that's what brings you back.",
       "routeWhy": "There's no route to optimise today, and that's the point. Go back to whichever café or corner earned a second visit — the return is the reward. Then walk with no destination through whichever neighbourhood you liked best, buy the last things on the list without hunting, and make your way to King's Cross with time to spare. The train to York takes just under two hours; give yourself the platform without a run.",
       "route": [
         {
-          "time": "09:30",
-          "name": "The café you'd return to",
-          "note": "Order 'the usual' in a city you've known four days."
+          "time": "08:30",
+          "name": "A first coffee",
+          "note": "Bags packed. One last proper flat white."
         },
         {
-          "time": "10:00",
-          "name": "Notting Hill, no map",
-          "note": "Portobello, the pastel streets, a slow wander."
+          "time": "09:15",
+          "name": "Breakfast, unhurried",
+          "note": "Sit down. You've earned a slow one."
         },
         {
-          "time": "12:15",
-          "name": "The last small thing",
-          "note": "Bought on the way back, not hunted."
-        },
-        {
-          "time": "13:30",
+          "time": "10:15",
           "name": "King's Cross",
-          "note": "Arrive early. Look up at the roof."
+          "note": "Bags and all. Look up at the roof."
         },
         {
-          "time": "14:30",
+          "time": "11:00",
           "name": "Train to York",
           "note": "Window seat, left side, going north."
         }
       ],
       "stops": [
         {
-          "time": "10:00",
-          "lat": 51.5165,
-          "lng": -0.2045,
-          "name": "Notting Hill & Portobello Road",
-          "kind": "Neighbourhood",
-          "address": "Portobello Rd, London W11",
-          "hours": "Antiques market Fri & Sat; shops daily",
-          "duration": "1.5 hr wander",
-          "tube": "Notting Hill Gate",
-          "lines": [
-            "Central",
-            "Circle",
-            "District"
-          ],
-          "walkFromPrev": "Tube: ~15 min on the Central line",
-          "walkDistance": "—",
-          "access": "Portobello Road is a long, gentle hill, cobbled in stretches.",
-          "note": "The loveliest last morning in London: stucco terraces painted in sherbet colours, mews you'd happily lose an hour in, and Portobello Road running downhill through the middle of it. The big antiques market is a Saturday affair — on a quieter morning it's just the street, which for a goodbye is the better version. Start at Notting Hill Gate, drift down Portobello, cut along Blenheim Crescent for the Notting Hill Bookshop (yes, that one) and up Lancaster Road for the brightest houses. Buy a peach, photograph a doorway, and leave yourself time you don't have to run for.",
-          "apple": "https://maps.apple.com/?q=Portobello%20Road%20Notting%20Hill%2C%20London",
-          "google": "https://www.google.com/maps/search/?api=1&query=Portobello%20Road%20Notting%20Hill%2C%20London"
-        },
-        {
-          "time": "13:30",
+          "time": "10:15",
           "name": "King's Cross Station",
           "kind": "Departure",
           "address": "Euston Rd, London N1 9AL",
@@ -1049,7 +1049,7 @@ window.JOURNAL = {
           "type": "shop",
           "title": "Shopping — closing the list",
           "place": "Whatever's still unticked",
-          "body": "Portobello is the morning's one temptation — a worn book, a small print, a bit of old silver — but keep it to a single thing you'll actually keep. Don't go hunting today; just finish what's easy. King's Cross itself has a good few shops if you're short — but ideally the last thing you buy is small, personal, and not on any list. The one London keepsake is often the thing you didn't plan to want.",
+          "body": "Don't go hunting today; just finish what's easy. King's Cross itself has a good few shops if you're short — but ideally the last thing you buy is small, personal, and not on any list. The one London keepsake is often the thing you didn't plan to want.",
           "apple": "https://maps.apple.com/?q=Coal%20Drops%20Yard%20King's%20Cross%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Coal%20Drops%20Yard%20King's%20Cross%20London"
         },
@@ -1057,7 +1057,7 @@ window.JOURNAL = {
           "type": "gem",
           "title": "Hidden gem",
           "place": "Gasholder Park & the Regent's Canal",
-          "body": "Ten minutes behind King's Cross, a Victorian gasholder frame reborn as a circular park and a quiet stretch of canal towpath. If you've an hour before the train, walk the water — narrowboats, a lock, herons — and let the city end on green instead of concrete.",
+          "body": "Ten minutes behind King's Cross, a Victorian gasholder frame reborn as a circular park with a quiet stretch of canal towpath. There's no hour to spare this morning — a train to catch, a bag to mind — but note it. Some London is worth leaving for the next visit.",
           "apple": "https://maps.apple.com/?q=Gasholder%20Park%20King's%20Cross%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Gasholder%20Park%20King's%20Cross%20London"
         },
@@ -1080,31 +1080,36 @@ window.JOURNAL = {
       "kicker": "The first northern night",
       "label": "York",
       "date": "19 July",
-      "weekday": "Sunday, evening",
-      "title": "York, at Dusk",
-      "dek": "Two hours north and eight centuries back. Drop the bags and walk a stretch of the medieval walls before the light goes — York is best met on foot, half-empty, at dusk.",
+      "weekday": "Sunday, afternoon",
+      "title": "York, the First Afternoon",
+      "dek": "Off the train by lunchtime with the whole afternoon still ahead. Settle in slowly, find a late lunch, and walk the medieval walls as the light softens — let York introduce itself before dinner.",
       "weather": "Cooler than London: 19°, a soft grey-gold northern evening. Take a layer for the walls.",
       "budget": "≈ £30 — a wander, a first dinner, an early night.",
-      "mission": "Arrive gently. Climb the walls while the Minster still holds the light. Eat something warm. Learn the shape of the town before you sleep.",
+      "mission": "Arrive with the day still open. Drop the bags, eat something, and let the afternoon unspool — the walls, the river, the Minster catching gold before dark.",
       "routeWhy": "Nothing to optimise tonight but your bearings. The bar walls run right past the station — climb up and follow them toward the river for a first sight of the Minster over the rooftops, then drop into the old town for dinner. York is barely a mile across; tonight you're just drawing the map in your head.",
       "route": [
         {
-          "time": "18:30",
+          "time": "13:15",
           "name": "York station",
-          "note": "Two minutes from the walls. Leave the case, keep the coat."
+          "note": "Off the train. Two minutes from the walls."
         },
         {
-          "time": "18:45",
+          "time": "13:45",
+          "name": "Late lunch, settle in",
+          "note": "Drop the bags first. Then eat."
+        },
+        {
+          "time": "15:30",
           "name": "The city walls",
-          "note": "Climb up. Turn toward the Minster."
+          "note": "The Minster stretch, in soft afternoon light."
         },
         {
-          "time": "19:15",
+          "time": "16:30",
           "name": "Museum Gardens",
           "note": "Abbey ruins on the grass, the river beyond."
         },
         {
-          "time": "19:45",
+          "time": "19:30",
           "name": "Dinner in the old town",
           "note": "Something warm, nothing fussy."
         },
@@ -1116,7 +1121,7 @@ window.JOURNAL = {
       ],
       "stops": [
         {
-          "time": "18:45",
+          "time": "15:30",
           "lat": 53.9612,
           "lng": -1.0876,
           "name": "The City Walls",
@@ -1128,12 +1133,12 @@ window.JOURNAL = {
           "walkFromPrev": "3 min from the station",
           "walkDistance": "250 m",
           "access": "Steep stone steps, no rail in places; the walk itself is narrow.",
-          "note": "The most complete circuit of medieval walls in England — nearly two miles of them, walkable on top. Do the Lendal-to-Bootham stretch tonight: the Minster rises on your right, floodlit as the sky goes, and the crowds have gone home to the suburbs. You'll have the parapet almost to yourself.",
+          "note": "The most complete circuit of medieval walls in England — nearly two miles of them, walkable on top. Do the Lendal-to-Bootham stretch in the soft afternoon: the Minster rises on your right, the stone going honey-gold, and the day-trippers already thinning. You'll have the parapet almost to yourself.",
           "apple": "https://maps.apple.com/?q=The%20City%20Walls%2C%20York",
           "google": "https://www.google.com/maps/search/?api=1&query=The%20City%20Walls%2C%20York"
         },
         {
-          "time": "19:15",
+          "time": "16:30",
           "lat": 53.9628,
           "lng": -1.0879,
           "name": "Museum Gardens",
@@ -1168,12 +1173,21 @@ window.JOURNAL = {
         {
           "type": "slow",
           "title": "Slow moment",
-          "body": "On the walls, stop where the Minster is framed between two merlons. Don't photograph it yet. Just stand for five minutes as the floodlights come up and the stone turns from grey to honey to amber. This is the whole reason to arrive at dusk."
+          "body": "On the walls, stop where the Minster is framed between two merlons. Don't photograph it yet. Just stand for five minutes as the stone turns from grey to honey to amber. Come back to this exact spot at dusk if you can — it's the loveliest way to end a first day."
         },
         {
           "type": "reflection",
           "title": "Reflection",
           "body": "London performs. York confides. It's a smaller voice — you have to slow down to hear it. Tomorrow, resist the urge to 'do' the city. Let it be overheard rather than toured."
+        },
+        {
+          "type": "lunch",
+          "time": "13:45",
+          "title": "A late lunch, first thing",
+          "place": "Brew & Brownie, Museum Street",
+          "body": "Off the train and hungry — drop the bags, then eat before you explore. Brew & Brownie is the cheerful, veg-friendly all-day spot the locals fill; the brunch plates and the cakes are the point. It sets you up for an afternoon on the walls.",
+          "apple": "https://maps.apple.com/?q=Brew%20%26%20Brownie%20York%2C%20York",
+          "google": "https://www.google.com/maps/search/?api=1&query=Brew%20%26%20Brownie%20York%2C%20York"
         }
       ]
     },

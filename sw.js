@@ -2,7 +2,7 @@
    Precache the whole shell so the guide opens with no signal.
    Maps are the only thing that need the outside world. */
 
-const CACHE = "london-journal-v6";
+const CACHE = "london-journal-v7";
 
 const SHELL = [
   "./",
