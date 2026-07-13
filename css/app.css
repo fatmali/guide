@@ -294,6 +294,47 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   border: 1px solid var(--line); border-radius: 6px; background: var(--paper-2);
 }
 .daymap svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+/* live OpenStreetMap (Leaflet) — hidden until it initialises, schematic shows meanwhile */
+.daymap__live { display: none; width: 100%; height: 250px; border-radius: 4px; overflow: hidden;
+  border: 1px solid var(--line-soft); background: var(--paper-3); }
+.daymap.is-live .daymap__live { display: block; }
+.daymap.is-live .daymap__fallback { display: none; }
+.daymap__fallback { margin: 0; }
+
+/* tone the tiles to the paper palette — warm in light, inverted in dark */
+.daymap .leaflet-tile-pane { filter: sepia(0.28) saturate(0.72) brightness(1.03) contrast(0.96) hue-rotate(-8deg); }
+@media (prefers-color-scheme: dark) {
+  .daymap .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) sepia(0.16); }
+}
+:root[data-theme="light"] .daymap .leaflet-tile-pane { filter: sepia(0.28) saturate(0.72) brightness(1.03) contrast(0.96) hue-rotate(-8deg); }
+:root[data-theme="dark"]  .daymap .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) sepia(0.16); }
+
+/* numbered markers, matching the schematic dots */
+.mapmark span {
+  display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--paper); border: 1.5px solid var(--red); color: var(--red);
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  box-shadow: 0 1px 3px var(--shadow);
+}
+.mapmark--start span { background: var(--red); color: var(--paper); }
+
+/* Leaflet chrome, toned down */
+.daymap .leaflet-container { font-family: var(--body); background: var(--paper-3); }
+.daymap .leaflet-bar a {
+  background: var(--paper); color: var(--ink-soft); border-bottom-color: var(--line);
+}
+.daymap .leaflet-bar a:hover { background: var(--paper-2); color: var(--ink); }
+.daymap .leaflet-control-attribution {
+  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  color: var(--ink-faint); font-family: var(--mono); font-size: 9px; letter-spacing: 0.02em;
+}
+.daymap .leaflet-control-attribution a { color: var(--ink-soft); }
+.daymap .leaflet-tooltip {
+  background: var(--ink); color: var(--paper); border: none; box-shadow: 0 2px 6px var(--shadow);
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.03em; padding: 3px 7px; border-radius: 3px;
+}
+.daymap .leaflet-tooltip-top::before { border-top-color: var(--ink); }
 .daymap__key {
   list-style: none; margin: 1rem 0 0; padding: 0.9rem 0 0;
   border-top: 1px solid var(--line-soft);

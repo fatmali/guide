@@ -4,7 +4,7 @@
    online; fonts and icons are cache-first because they never change.
    Maps are the only thing that need the outside world. */
 
-const CACHE = "london-journal-v13";
+const CACHE = "london-journal-v14";
 
 const SHELL = [
   "./",
@@ -12,6 +12,8 @@ const SHELL = [
   "./manifest.webmanifest",
   "./css/app.css",
   "./assets/fonts.css",
+  "./assets/leaflet/leaflet.css",
+  "./assets/leaflet/leaflet.js",
   "./js/data.js",
   "./js/app.js",
   "./assets/favicon.svg",
@@ -57,8 +59,10 @@ self.addEventListener("fetch", (e) => {
   if (url.origin !== self.location.origin) return; // never touch map deep links
 
   const isNav = request.mode === "navigate";
-  // the app's own code + content — always try the network first when online
-  const contentFirst = isNav || /\.(?:html|js|css|json|webmanifest)$/.test(url.pathname);
+  // the app's own code + content — network-first so edits appear at once.
+  // Leaflet is a pinned vendor lib (never changes), so leave it to cache-first.
+  const contentFirst = (isNav || /\.(?:html|js|css|json|webmanifest)$/.test(url.pathname))
+    && !url.pathname.includes("/assets/leaflet/");
 
   if (contentFirst) {
     e.respondWith(

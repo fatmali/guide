@@ -193,12 +193,13 @@
     return wrap;
   }
 
-  // A hand-drawn-feeling route map, projected from the stops' real coordinates.
-  // Pure SVG from data we already hold — works fully offline, no tiles.
-  function dayMapEl(day) {
-    const pts = (day.stops || []).filter((s) => s.lat != null);
-    if (pts.length < 2) return null;
+  // Each day gets a real OpenStreetMap (Leaflet) map when online, and a
+  // hand-drawn SVG schematic — built from the same coordinates — when offline.
+  const mapEntries = [];
+  let currentDayId = null;
 
+  // The offline schematic: pure SVG from data we already hold, no tiles.
+  function schematicSVG(day, pts) {
     const W = 100, H = 62, m = 12;                    // viewBox + inner margin
     const midLat = pts.reduce((a, s) => a + s.lat, 0) / pts.length;
     const kx = Math.cos((midLat * Math.PI) / 180);    // compress lng to match lat on the ground
@@ -266,14 +267,71 @@
       </g>
     </svg>`;
 
-    const legend = P.map((p, i) =>
-      `<li><b>${i + 1}</b> ${p.name.split(/[,&]/)[0].trim()}</li>`).join("");
+    return svg;
+  }
+
+  function dayMapEl(day) {
+    const pts = (day.stops || []).filter((s) => s.lat != null);
+    if (pts.length < 2) return null;
+
+    const legend = pts.map((s, i) =>
+      `<li><b>${i + 1}</b> ${s.name.split(/[,&]/)[0].trim()}</li>`).join("");
 
     const wrap = el("div", "rise");
     wrap.appendChild(el("div", "sectlabel", "The day, mapped"));
-    wrap.appendChild(el("figure", "daymap", `${svg}<ul class="daymap__key">${legend}</ul>`));
+    const fig = el("figure", "daymap");
+    fig.innerHTML =
+      `<div class="daymap__live"></div>` +
+      `<div class="daymap__fallback">${schematicSVG(day, pts)}</div>` +
+      `<ul class="daymap__key">${legend}</ul>`;
+    wrap.appendChild(fig);
+    mapEntries.push({ dayId: day.id, pts, fig, map: null, tileErr: 0 });
     return wrap;
   }
+
+  // Build the live Leaflet map for a day, lazily, once it's on screen and online.
+  function initDayMap(entry) {
+    if (!entry || entry.map || !window.L || !navigator.onLine) return;
+    const live = entry.fig.querySelector(".daymap__live");
+    entry.fig.classList.add("is-live");          // give the mount a size before init
+    try {
+      const latlngs = entry.pts.map((s) => [s.lat, s.lng]);
+      const map = L.map(live, { scrollWheelZoom: false });
+      const tiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+        subdomains: "abcd", maxZoom: 19, detectRetina: true,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      });
+      // if tiles can't load at all (offline captive wifi, provider outage), drop back to the schematic
+      let loaded = 0, decided = false;
+      tiles.on("tileload", () => { loaded++; });
+      tiles.on("tileerror", () => {
+        if (!decided && loaded === 0 && ++entry.tileErr >= 5) {
+          decided = true; map.remove(); entry.map = null; entry.fig.classList.remove("is-live");
+        }
+      });
+      tiles.addTo(map);
+      L.polyline(latlngs, { color: "#B23A2E", weight: 3.5, opacity: 0.9, dashArray: "2 7", lineCap: "round" }).addTo(map);
+      entry.pts.forEach((s, i) => {
+        const icon = L.divIcon({
+          className: "mapmark" + (i === 0 ? " mapmark--start" : ""),
+          html: `<span>${i + 1}</span>`, iconSize: [22, 22], iconAnchor: [11, 11],
+        });
+        L.marker([s.lat, s.lng], { icon, keyboard: false }).addTo(map).bindTooltip(s.name, { direction: "top", offset: [0, -9] });
+      });
+      map.fitBounds(latlngs, { padding: [28, 28] });
+      entry.map = map;
+      setTimeout(() => map.invalidateSize(), 60);
+    } catch (e) {
+      entry.fig.classList.remove("is-live");     // fall back to the schematic
+    }
+  }
+  function activateDayMap(dayId) {
+    const e = mapEntries.find((x) => x.dayId === dayId);
+    if (!e) return;
+    initDayMap(e);
+    if (e.map) setTimeout(() => e.map.invalidateSize(), 80);
+  }
+  addEventListener("online", () => { if (currentDayId) activateDayMap(currentDayId); });
 
   // "The shape of the day" — a quiet timeline read from the route's times.
   function rhythmEl(day) {
@@ -627,6 +685,8 @@
         e.target.classList.add("is-active");
         const i = pages.indexOf(e.target);
         current = i;
+        currentDayId = e.target.dataset.dayId || null;
+        if (currentDayId) activateDayMap(currentDayId);
         tabs.forEach((t, ti) => t.classList.toggle("is-current", ti === i));
         centerSpine(i);
         mastDay.textContent = e.target === pages[0] ? "Cover"
