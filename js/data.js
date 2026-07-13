@@ -699,94 +699,72 @@ window.JOURNAL = {
       "date": "18 July",
       "weekday": "Saturday",
       "title": "The City & the View",
-      "dek": "A Saturday that starts west among the market stalls, then hands you the oldest square mile from the top down and the ground up — and ends on a hill where London lays itself out for you.",
+      "dek": "A Saturday that starts high over the oldest square mile — a garden in the clouds before the crowds — then works west to the market stalls and ends on a hill where London lays itself out for you.",
       "weather": "Bright, 24° / 16°. The clearest evening of the trip, if you're lucky — and Primrose Hill knows it.",
       "budget": "≈ £45 — Sky Garden free (book ahead), coffee £4, lunch £15, books £20, sunset picnic £12.",
       "mission": "See the City from above before you walk through it. Read the skyline as a timeline. End the day on the grass with the whole thing glowing.",
-      "routeWhy": "Today has one deliberate cross-town hop in it, and Portobello on a Saturday earns it. Start west and early with the antiques market, before it becomes impassable, then take a single Tube east and drop into the City for the top-down, bottom-up half — Sky Garden's view, then St Paul's and the river. Swing back west to Daunt Books in the afternoon and finish due north on Primrose Hill for the sunset. West, east, then home to the northwest: one big loop, and the only long Tube ride of the week.",
+      "routeWhy": "One deliberate cross-town hop, and your Sky Garden slot sets the shape of it. Start high over the oldest square mile — the garden in the clouds at quarter to ten, before the crowds pour in at eleven, breakfast in hand — then drop to street level for St Paul's and the river while the City's still Saturday-quiet. After a light lunch, the single long Tube west to Portobello for the market's afternoon buzz, back through Daunt Books in Marylebone, and due north to finish on Primrose Hill at sunset. High, then low, then west, then home to the northwest.",
       "route": [
         {
-          "time": "08:30",
-          "name": "Portobello Market",
-          "note": "Saturday's the day. Go early, go deep."
-        },
-        {
-          "time": "11:15",
+          "time": "09:45",
           "name": "Sky Garden",
-          "note": "One Tube east. Book the late-morning slot."
+          "note": "Your early slot. Breakfast in the clouds."
         },
         {
-          "time": "12:00",
+          "time": "11:00",
           "name": "Leadenhall Market",
           "note": "Down the lift, into Diagon Alley."
         },
         {
-          "time": "12:45",
+          "time": "11:45",
           "name": "St Paul's",
           "note": "Let the dome grow as you walk to it."
         },
         {
-          "time": "13:30",
+          "time": "12:45",
           "name": "Millennium Bridge",
           "note": "The framed view. Don't rush across."
         },
         {
-          "time": "15:30",
+          "time": "14:00",
+          "name": "Portobello & Notting Hill",
+          "note": "One Tube west. The market's afternoon buzz."
+        },
+        {
+          "time": "16:00",
           "name": "Daunt Books, Marylebone",
-          "note": "West again. The long oak room."
+          "note": "The long oak room."
         },
         {
           "time": "20:00",
           "name": "Primrose Hill",
-          "note": "Climb it for sunset. Bring something to drink."
+          "note": "Climb it for the picnic sunset."
         }
       ],
       "stops": [
         {
-          "time": "08:30",
-          "lat": 51.5165,
-          "lng": -0.2045,
-          "name": "Portobello Road & Notting Hill",
-          "kind": "Market & neighbourhood",
-          "address": "Portobello Rd, London W11",
-          "hours": "Antiques market Sat from ~8am; general market daily",
-          "duration": "2 hr",
-          "tube": "Notting Hill Gate",
-          "lines": [
-            "Central",
-            "Circle",
-            "District"
-          ],
-          "walkFromPrev": "Start at Notting Hill Gate, walk downhill",
-          "walkDistance": "—",
-          "access": "A long, gently sloping street; cobbled in stretches; heaving by 11am on a Saturday.",
-          "note": "Saturday is the day — the antiques dealers are out at dawn and the market runs the full length of Portobello Road. Go early, before eleven, while you can still move. Start up at Notting Hill Gate among the sherbet-coloured terraces, drift downhill through the silver and the old prints, and cut along Blenheim Crescent for the Notting Hill Bookshop (yes, that one) and up Lancaster Road for the brightest houses. Buy one small beautiful old thing, then let the crowds have it.",
-          "apple": "https://maps.apple.com/?q=Portobello%20Road%20Notting%20Hill%2C%20London",
-          "google": "https://www.google.com/maps/search/?api=1&query=Portobello%20Road%20Notting%20Hill%2C%20London"
-        },
-        {
-          "time": "11:15",
+          "time": "09:45",
           "name": "Sky Garden",
           "kind": "Viewpoint",
           "address": "1 Sky Garden Walk, London EC3M 8AF",
-          "hours": "Mon–Fri 10am–6pm, weekends from 11am. Free — book online.",
-          "duration": "45 min",
+          "hours": "Early-access 9:45am, before the 11am public opening. Hot drink + pastry included.",
+          "duration": "1 hr 15",
           "tube": "Monument",
           "lines": [
             "District",
             "Circle"
           ],
-          "walkFromPrev": "5 min from Monument",
+          "walkFromPrev": "First thing — straight up for your slot",
           "walkDistance": "400 m",
           "access": "Lifts all the way up; fully step-free; airport-style security at entry.",
           "apple": "https://maps.apple.com/?q=Sky%20Garden%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Sky%20Garden%20London",
-          "note": "The 'Walkie-Talkie' building's public garden, thirty-five floors up and completely free if you book ahead — the ticket most tourists never realise exists. Go to the top open terrace and look east: you can see the whole argument of London, the medieval street plan still legible under the glass towers. Book a late-morning slot — you're arriving from the market, and the light's still clean before noon.",
+          "note": "You booked the early slot, and it's the right call: you're up at quarter to ten, before the free-ticket crowds pour in at eleven, with a hot drink and a pastry and the whole City laid out thirty-five floors below. Go to the top open terrace and look east — the medieval street plan still legible under the glass towers, the river bending away. Sky Garden turns loud and mobbed by midday; you get it calm, in clean morning light. This is the version worth having.",
           "lat": 51.5111,
           "lng": -0.0837
         },
         {
-          "time": "12:00",
+          "time": "11:00",
           "name": "Leadenhall Market",
           "kind": "Architecture",
           "address": "Gracechurch St, London EC3V 1LT",
@@ -797,7 +775,7 @@ window.JOURNAL = {
             "Central",
             "Northern"
           ],
-          "walkFromPrev": "4 min",
+          "walkFromPrev": "5 min from Sky Garden",
           "walkDistance": "300 m",
           "access": "Cobbled and gently sloped; covered.",
           "apple": "https://maps.apple.com/?q=Leadenhall%20Market%20London",
@@ -807,7 +785,7 @@ window.JOURNAL = {
           "lng": -0.0836
         },
         {
-          "time": "12:45",
+          "time": "11:45",
           "name": "St Paul's Cathedral",
           "kind": "Architecture",
           "address": "St Paul's Churchyard, London EC4M 8AD",
@@ -827,7 +805,7 @@ window.JOURNAL = {
           "lng": -0.0984
         },
         {
-          "time": "13:30",
+          "time": "12:45",
           "name": "Millennium Bridge",
           "kind": "Bridge",
           "address": "Thames Embankment, London EC4V 3QH",
@@ -848,7 +826,29 @@ window.JOURNAL = {
           "lng": -0.0985
         },
         {
-          "time": "15:30",
+          "time": "14:00",
+          "lat": 51.5165,
+          "lng": -0.2045,
+          "name": "Portobello Road & Notting Hill",
+          "kind": "Market & neighbourhood",
+          "address": "Portobello Rd, London W11",
+          "hours": "Market all day Sat; antiques best early, the street liveliest mid-afternoon",
+          "duration": "2 hr",
+          "tube": "Notting Hill Gate",
+          "lines": [
+            "Central",
+            "Circle",
+            "District"
+          ],
+          "walkFromPrev": "Tube west: Monument → Notting Hill Gate, ~35 min",
+          "walkDistance": "—",
+          "access": "A long, gently sloping street; cobbled in stretches; heaving by 11am on a Saturday.",
+          "note": "Saturday's market runs all day, and by afternoon it has changed character: the dawn antiques dealers are packing up, but the street is at its liveliest — the vintage and fashion end under the Westway humming, food stalls smoking, the crowd thick and happy. Come down from Notting Hill Gate through the sherbet-coloured terraces, drift along Portobello, cut down Blenheim Crescent for the Notting Hill Bookshop (yes, that one) and up Lancaster Road for the brightest houses. Buy one small beautiful thing, and eat something from a stall.",
+          "apple": "https://maps.apple.com/?q=Portobello%20Road%20Notting%20Hill%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Portobello%20Road%20Notting%20Hill%2C%20London"
+        },
+        {
+          "time": "16:00",
           "name": "Daunt Books, Marylebone",
           "kind": "Bookshop",
           "address": "84 Marylebone High St, London W1U 4QW",
@@ -861,7 +861,7 @@ window.JOURNAL = {
             "Circle",
             "H&C"
           ],
-          "walkFromPrev": "Tube: Blackfriars → Baker St, then 8 min",
+          "walkFromPrev": "Tube: Notting Hill Gate → Baker St, ~15 min",
           "walkDistance": "—",
           "access": "The famous long room is up a few steps; main floor is level.",
           "apple": "https://maps.apple.com/?q=Daunt%20Books%20Marylebone%20London",
@@ -903,21 +903,17 @@ window.JOURNAL = {
         },
         {
           "type": "breakfast",
-          "time": "08:45",
+          "time": "09:45",
           "title": "Breakfast",
-          "place": "Fortitude Bakehouse, Bloomsbury",
-          "body": "A closet-sized bakery near the British Museum doing cardamom buns and proper coffee. Three tables, a marble counter, no room to be in a hurry. Get the bun and a cortado and eat it on the step of a Georgian terrace.",
-          "apple": "https://maps.apple.com/?q=Fortitude%20Bakehouse%20Bloomsbury%20London",
-          "google": "https://www.google.com/maps/search/?api=1&query=Fortitude%20Bakehouse%20Bloomsbury%20London"
+          "place": "Included with your Sky Garden ticket",
+          "body": "Breakfast is built into the early-access ticket — a hot drink and a pastry, thirty-five floors up, with the City at your feet and barely anyone else there yet. No café could better it. Just turn up hungry."
         },
         {
           "type": "lunch",
-          "time": "13:15",
+          "time": "13:30",
           "title": "Lunch",
-          "place": "The City, near St Paul's",
-          "body": "The City empties on Saturdays, which is either lovely or dead depending on your mood. Ceremony of the Watermans or a bench by the cathedral with something from a bakery is honestly the move. If you want a table, walk to Bread Street or Paternoster Square — plenty of veg-forward options and space to breathe.",
-          "apple": "https://maps.apple.com/?q=Paternoster%20Square%20London",
-          "google": "https://www.google.com/maps/search/?api=1&query=Paternoster%20Square%20London"
+          "place": "Portobello food stalls, or a City bite",
+          "body": "Lunch is best light and on the move today. Something quick in the City after the bridge if you're flagging — or, better, hold out and graze the Portobello food stalls in the afternoon: paella, a cheese toastie, a crêpe eaten walking. On a Saturday the market is the lunch."
         },
         {
           "type": "dinner",
