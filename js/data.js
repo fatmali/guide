@@ -383,7 +383,7 @@ window.JOURNAL = {
       "weather": "Warm, 23° / 15°. Markets are best before the lunch rush swallows them.",
       "budget": "≈ £70 — market grazing £18, coffee £4, lunch £16, dinner £22, plus whatever the shops do to you.",
       "mission": "Eat with your nose. Then study how London sells beautiful things — the architecture of desire, from Liberty's timber to Selfridges' theatre.",
-      "routeWhy": "Start east and low, at Borough Market, when the traders are unpacking and it still belongs to cooks rather than tourists. Walk it off to Tower Bridge along the river, then take one Tube (London Bridge → Bond Street) straight to the shopping. Do the shops in the order of least to most overwhelming: Liberty's calm rooms first, Carnaby's noise second, Selfridges' cathedral last. From Selfridges, step west to Frameless at Marble Arch — an immersive art gallery for the design-minded — then south to Harrods for the grandest food halls in the city, and dinner in hushed Belgravia.",
+      "routeWhy": "Start east and low at Borough Market, when the traders are unpacking and it still belongs to cooks rather than tourists. Walk it off along the river to Tower Bridge, then one Tube west to the shops. The afternoon has a single fixed point — a 6:30 slot at Frameless — so arrange the rest around it: Liberty's calm rooms and Carnaby's noise, then drop south to Harrods for the food halls, double back up to Selfridges, and finish with the eight-minute walk to Marble Arch. The immersive gallery is the day's last act, and dinner waits for after the lights.",
       "route": [
         {
           "time": "09:00",
@@ -417,23 +417,23 @@ window.JOURNAL = {
         },
         {
           "time": "15:45",
-          "name": "Selfridges",
-          "note": "Save it for last. It's a performance."
-        },
-        {
-          "time": "16:45",
-          "name": "→ Frameless",
-          "note": "West to Marble Arch. The frame dissolves."
-        },
-        {
-          "time": "18:30",
           "name": "→ Harrods",
           "note": "One Tube south. The food halls, not the crowds."
         },
         {
-          "time": "20:00",
-          "name": "Belgravia dinner",
-          "note": "Quiet luxury, a few streets from Harrods."
+          "time": "17:15",
+          "name": "Selfridges",
+          "note": "Back north. The theatre of it, then west."
+        },
+        {
+          "time": "18:30",
+          "name": "→ Frameless",
+          "note": "Eight minutes to Marble Arch. The 6:30 slot."
+        },
+        {
+          "time": "20:15",
+          "name": "Dinner, near Marble Arch",
+          "note": "After the lights. Warm and unhurried."
         }
       ],
       "stops": [
@@ -546,48 +546,6 @@ window.JOURNAL = {
         },
         {
           "time": "15:45",
-          "name": "Selfridges",
-          "kind": "Department store",
-          "address": "400 Oxford St, London W1A 1AB",
-          "hours": "Mon–Sat 10am–9pm, Sun 12–6pm",
-          "duration": "1 hr",
-          "tube": "Bond Street",
-          "lines": [
-            "Central",
-            "Jubilee",
-            "Elizabeth"
-          ],
-          "walkFromPrev": "10 min west along Oxford St",
-          "walkDistance": "800 m",
-          "access": "Full step-free access, lifts, calm hour early morning.",
-          "apple": "https://maps.apple.com/?q=Selfridges%20Oxford%20Street%20London",
-          "google": "https://www.google.com/maps/search/?api=1&query=Selfridges%20Oxford%20Street%20London",
-          "note": "Save this for last because it's the loudest instrument. Harry Gordon Selfridge invented the idea that a shop could be theatre — put the perfume by the door in 1909 so the street would smell of it, made the windows a show. The beauty hall is where your signature-perfume hunt ends. Lakeland's West End branch is a short hop for your mum's baking supplies.",
-          "lat": 51.5145,
-          "lng": -0.1526
-        },
-        {
-          "time": "16:45",
-          "lat": 51.5133,
-          "lng": -0.159,
-          "name": "Frameless",
-          "kind": "Immersive art",
-          "address": "6 Marble Arch, London W1H 7AP",
-          "hours": "Daily, timed entry; late slots into the evening — book ahead",
-          "duration": "75–90 min",
-          "tube": "Marble Arch",
-          "lines": [
-            "Central"
-          ],
-          "walkFromPrev": "8 min west from Selfridges",
-          "walkDistance": "600 m",
-          "access": "Fully step-free, lifts; dim rooms with projected light and sound that can be intense — quieter slots exist.",
-          "note": "Four rooms where the frame — and with it the whole polite museum ritual of standing the right distance from a rectangle — simply dissolves. Famous paintings are taken apart into floor-to-ceiling projection that moves, breathes and reacts to you, so the work stops being an object on a wall and becomes the room you're standing in. Go with your HCI eyes open: watch how people move when nothing tells them where to stand or which way to face. Ten minutes from Selfridges, and a genuinely different way of seeing — book a late-afternoon slot.",
-          "apple": "https://maps.apple.com/?q=Frameless%20Marble%20Arch%2C%20London",
-          "google": "https://www.google.com/maps/search/?api=1&query=Frameless%20Marble%20Arch%2C%20London"
-        },
-        {
-          "time": "18:30",
           "lat": 51.4994,
           "lng": -0.1632,
           "name": "Harrods",
@@ -599,12 +557,54 @@ window.JOURNAL = {
           "lines": [
             "Piccadilly"
           ],
-          "walkFromPrev": "Tube: Bond St → Knightsbridge, ~12 min",
+          "walkFromPrev": "Tube: Oxford Circus → Knightsbridge, ~12 min",
           "walkDistance": "—",
           "access": "Fully step-free, lifts throughout; relentlessly busy — aim for the halls.",
           "note": "Theatre pretending to be a shop — and worth it for one thing above all: the Food Halls. The Edwardian tiled halls, Doulton peacocks and art-nouveau ceilings arching over the fishmongers, are among the most beautiful rooms in London, and nobody charges you to stand in them. Ride the Egyptian Escalator once for the sheer gloriously-mad excess of it, buy something small and edible, and leave before the perfume hall fogs your head.",
           "apple": "https://maps.apple.com/?q=Harrods%20Knightsbridge%2C%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Harrods%20Knightsbridge%2C%20London"
+        },
+        {
+          "time": "17:15",
+          "name": "Selfridges",
+          "kind": "Department store",
+          "address": "400 Oxford St, London W1A 1AB",
+          "hours": "Mon–Sat 10am–9pm, Sun 12–6pm",
+          "duration": "1 hr",
+          "tube": "Bond Street",
+          "lines": [
+            "Central",
+            "Jubilee",
+            "Elizabeth"
+          ],
+          "walkFromPrev": "Tube: Knightsbridge → Bond St, ~12 min",
+          "walkDistance": "800 m",
+          "access": "Full step-free access, lifts, calm hour early morning.",
+          "apple": "https://maps.apple.com/?q=Selfridges%20Oxford%20Street%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Selfridges%20Oxford%20Street%20London",
+          "note": "Save this for last because it's the loudest instrument. Harry Gordon Selfridge invented the idea that a shop could be theatre — put the perfume by the door in 1909 so the street would smell of it, made the windows a show. The beauty hall is where your signature-perfume hunt ends. Lakeland's West End branch is a short hop for your mum's baking supplies.",
+          "lat": 51.5145,
+          "lng": -0.1526
+        },
+        {
+          "time": "18:30",
+          "lat": 51.5133,
+          "lng": -0.159,
+          "name": "Frameless",
+          "kind": "Immersive art",
+          "address": "6 Marble Arch, London W1H 7AP",
+          "hours": "Daily, timed entry; last admission 20:30 — book ahead",
+          "duration": "90 min",
+          "tube": "Marble Arch",
+          "lines": [
+            "Central"
+          ],
+          "walkFromPrev": "8 min west from Selfridges",
+          "walkDistance": "600 m",
+          "access": "Fully step-free, lifts; dim rooms with projected light and sound that can be intense — quieter slots exist.",
+          "note": "Four rooms where the frame — and with it the whole polite museum ritual of standing the right distance from a rectangle — simply dissolves. Famous paintings are taken apart into floor-to-ceiling projection that moves, breathes and reacts to you, so the work stops being an object on a wall and becomes the room you're standing in. Go with your HCI eyes open: watch how people move when nothing tells them where to stand or which way to face. Ninety minutes inside, and the right last act before dinner.",
+          "apple": "https://maps.apple.com/?q=Frameless%20Marble%20Arch%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Frameless%20Marble%20Arch%2C%20London"
         }
       ],
       "notes": [
@@ -637,12 +637,12 @@ window.JOURNAL = {
         },
         {
           "type": "dinner",
-          "time": "19:00",
+          "time": "20:15",
           "title": "Dinner",
-          "place": "Amaya, Belgravia",
-          "body": "A few minutes from Harrods, in a hushed Belgravia arcade — an open-kitchen Indian grill where the vegetarian plates are the headline, not the footnote: tandoori broccoli, smoked aubergine, a truffle-and-corn tikki, a proper biryani. Elegant, warm, grown-up. If your feet have had enough of grand, Comptoir Libanais on the Brompton Road does honest mezze with no ceremony.",
-          "apple": "https://maps.apple.com/?q=Amaya%20Belgravia%2C%20London",
-          "google": "https://www.google.com/maps/search/?api=1&query=Amaya%20Belgravia%2C%20London"
+          "place": "Roti Chai, off Portman Square",
+          "body": "Five minutes from Frameless and exactly the right speed for after — a modern Indian 'railway canteen' downstairs, a calmer dining room above, and vegetarian dishes that steal the show: the bhel, the paneer, the dosa. Warm, unfussy, and open late enough for a half-eight table once the lights let you go.",
+          "apple": "https://maps.apple.com/?q=Roti%20Chai%20Marylebone%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Roti%20Chai%20Marylebone%2C%20London"
         },
         {
           "type": "bakery",
