@@ -18,41 +18,46 @@ window.JOURNAL = {
       "kicker": "The night you land",
       "label": "Arr.",
       "date": "15–16 July",
-      "weekday": "Wednesday, late",
+      "weekday": "Wednesday, evening",
       "title": "Arrival",
       "dek": "You will be tired in a way that feels like water. Don't fight it. London will still be here at breakfast.",
-      "weather": "Mild night, 15°. The city smells of rain that has already stopped.",
+      "weather": "Mild evening, 16°. It's still light when you land — London barely gets dark before ten in July — and the city smells of rain that has already stopped.",
       "budget": "£0 tonight. Everything you need is already in the room.",
-      "mission": "Land. Get horizontal. That is the entire ambition for the next twelve hours.",
-      "routeWhy": "No route tonight. The only distance worth measuring is the one between the door and the bed.",
+      "mission": "Land. Get into town. Get horizontal. That is the whole ambition tonight — anything else can wait for breakfast.",
+      "routeWhy": "No route tonight beyond the one from the plane to the pillow. You touch down at eight, but by the time the airport lets you go and the train reels you into the city it will be gone ten — so keep it simple: get to the room, wash the flight off, eat something small, sleep. London will still be here in the morning.",
       "route": [
         {
+          "time": "20:00",
+          "name": "Touch down",
+          "note": "Wheels down. You made it."
+        },
+        {
+          "time": "20:45",
+          "name": "Through the airport",
+          "note": "Bags, then the border. Have the address written down."
+        },
+        {
+          "time": "21:15",
+          "name": "Into the city",
+          "note": "The fast train, or a black cab after the day you've had."
+        },
+        {
           "time": "22:00",
-          "name": "Passport control",
-          "note": "Have the address written down. They always ask."
+          "name": "Check in",
+          "note": "Say hello. Ask when breakfast starts. Nothing more."
         },
         {
           "time": "22:20",
-          "name": "The Tube or a cab",
-          "note": "After 10pm, a black cab is a kindness to yourself."
-        },
-        {
-          "time": "22:45",
-          "name": "Check in",
-          "note": "Say hello. Ask what time breakfast starts. Nothing more."
-        },
-        {
-          "time": "23:00",
           "name": "Hot shower",
           "note": "The whole flight rinses off here."
         },
         {
-          "time": "23:20",
+          "time": "22:40",
           "name": "Something small to eat",
           "note": "Toast. A banana. Not a decision."
         },
         {
-          "time": "23:40",
+          "time": "23:00",
           "name": "Sleep",
           "note": "Curtains closed. Phone across the room."
         }

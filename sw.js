@@ -1,8 +1,10 @@
 /* The London Journal — service worker.
    Precache the whole shell so the guide opens with no signal.
+   Content (HTML/JS/CSS) is network-first so edits show up the moment you're
+   online; fonts and icons are cache-first because they never change.
    Maps are the only thing that need the outside world. */
 
-const CACHE = "london-journal-v7";
+const CACHE = "london-journal-v8";
 
 const SHELL = [
   "./",
@@ -40,31 +42,37 @@ self.addEventListener("activate", (e) => {
   );
 });
 
+const putInCache = (req, resp) => {
+  if (resp && resp.status === 200 && resp.type === "basic") {
+    const copy = resp.clone();
+    caches.open(CACHE).then((c) => c.put(req, copy));
+  }
+  return resp;
+};
+
 self.addEventListener("fetch", (e) => {
   const { request } = e;
   if (request.method !== "GET") return;
   const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return; // never touch map deep links
 
-  // Never intercept map deep links or anything cross-origin.
-  if (url.origin !== self.location.origin) return;
+  const isNav = request.mode === "navigate";
+  // the app's own code + content — always try the network first when online
+  const contentFirst = isNav || /\.(?:html|js|css|json|webmanifest)$/.test(url.pathname);
 
-  // App navigations: serve the cached shell first, fall back to network.
-  if (request.mode === "navigate") {
-    e.respondWith(caches.match("./index.html").then((r) => r || fetch(request)));
+  if (contentFirst) {
+    e.respondWith(
+      fetch(request)
+        .then((resp) => putInCache(isNav ? "./index.html" : request, resp))
+        .catch(() => caches.match(isNav ? "./index.html" : request).then((r) => r || caches.match("./index.html")))
+    );
     return;
   }
 
-  // Cache-first for same-origin assets; fill the cache as we go.
+  // fonts + icons — immutable, so cache-first is fastest
   e.respondWith(
     caches.match(request).then((cached) =>
-      cached ||
-      fetch(request).then((resp) => {
-        if (resp && resp.status === 200 && resp.type === "basic") {
-          const copy = resp.clone();
-          caches.open(CACHE).then((c) => c.put(request, copy));
-        }
-        return resp;
-      }).catch(() => cached)
+      cached || fetch(request).then((resp) => putInCache(request, resp)).catch(() => cached)
     )
   );
 });
