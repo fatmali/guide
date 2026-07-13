@@ -378,7 +378,7 @@ window.JOURNAL = {
       "weather": "Warm, 23° / 15°. Markets are best before the lunch rush swallows them.",
       "budget": "≈ £70 — market grazing £18, coffee £4, lunch £16, dinner £22, plus whatever the shops do to you.",
       "mission": "Eat with your nose. Then study how London sells beautiful things — the architecture of desire, from Liberty's timber to Selfridges' theatre.",
-      "routeWhy": "Start east and low, at Borough Market, when the traders are unpacking and it still belongs to cooks rather than tourists. Walk it off to Tower Bridge along the river, then take one Tube (London Bridge → Bond Street) straight to the shopping. Do the shops in the order of least to most overwhelming: Liberty's calm rooms first, Carnaby's noise second, Selfridges' cathedral last. Ending at Selfridges means dinner in Marylebone, the softest neighbourhood in the West End.",
+      "routeWhy": "Start east and low, at Borough Market, when the traders are unpacking and it still belongs to cooks rather than tourists. Walk it off to Tower Bridge along the river, then take one Tube (London Bridge → Bond Street) straight to the shopping. Do the shops in the order of least to most overwhelming: Liberty's calm rooms first, Carnaby's noise second, Selfridges' cathedral last. From Selfridges it's a short Tube south to Harrods — the grandest food halls in the city — and dinner in hushed Belgravia, a few streets on.",
       "route": [
         {
           "time": "09:00",
@@ -416,9 +416,14 @@ window.JOURNAL = {
           "note": "Save it for last. It's a performance."
         },
         {
+          "time": "16:45",
+          "name": "→ Harrods",
+          "note": "One Tube south. The food halls, not the crowds."
+        },
+        {
           "time": "19:00",
-          "name": "Marylebone dinner",
-          "note": "Wind down where London exhales."
+          "name": "Belgravia dinner",
+          "note": "Quiet luxury, a few streets from Harrods."
         }
       ],
       "stops": [
@@ -550,6 +555,26 @@ window.JOURNAL = {
           "note": "Save this for last because it's the loudest instrument. Harry Gordon Selfridge invented the idea that a shop could be theatre — put the perfume by the door in 1909 so the street would smell of it, made the windows a show. The beauty hall is where your signature-perfume hunt ends. Lakeland's West End branch is a short hop for your mum's baking supplies.",
           "lat": 51.5145,
           "lng": -0.1526
+        },
+        {
+          "time": "16:45",
+          "lat": 51.4994,
+          "lng": -0.1632,
+          "name": "Harrods",
+          "kind": "Department store",
+          "address": "87–135 Brompton Rd, Knightsbridge, London SW1X 7XL",
+          "hours": "Mon–Sat 10am–9pm, Sun 11:30am–6pm",
+          "duration": "45 min",
+          "tube": "Knightsbridge",
+          "lines": [
+            "Piccadilly"
+          ],
+          "walkFromPrev": "Tube: Bond St → Knightsbridge, ~12 min",
+          "walkDistance": "—",
+          "access": "Fully step-free, lifts throughout; relentlessly busy — aim for the halls.",
+          "note": "Theatre pretending to be a shop — and worth it for one thing above all: the Food Halls. The Edwardian tiled halls, Doulton peacocks and art-nouveau ceilings arching over the fishmongers, are among the most beautiful rooms in London, and nobody charges you to stand in them. Ride the Egyptian Escalator once for the sheer gloriously-mad excess of it, buy something small and edible, and leave before the perfume hall fogs your head.",
+          "apple": "https://maps.apple.com/?q=Harrods%20Knightsbridge%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Harrods%20Knightsbridge%2C%20London"
         }
       ],
       "notes": [
@@ -584,10 +609,10 @@ window.JOURNAL = {
           "type": "dinner",
           "time": "19:00",
           "title": "Dinner",
-          "place": "The Providores / or Roti King if you want a queue with a reward",
-          "body": "In Marylebone after Selfridges, wind down at a small neighbourhood table. If you've the patience, walk to Kricket or a Marylebone Lane bistro; if you want something soulful and cheap, the roti canai down the road is transcendent. Vegetarian either way — ask for the dal and the paneer.",
-          "apple": "https://maps.apple.com/?q=Marylebone%20Lane%20restaurants%20London",
-          "google": "https://www.google.com/maps/search/?api=1&query=Marylebone%20Lane%20restaurants%20London"
+          "place": "Amaya, Belgravia",
+          "body": "A few minutes from Harrods, in a hushed Belgravia arcade — an open-kitchen Indian grill where the vegetarian plates are the headline, not the footnote: tandoori broccoli, smoked aubergine, a truffle-and-corn tikki, a proper biryani. Elegant, warm, grown-up. If your feet have had enough of grand, Comptoir Libanais on the Brompton Road does honest mezze with no ceremony.",
+          "apple": "https://maps.apple.com/?q=Amaya%20Belgravia%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Amaya%20Belgravia%2C%20London"
         },
         {
           "type": "bakery",
@@ -612,7 +637,7 @@ window.JOURNAL = {
           "type": "shop",
           "title": "Shopping",
           "place": "Liberty, Selfridges, Sephora, Lakeland",
-          "body": "Today knocks out most of the hunt list. Liberty for the one London keepsake (their own-print scarf or a Tana Lawn offcut). Selfridges' beauty hall for the signature perfume — spray one, walk away, come back in an hour and see if you miss it. Sephora on Oxford Street, Lakeland's West End branch for mum's baking supplies, Zara flagship for the practical.",
+          "body": "Today knocks out most of the hunt list. Liberty for the one London keepsake (their own-print scarf or a Tana Lawn offcut). Selfridges' beauty hall for the signature perfume — spray one, walk away, come back in an hour and see if you miss it. Sephora on Oxford Street, Lakeland's West End branch for mum's baking supplies, Zara flagship for the practical. And end grand: Harrods' Food Halls in Knightsbridge, where the one keepsake worth carrying home is edible — a tin, a chocolate, a jar with that green-and-gold label.",
           "apple": "https://maps.apple.com/?q=Liberty%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Liberty%20London"
         },
@@ -908,34 +933,56 @@ window.JOURNAL = {
       "routeWhy": "There's no route to optimise today, and that's the point. Go back to whichever café or corner earned a second visit — the return is the reward. Then walk with no destination through whichever neighbourhood you liked best, buy the last things on the list without hunting, and make your way to King's Cross with time to spare. The train to York takes just under two hours; give yourself the platform without a run.",
       "route": [
         {
-          "time": "10:00",
+          "time": "09:30",
           "name": "The café you'd return to",
-          "note": "Second visits beat first ones."
+          "note": "Order 'the usual' in a city you've known four days."
         },
         {
-          "time": "11:15",
-          "name": "A walk with no map",
-          "note": "Turn toward whatever looks good."
+          "time": "10:00",
+          "name": "Notting Hill, no map",
+          "note": "Portobello, the pastel streets, a slow wander."
         },
         {
-          "time": "12:30",
-          "name": "Last small purchases",
-          "note": "Close the hunt list, gently."
+          "time": "12:15",
+          "name": "The last small thing",
+          "note": "Bought on the way back, not hunted."
         },
         {
-          "time": "14:30",
+          "time": "13:30",
           "name": "King's Cross",
           "note": "Arrive early. Look up at the roof."
         },
         {
-          "time": "15:00",
+          "time": "14:30",
           "name": "Train to York",
-          "note": "≈ 1h 50m. Window seat, left side, going up."
+          "note": "Window seat, left side, going north."
         }
       ],
       "stops": [
         {
-          "time": "14:30",
+          "time": "10:00",
+          "lat": 51.5165,
+          "lng": -0.2045,
+          "name": "Notting Hill & Portobello Road",
+          "kind": "Neighbourhood",
+          "address": "Portobello Rd, London W11",
+          "hours": "Antiques market Fri & Sat; shops daily",
+          "duration": "1.5 hr wander",
+          "tube": "Notting Hill Gate",
+          "lines": [
+            "Central",
+            "Circle",
+            "District"
+          ],
+          "walkFromPrev": "Tube: ~15 min on the Central line",
+          "walkDistance": "—",
+          "access": "Portobello Road is a long, gentle hill, cobbled in stretches.",
+          "note": "The loveliest last morning in London: stucco terraces painted in sherbet colours, mews you'd happily lose an hour in, and Portobello Road running downhill through the middle of it. The big antiques market is a Saturday affair — on a quieter morning it's just the street, which for a goodbye is the better version. Start at Notting Hill Gate, drift down Portobello, cut along Blenheim Crescent for the Notting Hill Bookshop (yes, that one) and up Lancaster Road for the brightest houses. Buy a peach, photograph a doorway, and leave yourself time you don't have to run for.",
+          "apple": "https://maps.apple.com/?q=Portobello%20Road%20Notting%20Hill%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Portobello%20Road%20Notting%20Hill%2C%20London"
+        },
+        {
+          "time": "13:30",
           "name": "King's Cross Station",
           "kind": "Departure",
           "address": "Euston Rd, London N1 9AL",
@@ -1002,7 +1049,7 @@ window.JOURNAL = {
           "type": "shop",
           "title": "Shopping — closing the list",
           "place": "Whatever's still unticked",
-          "body": "Don't go hunting today; just finish what's easy. King's Cross itself has a good few shops if you're short — but ideally the last thing you buy is small, personal, and not on any list. The one London keepsake is often the thing you didn't plan to want.",
+          "body": "Portobello is the morning's one temptation — a worn book, a small print, a bit of old silver — but keep it to a single thing you'll actually keep. Don't go hunting today; just finish what's easy. King's Cross itself has a good few shops if you're short — but ideally the last thing you buy is small, personal, and not on any list. The one London keepsake is often the thing you didn't plan to want.",
           "apple": "https://maps.apple.com/?q=Coal%20Drops%20Yard%20King's%20Cross%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Coal%20Drops%20Yard%20King's%20Cross%20London"
         },

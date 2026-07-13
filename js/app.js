@@ -304,13 +304,22 @@
       }
       const n = data.next;
       const nTransit = n.tube ? " · " + n.tube : (n.transit ? " · " + n.transit : "");
+      const chips = n.lines ? lineChips(n.lines) : "";
+      // beyond a pleasant walk it's a Tube/transit hop, not a stroll — say so
+      const far = data.nextDist > 2500;
+      const metaLine = far
+        ? `Across town · ${fmtDist(data.nextDist)}${nTransit} ${chips}`
+        : `${walkMin(data.nextDist)} min walk · ${fmtDist(data.nextDist)}${nTransit} ${chips}`;
+      const goApple = far ? `https://maps.apple.com/?daddr=${n.lat},${n.lng}&dirflg=r` : dirApple(n);
+      const goGoogle = far ? `https://www.google.com/maps/dir/?api=1&destination=${n.lat},${n.lng}&travelmode=transit` : dirGoogle(n);
+      const goLabel = far ? "Directions" : "Walk there";
       return `<div class="upnext__label">${g}Up next</div>
         <div class="upnext__near">You're nearest <b>${data.here.name}</b> · ${fmtDist(data.hereDist)} away</div>
         <h3 class="upnext__name">${n.name}</h3>
-        <div class="upnext__meta">${walkMin(data.nextDist)} min walk · ${fmtDist(data.nextDist)}${nTransit} ${n.lines ? lineChips(n.lines) : ""}</div>
+        <div class="upnext__meta">${metaLine}</div>
         <div class="maplinks">
-          <a class="maplink maplink--apple upnext__go" href="${dirApple(n)}" target="_blank" rel="noopener">${ICON.apple} Walk there</a>
-          <a class="maplink" href="${dirGoogle(n)}" target="_blank" rel="noopener">${ICON.map} Google</a>
+          <a class="maplink maplink--apple upnext__go" href="${goApple}" target="_blank" rel="noopener">${ICON.apple} ${goLabel}</a>
+          <a class="maplink" href="${goGoogle}" target="_blank" rel="noopener">${ICON.map} Google</a>
         </div>
         ${data.then.length ? `<div class="upnext__then">Then · ${data.then.map((s) => s.name).join(" · ")}</div>` : ""}
         <button class="upnext__relink" data-loc>Refresh</button>`;
