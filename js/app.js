@@ -157,18 +157,23 @@
     markSpineDone();
     renderPassport();
   }
-  // Reliable tap for touch: a scroll-snap pager often eats plain clicks on
-  // small targets, so fire on a stationary pointerup (and keep click as a
-  // fallback — collectStamp is idempotent, so a double call is harmless).
+  // Reliable tap for touch: a scroll-snap pager eats plain clicks on small
+  // targets, so handle the raw touch — a stationary touchend fires the action
+  // and preventDefault kills the ghost click. Click stays for mouse/desktop
+  // (guarded so it doesn't double-fire right after a touch).
   function bindTap(el, fn) {
-    let ox = 0, oy = 0, live = false;
-    el.addEventListener("pointerdown", (e) => { live = true; ox = e.clientX; oy = e.clientY; }, { passive: true });
-    el.addEventListener("pointermove", (e) => {
-      if (live && (Math.abs(e.clientX - ox) > 12 || Math.abs(e.clientY - oy) > 12)) live = false;
+    let sx = 0, sy = 0, moved = false, tapped = 0;
+    el.addEventListener("touchstart", (e) => {
+      moved = false; const t = e.touches[0]; if (t) { sx = t.clientX; sy = t.clientY; }
     }, { passive: true });
-    el.addEventListener("pointercancel", () => { live = false; });
-    el.addEventListener("pointerup", () => { if (live) { live = false; fn(); } });
-    el.addEventListener("click", () => fn());
+    el.addEventListener("touchmove", (e) => {
+      const t = e.touches[0];
+      if (t && (Math.abs(t.clientX - sx) > 12 || Math.abs(t.clientY - sy) > 12)) moved = true;
+    }, { passive: true });
+    el.addEventListener("touchend", (e) => {
+      if (!moved) { e.preventDefault(); tapped = Date.now(); fn(); }
+    }, { passive: false });
+    el.addEventListener("click", () => { if (Date.now() - tapped > 600) fn(); });
   }
 
   /* ==========================================================
