@@ -40,12 +40,13 @@
   };
   const glyphFor = (type) => ({
     coffee: "☕", breakfast: "◷", lunch: "❍", dinner: "✦", bakery: "❊",
-    photo: "◉", design: "▤", shop: "❖", gem: "◇", slow: "❋", reflection: "❞",
+    photo: "◉", design: "▤", shop: "❖", gem: "◇", slow: "❋", reflection: "❞", eating: "◑",
   }[type] || "·");
   const labelFor = (type) => ({
     coffee: "Coffee", breakfast: "Breakfast", lunch: "Lunch", dinner: "Dinner",
     bakery: "Bakery", photo: "Photography", design: "Design safari",
     shop: "Shopping", gem: "Hidden gem", slow: "Slow moment", reflection: "Reflection",
+    eating: "On eating",
   }[type] || type);
   const MUSE = new Set(["photo", "design", "slow", "reflection"]);
   const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
@@ -168,7 +169,7 @@
     const box = el("div", "viral");
     box.innerHTML = v.map((x) => `
       <article class="viral__item">
-        <div class="viral__meal">${x.meal}</div>
+        <div class="viral__meal">${x.meal}${x.tag ? `<span class="viral__tag">${x.tag}</span>` : ""}</div>
         <h4 class="viral__name">${x.name}</h4>
         <p class="viral__note">${x.note}</p>
         <div class="maplinks">
@@ -341,7 +342,7 @@
       });
       map.fitBounds(latlngs, { padding: [28, 28] });
       entry.map = map;
-      setTimeout(() => map.invalidateSize(), 60);
+      setTimeout(() => { if (entry.map === map) map.invalidateSize(); }, 60);
     } catch (e) {
       entry.fig.classList.remove("is-live");     // fall back to the schematic
     }
@@ -350,7 +351,7 @@
     const e = mapEntries.find((x) => x.dayId === dayId);
     if (!e) return;
     initDayMap(e);
-    if (e.map) setTimeout(() => e.map.invalidateSize(), 80);
+    if (e.map) setTimeout(() => { if (e.map) e.map.invalidateSize(); }, 80);
   }
   addEventListener("online", () => { if (currentDayId) activateDayMap(currentDayId); });
 

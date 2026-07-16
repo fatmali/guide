@@ -1,6 +1,8 @@
 /* The London Journal — trip content.
    Written in the voice of an architect friend who quietly knows these cities.
    Every place is real; every note is a small opinion.
+   Food is halal-friendly throughout — vegetarian or verified-halal, no pork,
+   with any alcohol-in-cooking flagged.
    Times are gentle suggestions — a shape for the day, not a schedule to obey.
    Stop coordinates power the location-aware wayfinder. */
 
@@ -64,6 +66,11 @@ window.JOURNAL = {
       ],
       "stops": [],
       "notes": [
+        {
+          "type": "eating",
+          "title": "A note on eating",
+          "body": "Everything this guide sends you to is halal-friendly. Most of it is vegetarian — which keeps it simple and halal-safe — and wherever there's meat, the pick is a verified-halal kitchen, never pork. A few of the vegetarian places serve alcohol or cook the odd dish with wine (a bourguignon, a tiramisu); those are flagged so you can steer around them. Eat freely."
+        },
         {
           "type": "slow",
           "title": "Tonight's only ritual",
@@ -320,7 +327,7 @@ window.JOURNAL = {
           "time": "19:00",
           "title": "Dinner",
           "place": "Mildreds, Covent Garden",
-          "body": "Vegetarian cooking that doesn't apologise or announce itself — it's just very good food that happens to have no meat. Loud, warm, no reservations, so put your name down and go look at stationery for forty minutes. Order the mushroom bourguignon or the Sri Lankan curry, and the chocolate torte after.",
+          "body": "Vegetarian cooking that doesn't apologise or announce itself — it's just very good food that happens to have no meat. Loud, warm, no reservations, so put your name down and go look at stationery for forty minutes. It's all vegetarian, so halal-safe — order the Sri Lankan curry or the tandoori plates (skip the mushroom bourguignon; it's cooked with red wine), then the chocolate torte.",
           "apple": "https://maps.apple.com/?q=Mildreds%20Covent%20Garden%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Mildreds%20Covent%20Garden%20London"
         },
@@ -374,15 +381,17 @@ window.JOURNAL = {
       "viral": [
         {
           "meal": "Breakfast",
-          "name": "Dishoom",
-          "note": "The bacon naan roll that broke the internet — or the veg naan and a chai. Yes, you queue; yes, it's worth it. The Covent Garden branch is on your patch.",
-          "apple": "https://maps.apple.com/?q=Dishoom%20Covent%20Garden%2C%20London",
-          "google": "https://www.google.com/maps/search/?api=1&query=Dishoom%20Covent%20Garden%2C%20London"
+          "tag": "All-veg · halal-safe",
+          "name": "Sagar",
+          "note": "South Indian and entirely vegetarian — so nothing to think about — with crisp dosas, fluffy idli and proper filter coffee. A calm, cheap start a step from the piazza.",
+          "apple": "https://maps.apple.com/?q=Sagar%20South%20Indian%20Covent%20Garden%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Sagar%20South%20Indian%20Covent%20Garden%2C%20London"
         },
         {
           "meal": "Lunch",
+          "tag": "Halal-safe stalls",
           "name": "Seven Dials Market",
-          "note": "A buzzy covered food hall right where your day ends. The Pick & Cheese conveyor belt is the viral one; plenty of veg across the stalls.",
+          "note": "The buzzy covered food hall on your route. Graze the meat-free stalls — the Pick & Cheese conveyor belt, the pizza, the falafel — all halal-safe, all very much of the moment.",
           "apple": "https://maps.apple.com/?q=Seven%20Dials%20Market%2C%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Seven%20Dials%20Market%2C%20London"
         }
@@ -655,10 +664,10 @@ window.JOURNAL = {
           "type": "dinner",
           "time": "18:30",
           "title": "Dinner",
-          "place": "Roti Chai, off Portman Square",
-          "body": "Five minutes from Frameless, and the right thing to do before it rather than after — a modern Indian 'railway canteen' downstairs, a calmer dining room above, and vegetarian dishes that steal the show: the bhel, the paneer, the dosa. Warm and unfussy; eat well, then walk round the corner for the last slot.",
-          "apple": "https://maps.apple.com/?q=Roti%20Chai%20Marylebone%2C%20London",
-          "google": "https://www.google.com/maps/search/?api=1&query=Roti%20Chai%20Marylebone%2C%20London"
+          "place": "Maroush / Ranoush, Edgware Road",
+          "body": "A few minutes from Frameless, the Edgware Road strip is London's Lebanese heartland — Maroush and Ranoush do halal mezze, grilled halloumi, fattoush, moutabal and shawarma late into the night. Casual, generous, no pork, no fuss: the right end to a big day on your feet.",
+          "apple": "https://maps.apple.com/?q=Maroush%20Edgware%20Road%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Maroush%20Edgware%20Road%2C%20London"
         },
         {
           "type": "bakery",
@@ -710,15 +719,17 @@ window.JOURNAL = {
       "viral": [
         {
           "meal": "Breakfast",
+          "tag": "All plant-based",
           "name": "Mallow",
-          "note": "All-plant-based and all over your feed — the tiramisu French toast is the money shot. Inside Borough Market, right where your morning is.",
+          "note": "Fully plant-based and all over your feed, inside Borough Market where your morning is. Everything's halal-safe; the one to skip is the tiramisu toast (it carries a little alcohol) — the shakshuka and pancakes are the move.",
           "apple": "https://maps.apple.com/?q=Mallow%20Borough%20Market%2C%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Mallow%20Borough%20Market%2C%20London"
         },
         {
           "meal": "Lunch",
+          "tag": "Veg pastas · halal-safe",
           "name": "Padella",
-          "note": "The £-cheap hand-rolled pasta with the legendary queue — pici cacio e pepe, then whatever's special. (It's your lunch pick today, and this is why.)",
+          "note": "The £-cheap hand-rolled pasta with the legendary queue. Keep to the meat-free plates — the pici cacio e pepe is the famous one — and it's completely halal-safe.",
           "apple": "https://maps.apple.com/?q=Padella%20Borough%2C%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Padella%20Borough%2C%20London"
         }
@@ -952,7 +963,7 @@ window.JOURNAL = {
           "time": "20:00",
           "title": "Dinner",
           "place": "Picnic on Primrose Hill",
-          "body": "Tonight, don't book a table — build a picnic. A good cheese and bread from a Marylebone deli, olives, something cold, one nice thing sweet. Carry it up the hill and eat it watching London turn gold then blue. The best dinner of the trip won't have a bill.",
+          "body": "Tonight, don't book a table — build a picnic. A good cheese and bread from a Marylebone deli, olives, something cold, one nice thing sweet. Carry it up the hill and eat it watching London turn gold then blue. The best dinner of the trip won't have a bill. Everything here is naturally halal-safe — just keep the something-cold to soft drinks.",
           "apple": "https://maps.apple.com/?q=Primrose%20Hill%20London",
           "google": "https://www.google.com/maps/search/?api=1&query=Primrose%20Hill%20London"
         },
@@ -1006,10 +1017,11 @@ window.JOURNAL = {
       "viral": [
         {
           "meal": "Lunch",
-          "name": "Farm Girl",
-          "note": "The Notting Hill café everyone's photographed — matcha, corn fritters, plant-heavy plates — right where your afternoon lands on Portobello. (Breakfast today is already sorted, up at Sky Garden.)",
-          "apple": "https://maps.apple.com/?q=Farm%20Girl%20Portobello%2C%20London",
-          "google": "https://www.google.com/maps/search/?api=1&query=Farm%20Girl%20Portobello%2C%20London"
+          "tag": "Fully halal",
+          "name": "Beam",
+          "note": "A proper halal brunch on Westbourne Grove, minutes from Portobello — shakshuka, a harissa-hollandaise benedict, Nutella doughnuts. Buzzy, generous, and exactly where your afternoon lands. (Breakfast today is already up at Sky Garden.)",
+          "apple": "https://maps.apple.com/?q=Beam%20Westbourne%20Grove%20Notting%20Hill%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Beam%20Westbourne%20Grove%20Notting%20Hill%2C%20London"
         }
       ]
     },
@@ -1143,10 +1155,11 @@ window.JOURNAL = {
       "viral": [
         {
           "meal": "Breakfast",
-          "name": "Dishoom",
-          "note": "Steps from your platform: the famous bacon (or veg) naan and a proper chai before the train north. The right London send-off.",
-          "apple": "https://maps.apple.com/?q=Dishoom%20Kings%20Cross%2C%20London",
-          "google": "https://www.google.com/maps/search/?api=1&query=Dishoom%20Kings%20Cross%2C%20London"
+          "tag": "Veg bakery · halal-safe",
+          "name": "Ole & Steen",
+          "note": "Danish bakery steps from your platform — the viral cinnamon 'social', cardamoms, good coffee. All halal-safe, quick, and the right small send-off before the train.",
+          "apple": "https://maps.apple.com/?q=Ole%20and%20Steen%20Kings%20Cross%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Ole%20and%20Steen%20Kings%20Cross%2C%20London"
         }
       ]
     },
@@ -1237,7 +1250,7 @@ window.JOURNAL = {
           "time": "19:45",
           "title": "Dinner — the first night",
           "place": "Mannion & Co, Blake Street",
-          "body": "A proper Yorkshire deli-bistro down a lane off the main streets — warm, wood-panelled, unhurried. The rarebit is famous, and the vegetarian plates (a beautiful tart, good soup, cheeses from the counter) are exactly the honest, unshowy food you want on a first tired night. No ceremony, just care.",
+          "body": "A proper Yorkshire deli-bistro down a lane off the main streets — warm, wood-panelled, unhurried. The rarebit is famous, and the vegetarian plates (a beautiful tart, good soup, cheeses from the counter) are exactly the honest, unshowy food you want on a first tired night. No ceremony, just care. The veg plates here are halal-safe (they do serve meat and wine, so keep to those); for a fully-halal first night instead, The Marrakesh does Moroccan tagines a few streets over.",
           "apple": "https://maps.apple.com/?q=Mannion%20%26%20Co%20Blake%20Street%2C%20York",
           "google": "https://www.google.com/maps/search/?api=1&query=Mannion%20%26%20Co%20Blake%20Street%2C%20York"
         },
@@ -1269,10 +1282,11 @@ window.JOURNAL = {
       "viral": [
         {
           "meal": "Lunch",
-          "name": "Brew & Brownie",
-          "note": "York's most-loved brunch, a minute from the Minster — the 'Big Brew Breakfast' and a fridge of viral bakes next door. Drop the bags and go straight in.",
-          "apple": "https://maps.apple.com/?q=Brew%20and%20Brownie%20York%2C%20York",
-          "google": "https://www.google.com/maps/search/?api=1&query=Brew%20and%20Brownie%20York%2C%20York"
+          "tag": "Fully halal",
+          "name": "Yemen Heaven",
+          "note": "Yemeni home cooking on Walmgate that locals rave about — mezze, warm flatbread, slow-cooked mains, all halal. Drop the bags and have a proper hot first meal.",
+          "apple": "https://maps.apple.com/?q=Yemen%20Heaven%20Walmgate%20York%2C%20York",
+          "google": "https://www.google.com/maps/search/?api=1&query=Yemen%20Heaven%20Walmgate%20York%2C%20York"
         }
       ]
     },
@@ -1477,10 +1491,10 @@ window.JOURNAL = {
           "type": "dinner",
           "time": "19:30",
           "title": "Dinner",
-          "place": "Skosh, Micklegate",
-          "body": "Small plates, big ideas — a chef cooking playful, Yorkshire-meets-the-world dishes in a relaxed little room. Tell them you're vegetarian and let them send out whatever's singing that night; the veg plates are the ones people rave about. It's the best dinner in York and it never feels like it's trying to be.",
-          "apple": "https://maps.apple.com/?q=Skosh%20York%2C%20York",
-          "google": "https://www.google.com/maps/search/?api=1&query=Skosh%20York%2C%20York"
+          "place": "Damastique, Walmgate",
+          "body": "Authentic Syrian cooking in the heart of York — halal grills, warm mezze, flatbread straight from the oven. Family-run, generous and unshowy: the kind of dinner that quietly ends a big day right. (For a change, Yemen Heaven or The Marrakesh nearby are both fully halal too.)",
+          "apple": "https://maps.apple.com/?q=Damastique%20Syrian%20York%2C%20York",
+          "google": "https://www.google.com/maps/search/?api=1&query=Damastique%20Syrian%20York%2C%20York"
         },
         {
           "type": "bakery",
@@ -1520,17 +1534,19 @@ window.JOURNAL = {
       "viral": [
         {
           "meal": "Breakfast",
+          "tag": "Veg dishes · halal-safe",
           "name": "Robinsons Café",
-          "note": "Locals' pick for the best breakfast in York — Turkish eggs, caramel pancake stacks. A short walk south to Bishy Road, and worth it.",
+          "note": "Locals' pick for York's best breakfast, down on Bishy Road. Go for the Turkish eggs or the caramel pancake stacks — meat-free and halal-safe — rather than the fry-up.",
           "apple": "https://maps.apple.com/?q=Robinsons%20Cafe%20Bishopthorpe%20Road%20York%2C%20York",
           "google": "https://www.google.com/maps/search/?api=1&query=Robinsons%20Cafe%20Bishopthorpe%20Road%20York%2C%20York"
         },
         {
           "meal": "Lunch",
-          "name": "Shambles Kitchen",
-          "note": "A tiny cult spot seconds from the Shambles for the viral halloumi and steak wraps. Grab one and keep wandering.",
-          "apple": "https://maps.apple.com/?q=Shambles%20Kitchen%20York%2C%20York",
-          "google": "https://www.google.com/maps/search/?api=1&query=Shambles%20Kitchen%20York%2C%20York"
+          "tag": "Fully halal",
+          "name": "Miller's",
+          "note": "A fully-halal chippy right in Shambles Market, seconds off your route — proper fish and chips and cult fish burgers. The easy, brilliant, halal grab-and-wander lunch.",
+          "apple": "https://maps.apple.com/?q=Millers%20Fish%20and%20Chips%20Shambles%20Market%20York%2C%20York",
+          "google": "https://www.google.com/maps/search/?api=1&query=Millers%20Fish%20and%20Chips%20Shambles%20Market%20York%2C%20York"
         }
       ]
     },
@@ -1678,9 +1694,9 @@ window.JOURNAL = {
           "time": "19:00",
           "title": "Dinner — first night north",
           "place": "Hendersons or Mother India's Café",
-          "body": "Two soulful, veg-friendly Edinburgh institutions. Hendersons has been doing proper vegetarian cooking since 1962 — hearty, unfussy, exactly right after a travel day. Or Mother India's Café for Indian tapas where the vegetarian dishes outshine everything: the dal, the paneer, the aubergine. Warm rooms, kind prices, no fuss.",
-          "apple": "https://maps.apple.com/?q=Hendersons%20Edinburgh%2C%20Edinburgh",
-          "google": "https://www.google.com/maps/search/?api=1&query=Hendersons%20Edinburgh%2C%20Edinburgh"
+          "body": "Hendersons has been doing proper vegetarian cooking since 1962 — hearty, unfussy, all-veg and so halal-safe (they serve wine, so it's a food-only note), and exactly right after a travel day. For a fully-halal first dinner instead, Laila does Middle-Eastern plates in the Old Town and Chaophraya does halal Thai with a view. Warm rooms, kind prices, no fuss.",
+          "apple": "https://maps.apple.com/?q=Hendersons%20Vegetarian%20Edinburgh%2C%20Edinburgh",
+          "google": "https://www.google.com/maps/search/?api=1&query=Hendersons%20Vegetarian%20Edinburgh%2C%20Edinburgh"
         },
         {
           "type": "photo",
@@ -1711,10 +1727,11 @@ window.JOURNAL = {
       "viral": [
         {
           "meal": "Lunch",
-          "name": "Hula Juice Café",
-          "note": "Right at the foot of Victoria Street: açai bowls, smoothies and loaded wraps — the healthy, buzzy pit-stop the second you're off the train.",
-          "apple": "https://maps.apple.com/?q=Hula%20Juice%20Cafe%20Edinburgh%2C%20Edinburgh",
-          "google": "https://www.google.com/maps/search/?api=1&query=Hula%20Juice%20Cafe%20Edinburgh%2C%20Edinburgh"
+          "tag": "Fully halal",
+          "name": "Laila",
+          "note": "The pink-fronted Old Town favourite on Cockburn Street — halal Middle-Eastern brunch with a twist, and one of the most-loved tables in the city. Right where you arrive off the train.",
+          "apple": "https://maps.apple.com/?q=Laila%20Brunch%20Cockburn%20Street%20Edinburgh%2C%20Edinburgh",
+          "google": "https://www.google.com/maps/search/?api=1&query=Laila%20Brunch%20Cockburn%20Street%20Edinburgh%2C%20Edinburgh"
         }
       ]
     },
@@ -1909,10 +1926,10 @@ window.JOURNAL = {
           "type": "dinner",
           "time": "19:30",
           "title": "Dinner — the good one",
-          "place": "Aizle or Timberyard",
-          "body": "Save one proper dinner for tonight. Aizle cooks a set, seasonal, Scottish menu that reads like a poem of what's growing right now, and treats vegetarians as the main event, not an afterthought. Timberyard, in a converted warehouse, does the same with more raw wood and candlelight. Book ahead; this is the meal you'll still be describing next year.",
-          "apple": "https://maps.apple.com/?q=Aizle%20Edinburgh%2C%20Edinburgh",
-          "google": "https://www.google.com/maps/search/?api=1&query=Aizle%20Edinburgh%2C%20Edinburgh"
+          "place": "Chaophraya, Castle Street",
+          "body": "Save one proper dinner for tonight: Chaophraya does halal Thai from a rooftop that looks straight at the castle — lemongrass, coconut, the whole spread — and a terrace table at golden hour is the closest Edinburgh gets to showing off gently. Book ahead.",
+          "apple": "https://maps.apple.com/?q=Chaophraya%20Edinburgh%2C%20Edinburgh",
+          "google": "https://www.google.com/maps/search/?api=1&query=Chaophraya%20Edinburgh%2C%20Edinburgh"
         },
         {
           "type": "bakery",
@@ -1957,17 +1974,19 @@ window.JOURNAL = {
       "viral": [
         {
           "meal": "Breakfast",
-          "name": "The Edinburgh Larder",
-          "note": "The Blackfriars Street stalwart everyone rates — a proper Scottish breakfast, brilliant coffee, minutes from the castle climb.",
-          "apple": "https://maps.apple.com/?q=The%20Edinburgh%20Larder%20Blackfriars%20Street%2C%20Edinburgh",
-          "google": "https://www.google.com/maps/search/?api=1&query=The%20Edinburgh%20Larder%20Blackfriars%20Street%2C%20Edinburgh"
+          "tag": "Veg bakery · halal-safe",
+          "name": "Söderberg",
+          "note": "Sweden by way of the Old Town — the cardamom bun is a warm, cabled, sugar-dusted spiral worth crossing town for, with a good cortado beside it. All meat-free and halal-safe before the castle climb.",
+          "apple": "https://maps.apple.com/?q=Soderberg%20Edinburgh%2C%20Edinburgh",
+          "google": "https://www.google.com/maps/search/?api=1&query=Soderberg%20Edinburgh%2C%20Edinburgh"
         },
         {
           "meal": "Lunch",
-          "name": "Ting Thai Caravan",
-          "note": "Cheap, canteen-style Thai the whole city queues for — pad see ew, drunken noodles, a happy crush of tables. The anti-fancy lunch.",
-          "apple": "https://maps.apple.com/?q=Ting%20Thai%20Caravan%20Edinburgh%2C%20Edinburgh",
-          "google": "https://www.google.com/maps/search/?api=1&query=Ting%20Thai%20Caravan%20Edinburgh%2C%20Edinburgh"
+          "tag": "Fully halal",
+          "name": "Knights Kitchen",
+          "note": "One of the city's most-loved halal spots — big-hearted Kenyan and East-African cooking, generous and cheap. The anti-fancy lunch, exactly as ordered.",
+          "apple": "https://maps.apple.com/?q=Knights%20Kitchen%20Edinburgh%2C%20Edinburgh",
+          "google": "https://www.google.com/maps/search/?api=1&query=Knights%20Kitchen%20Edinburgh%2C%20Edinburgh"
         }
       ]
     },
@@ -2087,8 +2106,9 @@ window.JOURNAL = {
       "viral": [
         {
           "meal": "Breakfast",
+          "tag": "Veg bakery · halal-safe",
           "name": "Lannan Bakery",
-          "note": "The bakery Edinburgh sets alarms for — croissants and cakes that sell out by mid-morning. A last-day treat, so go early.",
+          "note": "The bakery Edinburgh sets alarms for — croissants and cakes that sell out by mid-morning, all halal-safe. A last-day treat, so go early.",
           "apple": "https://maps.apple.com/?q=Lannan%20Bakery%20Stockbridge%20Edinburgh%2C%20Edinburgh",
           "google": "https://www.google.com/maps/search/?api=1&query=Lannan%20Bakery%20Stockbridge%20Edinburgh%2C%20Edinburgh"
         }

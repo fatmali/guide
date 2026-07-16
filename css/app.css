@@ -456,7 +456,11 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .viral__item { padding: 1.5rem 0; border-top: 1px solid var(--line); }
 .viral__item:first-child { border-top: none; padding-top: 0.4rem; }
 .viral__meal { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em;
-  text-transform: uppercase; color: var(--sage); }
+  text-transform: uppercase; color: var(--sage); display: flex; align-items: center;
+  gap: 0.7rem; flex-wrap: wrap; }
+.viral__tag { font-size: 0.52rem; letter-spacing: 0.12em; color: var(--sage);
+  border: 1px solid color-mix(in srgb, var(--sage) 50%, transparent);
+  border-radius: 999px; padding: 0.16rem 0.55rem; }
 .viral__name { font-family: var(--display); font-weight: 500; font-size: 1.7rem;
   line-height: 1.15; margin: 0.4rem 0 0; }
 .viral__note { color: var(--ink-soft); margin: 0.65rem 0 0; }

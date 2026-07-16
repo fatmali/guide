@@ -4,7 +4,7 @@
    online; fonts and icons are cache-first because they never change.
    Maps are the only thing that need the outside world. */
 
-const CACHE = "london-journal-v15";
+const CACHE = "london-journal-v16";
 
 const SHELL = [
   "./",
