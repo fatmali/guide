@@ -418,10 +418,13 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 /* per-place passport postmark */
 .postmark {
-  flex: 0 0 auto; width: 66px; height: 66px; position: relative; margin-top: 0.15rem;
+  flex: 0 0 auto; width: 74px; height: 74px; position: relative; margin-top: 0.15rem;
   display: grid; place-items: center; border: 1.4px dashed var(--line); border-radius: 50%;
-  color: var(--ink-faint); transition: border-color .3s var(--ease), color .3s var(--ease), transform .2s var(--ease);
+  color: var(--ink-faint); cursor: pointer; touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent; user-select: none;
+  transition: border-color .3s var(--ease), color .3s var(--ease), transform .2s var(--ease);
 }
+.postmark:not(.is-stamped):hover { background: var(--line-soft); }
 .postmark:hover { border-color: var(--ink-faint); color: var(--ink-soft); transform: scale(1.04); }
 .postmark:active { transform: scale(0.97); }
 .postmark__hint { font-family: var(--mono); font-size: 0.48rem; letter-spacing: 0.14em;

@@ -157,6 +157,19 @@
     markSpineDone();
     renderPassport();
   }
+  // Reliable tap for touch: a scroll-snap pager often eats plain clicks on
+  // small targets, so fire on a stationary pointerup (and keep click as a
+  // fallback — collectStamp is idempotent, so a double call is harmless).
+  function bindTap(el, fn) {
+    let ox = 0, oy = 0, live = false;
+    el.addEventListener("pointerdown", (e) => { live = true; ox = e.clientX; oy = e.clientY; }, { passive: true });
+    el.addEventListener("pointermove", (e) => {
+      if (live && (Math.abs(e.clientX - ox) > 12 || Math.abs(e.clientY - oy) > 12)) live = false;
+    }, { passive: true });
+    el.addEventListener("pointercancel", () => { live = false; });
+    el.addEventListener("pointerup", () => { if (live) { live = false; fn(); } });
+    el.addEventListener("click", () => fn());
+  }
 
   /* ==========================================================
      Build pages
@@ -229,7 +242,8 @@
         <a class="maplink maplink--apple" href="${stop.apple}" target="_blank" rel="noopener">${ICON.apple} Apple&nbsp;Maps</a>
         <a class="maplink" href="${stop.google}" target="_blank" rel="noopener">${ICON.map} Google&nbsp;Maps</a>
       </div>`;
-    s.querySelector(".postmark").addEventListener("click", (e) => collectStamp(e.currentTarget, day, stop));
+    const pm = s.querySelector(".postmark");
+    bindTap(pm, () => collectStamp(pm, day, stop));
     return s;
   }
 
