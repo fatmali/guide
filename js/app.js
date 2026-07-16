@@ -219,6 +219,7 @@
   // hand-drawn SVG schematic — built from the same coordinates — when offline.
   const mapEntries = [];
   let currentDayId = null;
+  let mapPref = store.get("mapPref", "street");   // "street" (tiles) | "schematic" (no tiles, flag-proof)
 
   // The offline schematic: pure SVG from data we already hold, no tiles.
   function schematicSVG(day, pts) {
@@ -305,23 +306,45 @@
     fig.innerHTML =
       `<div class="daymap__live"></div>` +
       `<div class="daymap__fallback">${schematicSVG(day, pts)}</div>` +
+      `<button class="daymap__toggle" type="button"></button>` +
       `<ul class="daymap__key">${legend}</ul>`;
+    if (mapPref === "schematic") fig.classList.add("prefer-schematic");
+    const toggle = fig.querySelector(".daymap__toggle");
+    toggle.textContent = mapPref === "schematic" ? "Show the street map" : "Show the schematic";
+    toggle.addEventListener("click", () => {
+      mapPref = mapPref === "street" ? "schematic" : "street";
+      store.set("mapPref", mapPref);
+      mapEntries.forEach(applyMapPref);
+    });
     wrap.appendChild(fig);
     mapEntries.push({ dayId: day.id, pts, fig, map: null, tileErr: 0 });
     return wrap;
   }
 
+  // Reflect the street/schematic preference on a day's map (init tiles only when needed).
+  function applyMapPref(entry) {
+    const schema = mapPref === "schematic";
+    entry.fig.classList.toggle("prefer-schematic", schema);
+    const btn = entry.fig.querySelector(".daymap__toggle");
+    if (btn) btn.textContent = schema ? "Show the street map" : "Show the schematic";
+    if (!schema && entry.dayId === currentDayId) {
+      initDayMap(entry);
+      if (entry.map) setTimeout(() => { if (entry.map) entry.map.invalidateSize(); }, 80);
+    }
+  }
+
   // Build the live Leaflet map for a day, lazily, once it's on screen and online.
   function initDayMap(entry) {
-    if (!entry || entry.map || !window.L || !navigator.onLine) return;
+    if (!entry || entry.map || !window.L || !navigator.onLine || mapPref === "schematic") return;
     const live = entry.fig.querySelector(".daymap__live");
     entry.fig.classList.add("is-live");          // give the mount a size before init
     try {
       const latlngs = entry.pts.map((s) => [s.lat, s.lng]);
       const map = L.map(live, { scrollWheelZoom: false });
-      const tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      // Esri's basemaps are permissive (no referer-blocking, no "blocked tile" flag placeholder)
+      const tiles = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        attribution: 'Tiles &copy; <a href="https://www.esri.com/">Esri</a> — OpenStreetMap contributors',
       });
       // if tiles can't load at all (offline captive wifi, provider outage), drop back to the schematic
       let loaded = 0, decided = false;
