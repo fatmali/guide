@@ -302,13 +302,13 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .daymap.is-live .daymap__fallback { display: none; }
 .daymap__fallback { margin: 0; }
 
-/* tone the tiles to the paper palette — warm in light, inverted in dark */
-.daymap .leaflet-tile-pane { filter: sepia(0.28) saturate(0.72) brightness(1.03) contrast(0.96) hue-rotate(-8deg); }
+/* tone the OSM tiles to the paper palette — warm & muted in light, inverted in dark */
+.daymap .leaflet-tile-pane { filter: sepia(0.42) saturate(0.55) brightness(1.02) contrast(0.92) hue-rotate(-6deg); }
 @media (prefers-color-scheme: dark) {
-  .daymap .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) sepia(0.16); }
+  .daymap .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) saturate(0.6) brightness(0.9) contrast(0.9) sepia(0.2); }
 }
-:root[data-theme="light"] .daymap .leaflet-tile-pane { filter: sepia(0.28) saturate(0.72) brightness(1.03) contrast(0.96) hue-rotate(-8deg); }
-:root[data-theme="dark"]  .daymap .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) sepia(0.16); }
+:root[data-theme="light"] .daymap .leaflet-tile-pane { filter: sepia(0.42) saturate(0.55) brightness(1.02) contrast(0.92) hue-rotate(-6deg); }
+:root[data-theme="dark"]  .daymap .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) saturate(0.6) brightness(0.9) contrast(0.9) sepia(0.2); }
 
 /* numbered markers, matching the schematic dots */
 .mapmark span {

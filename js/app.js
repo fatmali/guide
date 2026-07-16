@@ -319,9 +319,9 @@
     try {
       const latlngs = entry.pts.map((s) => [s.lat, s.lng]);
       const map = L.map(live, { scrollWheelZoom: false });
-      const tiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-        subdomains: "abcd", maxZoom: 19, detectRetina: true,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      const tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       });
       // if tiles can't load at all (offline captive wifi, provider outage), drop back to the schematic
       let loaded = 0, decided = false;
