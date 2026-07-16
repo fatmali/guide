@@ -433,6 +433,9 @@
     try {
       const latlngs = entry.pts.map((s) => [s.lat, s.lng]);
       const map = L.map(live, { scrollWheelZoom: false });
+      // Leaflet's default attribution prefix carries a Ukrainian-flag SVG that
+      // renders large on mobile; drop the prefix (tile credit below stays).
+      map.attributionControl.setPrefix(false);
       // Esri's basemaps are permissive (no referer-blocking, no "blocked tile" flag placeholder)
       const tiles = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 19,
