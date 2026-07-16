@@ -370,7 +370,23 @@ window.JOURNAL = {
           "body": "Royal London is the London that photographs itself. Tomorrow is the London that smells of bread and leather. Tonight, notice which one you're actually here for."
         }
       ],
-      "city": "London"
+      "city": "London",
+      "viral": [
+        {
+          "meal": "Breakfast",
+          "name": "Dishoom",
+          "note": "The bacon naan roll that broke the internet — or the veg naan and a chai. Yes, you queue; yes, it's worth it. The Covent Garden branch is on your patch.",
+          "apple": "https://maps.apple.com/?q=Dishoom%20Covent%20Garden%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Dishoom%20Covent%20Garden%2C%20London"
+        },
+        {
+          "meal": "Lunch",
+          "name": "Seven Dials Market",
+          "note": "A buzzy covered food hall right where your day ends. The Pick & Cheese conveyor belt is the viral one; plenty of veg across the stalls.",
+          "apple": "https://maps.apple.com/?q=Seven%20Dials%20Market%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Seven%20Dials%20Market%2C%20London"
+        }
+      ]
     },
     {
       "id": "d17",
@@ -690,7 +706,23 @@ window.JOURNAL = {
           "body": "You spent the morning on things made to be eaten and the afternoon on things made to be wanted. Notice which left you lighter."
         }
       ],
-      "city": "London"
+      "city": "London",
+      "viral": [
+        {
+          "meal": "Breakfast",
+          "name": "Mallow",
+          "note": "All-plant-based and all over your feed — the tiramisu French toast is the money shot. Inside Borough Market, right where your morning is.",
+          "apple": "https://maps.apple.com/?q=Mallow%20Borough%20Market%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Mallow%20Borough%20Market%2C%20London"
+        },
+        {
+          "meal": "Lunch",
+          "name": "Padella",
+          "note": "The £-cheap hand-rolled pasta with the legendary queue — pici cacio e pepe, then whatever's special. (It's your lunch pick today, and this is why.)",
+          "apple": "https://maps.apple.com/?q=Padella%20Borough%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Padella%20Borough%2C%20London"
+        }
+      ]
     },
     {
       "id": "d18",
@@ -970,7 +1002,16 @@ window.JOURNAL = {
           "body": "You saw London from 155 metres this morning and from a picnic blanket tonight. The city didn't change. Which height felt more like understanding it?"
         }
       ],
-      "city": "London"
+      "city": "London",
+      "viral": [
+        {
+          "meal": "Lunch",
+          "name": "Farm Girl",
+          "note": "The Notting Hill café everyone's photographed — matcha, corn fritters, plant-heavy plates — right where your afternoon lands on Portobello. (Breakfast today is already sorted, up at Sky Garden.)",
+          "apple": "https://maps.apple.com/?q=Farm%20Girl%20Portobello%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Farm%20Girl%20Portobello%2C%20London"
+        }
+      ]
     },
     {
       "id": "d19",
@@ -1098,7 +1139,16 @@ window.JOURNAL = {
           "body": "You didn't see all of London. Good. A city you finish is a city you won't return to. Leave York-bound with a short list of things you missed — that list is the reason you'll come back."
         }
       ],
-      "city": "London"
+      "city": "London",
+      "viral": [
+        {
+          "meal": "Breakfast",
+          "name": "Dishoom",
+          "note": "Steps from your platform: the famous bacon (or veg) naan and a proper chai before the train north. The right London send-off.",
+          "apple": "https://maps.apple.com/?q=Dishoom%20Kings%20Cross%2C%20London",
+          "google": "https://www.google.com/maps/search/?api=1&query=Dishoom%20Kings%20Cross%2C%20London"
+        }
+      ]
     },
     {
       "id": "york-arr",
@@ -1214,6 +1264,15 @@ window.JOURNAL = {
           "body": "Off the train and hungry — drop the bags, then eat before you explore. Brew & Brownie is the cheerful, veg-friendly all-day spot the locals fill; the brunch plates and the cakes are the point. It sets you up for an afternoon on the walls.",
           "apple": "https://maps.apple.com/?q=Brew%20%26%20Brownie%20York%2C%20York",
           "google": "https://www.google.com/maps/search/?api=1&query=Brew%20%26%20Brownie%20York%2C%20York"
+        }
+      ],
+      "viral": [
+        {
+          "meal": "Lunch",
+          "name": "Brew & Brownie",
+          "note": "York's most-loved brunch, a minute from the Minster — the 'Big Brew Breakfast' and a fridge of viral bakes next door. Drop the bags and go straight in.",
+          "apple": "https://maps.apple.com/?q=Brew%20and%20Brownie%20York%2C%20York",
+          "google": "https://www.google.com/maps/search/?api=1&query=Brew%20and%20Brownie%20York%2C%20York"
         }
       ]
     },
@@ -1457,6 +1516,22 @@ window.JOURNAL = {
           "title": "Reflection",
           "body": "You could 'see' York in three hours. You'd have seen nothing. The city's gift is that it rewards dawdling — the pushed-open church door, the timber you looked up at, the tea you didn't hurry. Tomorrow you go north again. Tonight, notice how much a small place can hold."
         }
+      ],
+      "viral": [
+        {
+          "meal": "Breakfast",
+          "name": "Robinsons Café",
+          "note": "Locals' pick for the best breakfast in York — Turkish eggs, caramel pancake stacks. A short walk south to Bishy Road, and worth it.",
+          "apple": "https://maps.apple.com/?q=Robinsons%20Cafe%20Bishopthorpe%20Road%20York%2C%20York",
+          "google": "https://www.google.com/maps/search/?api=1&query=Robinsons%20Cafe%20Bishopthorpe%20Road%20York%2C%20York"
+        },
+        {
+          "meal": "Lunch",
+          "name": "Shambles Kitchen",
+          "note": "A tiny cult spot seconds from the Shambles for the viral halloumi and steak wraps. Grab one and keep wandering.",
+          "apple": "https://maps.apple.com/?q=Shambles%20Kitchen%20York%2C%20York",
+          "google": "https://www.google.com/maps/search/?api=1&query=Shambles%20Kitchen%20York%2C%20York"
+        }
       ]
     },
     {
@@ -1631,6 +1706,15 @@ window.JOURNAL = {
           "type": "reflection",
           "title": "Reflection",
           "body": "Three cities now, each with a different temperature: London bright and performing, York close and confiding, Edinburgh dark-stoned and dramatic. You didn't change; the light did. Notice which one your shoulders relaxed in."
+        }
+      ],
+      "viral": [
+        {
+          "meal": "Lunch",
+          "name": "Hula Juice Café",
+          "note": "Right at the foot of Victoria Street: açai bowls, smoothies and loaded wraps — the healthy, buzzy pit-stop the second you're off the train.",
+          "apple": "https://maps.apple.com/?q=Hula%20Juice%20Cafe%20Edinburgh%2C%20Edinburgh",
+          "google": "https://www.google.com/maps/search/?api=1&query=Hula%20Juice%20Cafe%20Edinburgh%2C%20Edinburgh"
         }
       ]
     },
@@ -1869,6 +1953,22 @@ window.JOURNAL = {
           "title": "Reflection",
           "body": "Edinburgh gives you the grand set-piece and then, if you keep walking, the quiet valley below it — and the valley is the better half. That's been the whole trip's lesson, city after city: the famous thing is the doorway, not the room. Tomorrow you go home. Tonight, you've earned the good dinner."
         }
+      ],
+      "viral": [
+        {
+          "meal": "Breakfast",
+          "name": "The Edinburgh Larder",
+          "note": "The Blackfriars Street stalwart everyone rates — a proper Scottish breakfast, brilliant coffee, minutes from the castle climb.",
+          "apple": "https://maps.apple.com/?q=The%20Edinburgh%20Larder%20Blackfriars%20Street%2C%20Edinburgh",
+          "google": "https://www.google.com/maps/search/?api=1&query=The%20Edinburgh%20Larder%20Blackfriars%20Street%2C%20Edinburgh"
+        },
+        {
+          "meal": "Lunch",
+          "name": "Ting Thai Caravan",
+          "note": "Cheap, canteen-style Thai the whole city queues for — pad see ew, drunken noodles, a happy crush of tables. The anti-fancy lunch.",
+          "apple": "https://maps.apple.com/?q=Ting%20Thai%20Caravan%20Edinburgh%2C%20Edinburgh",
+          "google": "https://www.google.com/maps/search/?api=1&query=Ting%20Thai%20Caravan%20Edinburgh%2C%20Edinburgh"
+        }
       ]
     },
     {
@@ -1982,6 +2082,15 @@ window.JOURNAL = {
           "type": "reflection",
           "title": "Reflection",
           "body": "London, York, Edinburgh — three cities, one slow line drawn up the spine of the country. You didn't finish any of them, and that's the point: a place you complete is a place you won't return to. Go home with a short list of what you missed in each. That list is the next trip."
+        }
+      ],
+      "viral": [
+        {
+          "meal": "Breakfast",
+          "name": "Lannan Bakery",
+          "note": "The bakery Edinburgh sets alarms for — croissants and cakes that sell out by mid-morning. A last-day treat, so go early.",
+          "apple": "https://maps.apple.com/?q=Lannan%20Bakery%20Stockbridge%20Edinburgh%2C%20Edinburgh",
+          "google": "https://www.google.com/maps/search/?api=1&query=Lannan%20Bakery%20Stockbridge%20Edinburgh%2C%20Edinburgh"
         }
       ]
     }

@@ -159,6 +159,27 @@
     return s;
   }
 
+  // "Worth the hype" — the viral, casual breakfast/lunch picks for the day.
+  function viralEl(day) {
+    const v = day.viral;
+    if (!v || !v.length) return null;
+    const wrap = el("div", "rise");
+    wrap.appendChild(el("div", "sectlabel", "Worth the hype"));
+    const box = el("div", "viral");
+    box.innerHTML = v.map((x) => `
+      <article class="viral__item">
+        <div class="viral__meal">${x.meal}</div>
+        <h4 class="viral__name">${x.name}</h4>
+        <p class="viral__note">${x.note}</p>
+        <div class="maplinks">
+          <a class="maplink maplink--apple" href="${x.apple}" target="_blank" rel="noopener">${ICON.apple} Apple&nbsp;Maps</a>
+          <a class="maplink" href="${x.google}" target="_blank" rel="noopener">${ICON.map} Google&nbsp;Maps</a>
+        </div>
+      </article>`).join("");
+    wrap.appendChild(box);
+    return wrap;
+  }
+
   function noteEl(note) {
     const muse = MUSE.has(note.type);
     const n = el("article", "notecard rise" + (muse ? " notecard--muse" : ""));
@@ -616,6 +637,9 @@
       c.appendChild(el("div", "sectlabel rise", "Notes for the day"));
       notes.forEach((n) => c.appendChild(noteEl(n)));
     }
+
+    const viral = viralEl(day);
+    if (viral) c.appendChild(viral);
 
     c.appendChild(marginEl(day));
     c.appendChild(stampZone(day));
