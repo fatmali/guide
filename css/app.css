@@ -408,12 +408,35 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .stop:first-of-type { border-top: none; }
 .stop__time { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
   color: var(--time); margin-bottom: 0.5rem; }
-.stop__top { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.stop__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.stop__head { min-width: 0; }
 .stop__name { font-family: var(--display); font-weight: 500;
   font-size: 1.9rem; line-height: 1.1; margin: 0; }
-.stop__kind { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--ink-faint); white-space: nowrap; padding-top: .5rem; }
+.stop__kind { display: block; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-faint); margin-top: 0.4rem; }
 .stop__note { color: var(--ink-soft); margin: 0.9rem 0 1.3rem; }
+
+/* per-place passport postmark */
+.postmark {
+  flex: 0 0 auto; width: 66px; height: 66px; position: relative; margin-top: 0.15rem;
+  display: grid; place-items: center; border: 1.4px dashed var(--line); border-radius: 50%;
+  color: var(--ink-faint); transition: border-color .3s var(--ease), color .3s var(--ease), transform .2s var(--ease);
+}
+.postmark:hover { border-color: var(--ink-faint); color: var(--ink-soft); transform: scale(1.04); }
+.postmark:active { transform: scale(0.97); }
+.postmark__hint { font-family: var(--mono); font-size: 0.48rem; letter-spacing: 0.14em;
+  text-transform: uppercase; line-height: 1.45; text-align: center; }
+.postmark__ink { position: absolute; inset: -1px; display: grid; place-items: center; pointer-events: none; }
+.postmark__ink svg { width: 100%; height: 100%; }
+.postmark.is-stamped { border-color: transparent; }
+.postmark.is-stamped .postmark__hint { display: none; }
+@keyframes press-in {
+  0% { opacity: 0; transform: scale(1.9); }
+  55% { opacity: 1; transform: scale(0.88); }
+  72% { transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.postmark__ink.press { animation: press-in 0.5s var(--ease); }
 
 .facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.1rem 1.6rem;
   border-top: 1px solid var(--line-soft); padding-top: 1rem; }
@@ -578,6 +601,25 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 .passport__intro { font-family: var(--display); font-style: italic; font-size: 1.5rem;
   line-height: 1.5; color: var(--ink-soft); text-align: center; margin: 1rem auto 2.6rem; max-width: 26rem; }
+
+/* passport, organised by day, one slot per place */
+#passportPages { display: block; }
+.ppday { margin-bottom: 2.6rem; }
+.ppday__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem;
+  border-bottom: 1px solid var(--line); padding-bottom: 0.7rem; margin-bottom: 1.1rem; }
+.ppday__city { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--red); }
+.ppday__title { font-family: var(--display); font-weight: 500; font-size: 1.55rem; line-height: 1.1; margin: 0.25rem 0 0; }
+.ppday__count { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.05em; color: var(--ink-faint); white-space: nowrap; }
+.ppday__count.is-full { color: var(--sage); }
+.ppday__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
+.ppslot { aspect-ratio: 1; display: grid; place-items: center; padding: 0.4rem;
+  border: 1px solid var(--line-soft); border-radius: 6px; background: var(--paper-2); }
+.ppslot svg { width: 100%; height: 100%; }
+.ppslot.is-empty { border-style: dashed; background: transparent; }
+.ppslot__wait { font-family: var(--display); font-style: italic; font-size: 0.82rem;
+  line-height: 1.15; color: var(--ink-faint); text-align: center; }
+
 .pages { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 .pp {
   aspect-ratio: 1 / 1.15; border: 1px solid var(--line); border-radius: 4px;
@@ -627,5 +669,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .pager { scroll-behavior: auto; }
   .rise { opacity: 1 !important; transform: none !important; transition: none !important; }
   .stamp--animate { animation: none; opacity: 0.92; transform: rotate(-8deg); }
+  .postmark__ink.press { animation: none; }
   .cover__hint .arrow { animation: none; }
 }

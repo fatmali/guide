@@ -93,6 +93,71 @@
     </svg>`;
   }
 
+  /* ---- passport stamps: one per place, varied by shape / ink / angle ---- */
+  let stampUid = 0;
+  const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const hashStr = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+  const stampKey = (day, stop) => day.id + "|" + slugify(stop.name);
+  const dayComplete = (d) => (d.stops || []).length > 0 && d.stops.every((s) => stampState[stampKey(d, s)]);
+  const STAMP_INK = ["var(--red)", "var(--brass)", "var(--sage)"];
+  const shortDate = (ds) => { const m = String(ds).match(/(\d+)\D+([A-Za-z]{3})/); return m ? `${m[1]} ${m[2].toUpperCase()}` : String(ds).toUpperCase(); };
+  function stampLines(name) {
+    const n = name.split("&")[0].split(",")[0].trim();
+    const w = n.split(" ");
+    if (n.length <= 12 || w.length === 1) return [n];
+    let cut = 1, diff = 1e9;
+    for (let i = 1; i < w.length; i++) {
+      const d = Math.abs(w.slice(0, i).join(" ").length - w.slice(i).join(" ").length);
+      if (d < diff) { diff = d; cut = i; }
+    }
+    return [w.slice(0, cut).join(" "), w.slice(cut).join(" ")];
+  }
+  function placeStampSVG(day, stop) {
+    const h = hashStr(stampKey(day, stop));
+    const tpl = h % 3, color = STAMP_INK[(h >>> 2) % 3], rot = ((h >>> 5) % 15) - 7, uid = "st" + (stampUid++);
+    const city = (day.city || "London").toUpperCase(), date = shortDate(day.date);
+    const lines = stampLines(stop.name), two = lines.length > 1, nf = two ? 12.5 : (lines[0].length > 9 ? 15 : 18);
+    const nameAt = (cy) => lines.map((ln, i) =>
+      `<text x="60" y="${(two ? cy - 6 + i * 13 : cy + 4).toFixed(1)}" text-anchor="middle" font-family="Cormorant Garamond, serif" font-style="italic" font-size="${nf}" fill="${color}" stroke="none">${ln}</text>`).join("");
+    let body;
+    if (tpl === 0) {
+      body = `<circle cx="60" cy="60" r="54" stroke-width="2"/><circle cx="60" cy="60" r="45" stroke-width="0.8"/>`
+        + `<path id="${uid}t" d="M60,60 m-37,0 a37,37 0 1,1 74,0" fill="none" stroke="none"/>`
+        + `<path id="${uid}b" d="M60,60 m-37,0 a37,37 0 1,0 74,0" fill="none" stroke="none"/>`
+        + `<text font-family="IBM Plex Mono, monospace" font-size="7" letter-spacing="3" fill="${color}" stroke="none"><textPath href="#${uid}t" startOffset="10%">${city}</textPath></text>`
+        + `<text font-family="IBM Plex Mono, monospace" font-size="6.5" letter-spacing="2.5" fill="${color}" stroke="none"><textPath href="#${uid}b" startOffset="14%">${date}</textPath></text>`
+        + nameAt(60) + `<line x1="43" y1="${two ? 80 : 74}" x2="77" y2="${two ? 80 : 74}" stroke-width="0.8"/>`;
+    } else if (tpl === 1) {
+      body = `<rect x="8" y="26" width="104" height="68" rx="7" stroke-width="2"/><rect x="13" y="31" width="94" height="58" rx="4" stroke-width="0.7"/>`
+        + `<text x="60" y="43" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" letter-spacing="2.5" fill="${color}" stroke="none">${city}</text>`
+        + `<line x1="26" y1="48" x2="94" y2="48" stroke-width="0.7"/>` + nameAt(62)
+        + `<line x1="26" y1="78" x2="94" y2="78" stroke-width="0.7"/>`
+        + `<text x="60" y="87" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="6.5" letter-spacing="1.5" fill="${color}" stroke="none">${date} · VISITED</text>`;
+    } else {
+      body = `<ellipse cx="60" cy="60" rx="55" ry="41" stroke-width="2"/><ellipse cx="60" cy="60" rx="47" ry="33" stroke-width="0.8"/>`
+        + `<text x="60" y="41" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" letter-spacing="3" fill="${color}" stroke="none">${city}</text>`
+        + nameAt(61)
+        + `<text x="60" y="85" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="6.5" letter-spacing="2" fill="${color}" stroke="none">${date}</text>`;
+    }
+    return `<svg viewBox="0 0 120 120" fill="none" stroke="${color}" style="transform:rotate(${rot}deg)" aria-hidden="true">${body}</svg>`;
+  }
+  function collectStamp(btn, day, stop) {
+    const key = stampKey(day, stop);
+    if (stampState[key]) return;
+    stampState[key] = { at: Date.now() };
+    store.set("stamps", stampState);
+    const ink = btn.querySelector(".postmark__ink");
+    ink.innerHTML = placeStampSVG(day, stop);
+    btn.classList.add("is-stamped");
+    btn.setAttribute("aria-pressed", "true");
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      ink.classList.add("press");
+      if (navigator.vibrate) navigator.vibrate(10);
+    }
+    markSpineDone();
+    renderPassport();
+  }
+
   /* ==========================================================
      Build pages
      ========================================================== */
@@ -134,7 +199,7 @@
     return "";
   }
 
-  function stopEl(stop) {
+  function stopEl(stop, day) {
     const s = el("article", "stop rise");
     const facts = [
       transitFact(stop),
@@ -145,11 +210,18 @@
       factRow("Address", stop.address, true),
       factRow("Accessibility", stop.access, true),
     ].join("");
+    const done = !!stampState[stampKey(day, stop)];
     s.innerHTML = `
       ${stop.time ? `<div class="stop__time">${stop.time}</div>` : ""}
       <div class="stop__top">
-        <h3 class="stop__name">${stop.name}</h3>
-        <span class="stop__kind">${stop.kind || ""}</span>
+        <div class="stop__head">
+          <h3 class="stop__name">${stop.name}</h3>
+          ${stop.kind ? `<span class="stop__kind">${stop.kind}</span>` : ""}
+        </div>
+        <button class="postmark${done ? " is-stamped" : ""}" type="button" aria-pressed="${done}" aria-label="Collect the stamp for ${stop.name}">
+          <span class="postmark__hint">press<br>to stamp</span>
+          <span class="postmark__ink">${done ? placeStampSVG(day, stop) : ""}</span>
+        </button>
       </div>
       <p class="stop__note">${stop.note}</p>
       <div class="facts">${facts}</div>
@@ -157,6 +229,7 @@
         <a class="maplink maplink--apple" href="${stop.apple}" target="_blank" rel="noopener">${ICON.apple} Apple&nbsp;Maps</a>
         <a class="maplink" href="${stop.google}" target="_blank" rel="noopener">${ICON.map} Google&nbsp;Maps</a>
       </div>`;
+    s.querySelector(".postmark").addEventListener("click", (e) => collectStamp(e.currentTarget, day, stop));
     return s;
   }
 
@@ -651,7 +724,7 @@
 
     if (day.stops && day.stops.length) {
       c.appendChild(el("div", "sectlabel rise", "The stops"));
-      day.stops.forEach((s) => c.appendChild(stopEl(s)));
+      day.stops.forEach((s) => c.appendChild(stopEl(s, day)));
     }
 
     // group notes: food & find, then the muses
@@ -666,7 +739,6 @@
     if (viral) c.appendChild(viral);
 
     c.appendChild(marginEl(day));
-    c.appendChild(stampZone(day));
 
     p.appendChild(c);
     return p;
@@ -692,7 +764,8 @@
     if (i > 0) spineTrack.appendChild(el("span", "spine__sep"));
     const tab = el("button", "spine__tab", page.dataset.nav);
     tab.dataset.idx = i;
-    if (page.dataset.dayId && stampState[page.dataset.dayId]) tab.classList.add("is-done");
+    const dd = page.dataset.dayId && J.days.find((x) => x.id === page.dataset.dayId);
+    if (dd && dayComplete(dd)) tab.classList.add("is-done");
     tab.addEventListener("click", () => goTo(i));
     spineTrack.appendChild(tab);
   });
@@ -718,7 +791,8 @@
   }
   function markSpineDone() {
     pages.forEach((page, i) => {
-      if (page.dataset.dayId && stampState[page.dataset.dayId]) tabs[i].classList.add("is-done");
+      const d = page.dataset.dayId && J.days.find((x) => x.id === page.dataset.dayId);
+      if (d) tabs[i].classList.toggle("is-done", dayComplete(d));
     });
   }
 
@@ -764,21 +838,32 @@
   const ppIntro = $("#passportIntro");
 
   function renderPassport() {
-    const total = J.days.length;
-    const count = J.days.filter((d) => stampState[d.id]).length;
-    ppIntro.innerHTML = count === 0
-      ? "Empty pages. Finish a day and press its stamp — it lands here."
-      : count === total
-      ? "Every day stamped. Four days walked slowly, and kept."
-      : `${count} of ${total} days stamped. The rest are waiting.`;
+    const daysWithStops = J.days.filter((d) => (d.stops || []).length);
+    const keys = daysWithStops.flatMap((d) => d.stops.map((s) => stampKey(d, s)));
+    const got = keys.filter((k) => stampState[k]).length;
+    ppIntro.innerHTML = got === 0
+      ? "Empty pages. Press the postmark on any stop and its stamp lands here."
+      : got === keys.length
+      ? `Every place stamped — all ${got}. The whole line, walked and kept.`
+      : `${got} of ${keys.length} places stamped. Keep collecting.`;
     ppPages.innerHTML = "";
-    J.days.forEach((d, i) => {
-      const stamped = !!stampState[d.id];
-      const pp = el("div", "pp" + (stamped ? "" : " pp--empty"));
-      pp.innerHTML = `<span class="pp__num">No. ${String(i + 1).padStart(2, "0")}</span>
-        ${stamped ? `<span class="pp__stamp">${stampSVG(d)}</span>`
-                  : `<span class="pp__wait">${d.title}</span>`}`;
-      ppPages.appendChild(pp);
+    daysWithStops.forEach((d) => {
+      const n = d.stops.filter((s) => stampState[stampKey(d, s)]).length;
+      const section = el("section", "ppday");
+      section.innerHTML = `
+        <div class="ppday__head">
+          <div>
+            <div class="ppday__city">${d.city} · ${d.date}</div>
+            <h3 class="ppday__title">${d.title}</h3>
+          </div>
+          <span class="ppday__count${n === d.stops.length ? " is-full" : ""}">${n}/${d.stops.length}</span>
+        </div>
+        <div class="ppday__grid">
+          ${d.stops.map((s) => stampState[stampKey(d, s)]
+            ? `<div class="ppslot">${placeStampSVG(d, s)}</div>`
+            : `<div class="ppslot is-empty"><span class="ppslot__wait">${s.name.split(/[,&]/)[0].trim()}</span></div>`).join("")}
+        </div>`;
+      ppPages.appendChild(section);
     });
   }
   function openPassport() { renderPassport(); sheet.classList.add("is-open"); sheet.setAttribute("aria-hidden", "false"); }
