@@ -200,6 +200,14 @@
       async add(rec) { return done((await os("readwrite")).add(rec)); },
       async del(id) { return done((await os("readwrite")).delete(id)); },
       async countAll() { return done((await os("readonly")).count()); },
+      async all() {
+        const store = await os("readonly");
+        return new Promise((res, rej) => {
+          const out = [], r = store.openCursor();
+          r.onsuccess = () => { const c = r.result; if (c) { out.push(c.value); c.continue(); } else res(out); };
+          r.onerror = () => rej(r.error);
+        });
+      },
       async byPlace(place) {
         const store = await os("readonly");
         return new Promise((res, rej) => {
@@ -352,6 +360,67 @@
     lb.img.removeAttribute("src");
     lb.root.setAttribute("aria-hidden", "true");
     document.body.classList.remove("lb-open");
+  }
+
+  /* ==========================================================
+     Back up / restore — carry the journal to another device or
+     send it to your partner. Bundles the stamps, notes, hunt
+     ticks and every photograph into one portable file.
+     ========================================================== */
+  const blobToDataURL = (blob) => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => rej(fr.error); fr.readAsDataURL(blob); });
+  const dataURLToBlob = (d) => fetch(d).then((r) => r.blob());
+  const BACKUP_MERGE = ["tlj.stamps", "tlj.hunt", "tlj.notes"];
+
+  async function exportJournal() {
+    const dump = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith("tlj.")) dump[k] = localStorage.getItem(k);
+    }
+    const photos = [];
+    for (const r of await PhotoDB.all()) {
+      photos.push({ place: r.place, at: r.at, w: r.w, h: r.h, data: await blobToDataURL(r.blob) });
+    }
+    const payload = { app: "travel-journal", version: 1, exportedAt: new Date().toISOString(), store: dump, photos };
+    const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+    const fname = `travel-journal-${new Date().toISOString().slice(0, 10)}.json`;
+    const file = new File([blob], fname, { type: "application/json" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: "Travel Journal" }); return "shared"; }
+      catch (e) { if (e && e.name === "AbortError") return "cancel"; }
+    }
+    const url = URL.createObjectURL(blob);
+    const a = el("a"); a.href = url; a.download = fname; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    return "downloaded";
+  }
+
+  async function importJournal(file) {
+    const data = JSON.parse(await file.text());
+    if (!data || data.app !== "travel-journal") throw new Error("not a journal backup");
+    for (const [k, v] of Object.entries(data.store || {})) {
+      if (!k.startsWith("tlj.")) continue;
+      if (BACKUP_MERGE.includes(k)) {
+        try {
+          const incoming = JSON.parse(v);
+          const cur = JSON.parse(localStorage.getItem(k) || (Array.isArray(incoming) ? "[]" : "{}"));
+          const merged = Array.isArray(incoming) ? Array.from(new Set([...cur, ...incoming])) : Object.assign({}, cur, incoming);
+          localStorage.setItem(k, JSON.stringify(merged));
+        } catch { localStorage.setItem(k, v); }
+      } else {
+        localStorage.setItem(k, v);
+      }
+    }
+    const existing = await PhotoDB.all();
+    const seen = new Set(existing.map((r) => r.place + "|" + r.at));
+    let added = 0;
+    for (const ph of (data.photos || [])) {
+      const sig = ph.place + "|" + ph.at;
+      if (seen.has(sig)) continue;
+      await PhotoDB.add({ place: ph.place, at: ph.at, w: ph.w, h: ph.h, blob: await dataURLToBlob(ph.data) });
+      seen.add(sig); added++;
+    }
+    return { added };
   }
 
   /* ==========================================================
@@ -1076,6 +1145,28 @@
   function closePassport() { sheet.classList.remove("is-open"); sheet.setAttribute("aria-hidden", "true"); }
   $("#passportClose").addEventListener("click", closePassport);
   addEventListener("keydown", (e) => { if (e.key === "Escape") closePassport(); });
+
+  /* ---- back up / restore ---- */
+  const kStatus = $("#keepsakeStatus");
+  const setKStatus = (t) => { if (kStatus) kStatus.textContent = t || ""; };
+  $("#backupBtn").addEventListener("click", async () => {
+    setKStatus("Preparing your journal…");
+    try {
+      const r = await exportJournal();
+      setKStatus(r === "shared" ? "Sent." : r === "cancel" ? "" : "Backup file saved.");
+    } catch (e) { setKStatus("Couldn't build the backup — try again."); }
+  });
+  $("#restoreBtn").addEventListener("click", () => $("#restoreInput").click());
+  $("#restoreInput").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; e.target.value = "";
+    if (!f) return;
+    setKStatus("Restoring…");
+    try {
+      const { added } = await importJournal(f);
+      setKStatus(`Restored — ${added} new photograph${added === 1 ? "" : "s"}. Refreshing…`);
+      setTimeout(() => location.reload(), 1000);
+    } catch (err) { setKStatus("That doesn't look like a journal backup file."); }
+  });
 
   /* ==========================================================
      Theme toggle

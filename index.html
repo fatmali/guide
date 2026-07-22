@@ -44,6 +44,16 @@
     <div class="sheet__body">
       <p class="passport__intro" id="passportIntro"></p>
       <div class="pages" id="passportPages"></div>
+      <div class="keepsake">
+        <div class="keepsake__label">Your journal · this device</div>
+        <p class="keepsake__note">Stamps, notes and photographs are saved on this device. Back it up to a file to keep it safe, carry it to another phone, or send it to your partner — then Restore to load it there.</p>
+        <div class="keepsake__row">
+          <button class="keepsake__btn" id="backupBtn" type="button">Back up / Share</button>
+          <button class="keepsake__btn keepsake__btn--ghost" id="restoreBtn" type="button">Restore from file</button>
+          <input id="restoreInput" type="file" accept="application/json,.json" hidden />
+        </div>
+        <div class="keepsake__status" id="keepsakeStatus" aria-live="polite"></div>
+      </div>
     </div>
   </section>
 
