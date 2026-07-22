@@ -3,7 +3,36 @@
 
 (function () {
   "use strict";
-  const J = window.JOURNAL;
+  /* The journal is a *book* of trips. London is Volume I; future trips drop
+     in as more entries in window.JOURNALS.trips (or a legacy single
+     window.JOURNAL is wrapped as the first volume). The day-engine below
+     stays trip-agnostic by working on a flattened view of every day. */
+  const LEGACY = window.JOURNAL;
+  const BOOK = (window.JOURNALS && Array.isArray(window.JOURNALS.trips) && window.JOURNALS.trips.length)
+    ? window.JOURNALS
+    : {
+        title: "The Travel Journal",
+        traveller: (LEGACY.meta && LEGACY.meta.traveller) || "",
+        colophon: "One book for every journey — stamps pressed, photographs kept, a few notes left in the margin.",
+        trips: [{
+          id: "london-2026",
+          title: LEGACY.meta.title,
+          place: LEGACY.meta.onward,
+          dates: LEGACY.meta.dates,
+          meta: LEGACY.meta,
+          days: LEGACY.days,
+          hunt: LEGACY.hunt || [],
+        }],
+      };
+  BOOK.trips.forEach((t) => (t.days || []).forEach((d) => { d.tripId = t.id; }));
+  // flattened view — every day across every volume, in reading order
+  const J = {
+    meta: BOOK.trips[0].meta,
+    days: BOOK.trips.flatMap((t) => t.days || []),
+    hunt: BOOK.trips.flatMap((t) => t.hunt || []),
+  };
+  const toRoman = (n) => { const m = [["X",10],["IX",9],["V",5],["IV",4],["I",1]]; let r = ""; for (const [s, v] of m) while (n >= v) { r += s; n -= v; } return r; };
+  const titleMarkup = (title) => { const w = String(title).split(" "); if (w.length < 2) return `<em>${title}</em>`; const last = w.pop(); return `${w.join(" ")}<br><em>${last}</em>`; };
   const $ = (s, r = document) => r.querySelector(s);
   const el = (tag, cls, html) => {
     const n = document.createElement(tag);
@@ -430,17 +459,50 @@
   const stampState = store.get("stamps", {});
   const pages = [];
 
+  // the book's cover: a shelf of volumes (one per trip)
   function coverPage() {
+    const p = el("section", "page page--shelf");
+    p.dataset.nav = "❦";
+    p.dataset.shelf = "1";
+    const c = el("div", "col");
+    const cards = BOOK.trips.map((t, i) => {
+      const keys = (t.days || []).flatMap((d) => (d.stops || []).map((s) => stampKey(d, s)));
+      const got = keys.filter((k) => stampState[k]).length;
+      return `<button class="shelf__vol" type="button" data-trip="${t.id}">
+        <span class="shelf__num">Volume ${toRoman(i + 1)}</span>
+        <span class="shelf__vol-title">${t.title}</span>
+        ${t.place ? `<span class="shelf__vol-place">${t.place}</span>` : ""}
+        <span class="shelf__vol-meta">${t.dates || ""}${keys.length ? `<span class="shelf__vol-dot">·</span>${got}/${keys.length} stamped` : ""}</span>
+      </button>`;
+    }).join("");
+    const cover = el("div", "cover shelf");
+    cover.innerHTML = `
+      <div class="cover__kicker rise">${BOOK.traveller ? "The travelling journal of " + BOOK.traveller : "A travelling journal"}</div>
+      <h1 class="cover__title rise">${titleMarkup(BOOK.title)}</h1>
+      <div class="cover__rule rise"></div>
+      ${BOOK.colophon ? `<p class="cover__colophon rise">${BOOK.colophon}</p>` : ""}
+      <div class="sectlabel rise">Volumes</div>
+      <div class="shelf__vols rise">${cards}</div>
+      <div class="cover__hint rise">Open a volume <span class="arrow">→</span></div>`;
+    c.appendChild(cover);
+    p.appendChild(c);
+    return p;
+  }
+
+  // a volume's own title page — where a trip begins
+  function volumeCoverPage(trip, i) {
     const p = el("section", "page");
-    p.dataset.nav = "Cover";
+    p.dataset.nav = toRoman(i + 1);
+    p.dataset.tripCover = trip.id;
+    const m = trip.meta || {};
     const c = el("div", "col");
     const cover = el("div", "cover");
     cover.innerHTML = `
-      <div class="cover__kicker rise">A field guide · for Fatma</div>
-      <h1 class="cover__title rise">The London<br><em>Journal</em></h1>
+      <div class="cover__kicker rise">Volume ${toRoman(i + 1)}${BOOK.traveller ? " · for " + BOOK.traveller : ""}</div>
+      <h1 class="cover__title rise">${titleMarkup(trip.title)}</h1>
       <div class="cover__rule rise"></div>
-      <div class="cover__dates rise">${J.meta.dates} <span>· ${J.meta.onward}</span></div>
-      <p class="cover__colophon rise">${J.meta.colophon}</p>
+      <div class="cover__dates rise">${trip.dates || m.dates || ""}${(trip.place || m.onward) ? ` <span>· ${trip.place || m.onward}</span>` : ""}</div>
+      ${m.colophon ? `<p class="cover__colophon rise">${m.colophon}</p>` : ""}
       <div class="cover__hint rise">Swipe to begin <span class="arrow">→</span></div>`;
     c.appendChild(cover);
     p.appendChild(c);
@@ -927,7 +989,7 @@
     return m;
   }
 
-  function huntPage() {
+  function huntPage(trip) {
     const p = el("section", "page");
     p.dataset.nav = "Hunt";
     const c = el("div", "col");
@@ -938,7 +1000,7 @@
 
     const state = store.get("hunt", {});
     const list = el("ul", "hunt rise");
-    J.hunt.forEach((item) => {
+    ((trip && trip.hunt) || J.hunt).forEach((item) => {
       const li = el("li", "hunt__item");
       li.setAttribute("role", "checkbox");
       li.tabIndex = 0;
@@ -1014,11 +1076,22 @@
     return p;
   }
 
-  // Assemble
+  // Assemble — the book cover, then each volume (title page · days · hunt)
   pager.appendChild(coverPage());
-  J.days.forEach((d) => pager.appendChild(dayPage(d)));
-  pager.appendChild(huntPage());
+  BOOK.trips.forEach((t, i) => {
+    pager.appendChild(volumeCoverPage(t, i));
+    (t.days || []).forEach((d) => pager.appendChild(dayPage(d)));
+    if (t.hunt && t.hunt.length) pager.appendChild(huntPage(t));
+  });
   pages.push(...pager.querySelectorAll(".page"));
+
+  // tapping a volume on the shelf jumps to its title page
+  pager.querySelectorAll(".shelf__vol[data-trip]").forEach((card) => {
+    card.addEventListener("click", () => {
+      const target = pages.find((pg) => pg.dataset.tripCover === card.dataset.trip);
+      if (target) goTo(pages.indexOf(target));
+    });
+  });
 
   // wayfinder: render idle cards; if she's opted in before, pick up where she is
   paintUpNext();
@@ -1081,7 +1154,8 @@
         if (currentDayId) activateDayMap(currentDayId);
         tabs.forEach((t, ti) => t.classList.toggle("is-current", ti === i));
         centerSpine(i);
-        mastDay.textContent = e.target === pages[0] ? "Cover"
+        mastDay.textContent = e.target.dataset.shelf ? "The shelf"
+          : e.target.dataset.tripCover ? ((BOOK.trips.find((t) => t.id === e.target.dataset.tripCover) || {}).title || "Volume")
           : e.target.dataset.nav === "Hunt" ? "Hunt list"
           : e.target.dataset.dayId
             ? (() => { const d = J.days.find((x) => x.id === e.target.dataset.dayId); return `${d.city} · ${d.date}`; })()
@@ -1108,8 +1182,7 @@
   const ppIntro = $("#passportIntro");
 
   function renderPassport() {
-    const daysWithStops = J.days.filter((d) => (d.stops || []).length);
-    const keys = daysWithStops.flatMap((d) => d.stops.map((s) => stampKey(d, s)));
+    const keys = J.days.flatMap((d) => (d.stops || []).map((s) => stampKey(d, s)));
     const got = keys.filter((k) => stampState[k]).length;
     const lead = got === 0
       ? "Empty pages. Press the postmark on any stop and its stamp lands here."
@@ -1118,26 +1191,36 @@
       : `${got} of ${keys.length} places stamped. Keep collecting.`;
     ppIntro.innerHTML = `${lead}<span id="ppTally"></span>`;
     ppPages.innerHTML = "";
-    daysWithStops.forEach((d) => {
-      const n = d.stops.filter((s) => stampState[stampKey(d, s)]).length;
-      const section = el("section", "ppday");
-      section.innerHTML = `
-        <div class="ppday__head">
-          <div>
-            <div class="ppday__city">${d.city} · ${d.date}</div>
-            <h3 class="ppday__title">${d.title}</h3>
+    const multi = BOOK.trips.length > 1;
+    BOOK.trips.forEach((trip) => {
+      const daysWithStops = (trip.days || []).filter((d) => (d.stops || []).length);
+      if (!daysWithStops.length) return;
+      if (multi) {
+        const head = el("div", "ppvol");
+        head.innerHTML = `<span class="ppvol__k">${trip.title}</span>${trip.place ? `<span class="ppvol__p">${trip.place}</span>` : ""}`;
+        ppPages.appendChild(head);
+      }
+      daysWithStops.forEach((d) => {
+        const n = d.stops.filter((s) => stampState[stampKey(d, s)]).length;
+        const section = el("section", "ppday");
+        section.innerHTML = `
+          <div class="ppday__head">
+            <div>
+              <div class="ppday__city">${d.city} · ${d.date}</div>
+              <h3 class="ppday__title">${d.title}</h3>
+            </div>
+            <span class="ppday__count${n === d.stops.length ? " is-full" : ""}">${n}/${d.stops.length}</span>
           </div>
-          <span class="ppday__count${n === d.stops.length ? " is-full" : ""}">${n}/${d.stops.length}</span>
-        </div>
-        <div class="ppday__grid">
-          ${d.stops.map((s) => stampState[stampKey(d, s)]
-            ? `<div class="ppslot" data-place="${stampKey(d, s)}">${placeStampSVG(d, s)}</div>`
-            : `<div class="ppslot is-empty"><span class="ppslot__wait">${s.name.split(/[,&]/)[0].trim()}</span></div>`).join("")}
-        </div>`;
-      // hang each stamped place's photographs beneath its stamp
-      section.querySelectorAll(".ppslot[data-place]").forEach((slot) =>
-        slot.appendChild(photosEl(slot.dataset.place, { readonly: true, mini: true })));
-      ppPages.appendChild(section);
+          <div class="ppday__grid">
+            ${d.stops.map((s) => stampState[stampKey(d, s)]
+              ? `<div class="ppslot" data-place="${stampKey(d, s)}">${placeStampSVG(d, s)}</div>`
+              : `<div class="ppslot is-empty"><span class="ppslot__wait">${s.name.split(/[,&]/)[0].trim()}</span></div>`).join("")}
+          </div>`;
+        // hang each stamped place's photographs beneath its stamp
+        section.querySelectorAll(".ppslot[data-place]").forEach((slot) =>
+          slot.appendChild(photosEl(slot.dataset.place, { readonly: true, mini: true })));
+        ppPages.appendChild(section);
+      });
     });
     updatePhotoCount();
   }

@@ -197,6 +197,31 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .cover__hint .arrow { animation: nudge 2.6s var(--ease) infinite; }
 @keyframes nudge { 0%,100%{transform:translateX(0)} 50%{transform:translateX(5px)} }
 
+/* the shelf — the book's cover, a stack of volumes */
+.shelf .sectlabel { max-width: 30rem; margin: 3rem auto 1.4rem; }
+.shelf__vols { display: flex; flex-direction: column; gap: 0.9rem; max-width: 30rem; width: 100%; margin: 0 auto; }
+.shelf__vol { position: relative; display: block; width: 100%; text-align: left; cursor: pointer;
+  background: var(--paper-2); border: 1px solid var(--line); border-radius: 10px; padding: 1.1rem 1.3rem 1.1rem 1.5rem;
+  color: inherit; box-shadow: 0 1px 3px var(--shadow);
+  transition: transform .2s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease); }
+.shelf__vol:hover { transform: translateY(-2px); border-color: var(--ink-faint); box-shadow: 0 6px 18px var(--shadow); }
+.shelf__vol:active { transform: translateY(0); }
+.shelf__vol::before { content: ""; position: absolute; left: 0; top: 0.95rem; bottom: 0.95rem;
+  width: 3px; border-radius: 3px; background: var(--red); opacity: 0.85; }
+.shelf__num { display: block; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--red); margin-bottom: 0.4rem; }
+.shelf__vol-title { display: block; font-family: var(--display); font-weight: 500; font-size: 1.7rem; line-height: 1.05; }
+.shelf__vol-place { display: block; font-family: var(--body); font-size: 0.9rem; color: var(--ink-soft); margin-top: 0.3rem; }
+.shelf__vol-meta { display: block; font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-faint); margin-top: 0.65rem; }
+.shelf__vol-dot { margin: 0 0.45rem; opacity: 0.6; }
+
+/* passport: a heading per volume (only when there's more than one) */
+.ppvol { margin: 0.4rem 0 1.5rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); }
+.ppvol__k { display: block; font-family: var(--display); font-weight: 500; font-size: 1.45rem; line-height: 1.1; }
+.ppvol__p { display: block; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-faint); margin-top: 0.25rem; }
+
 /* ============================================================
    Day header
    ============================================================ */
