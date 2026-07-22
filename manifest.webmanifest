@@ -1,7 +1,7 @@
 {
-  "name": "The London Journal",
-  "short_name": "London Journal",
-  "description": "A slow four days in London — notes from an architect friend. 16–19 July, then York.",
+  "name": "The Travel Journal",
+  "short_name": "Travel Journal",
+  "description": "A travelling journal — one book for every journey. Stamps pressed, photographs kept, notes in the margin.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
