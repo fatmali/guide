@@ -269,13 +269,13 @@
     return { blob: blob || file, w, h };
   }
 
-  function photoThumb(rec) {
+  function photoThumb(rec, onClick) {
     const b = el("button", "pthumb");
     b.type = "button";
     b.style.backgroundImage = `url("${URL.createObjectURL(rec.blob)}")`;
     b.dataset.id = rec.id;
     b.setAttribute("aria-label", "View photo");
-    b.addEventListener("click", () => openLightbox(rec.place, rec.id));
+    b.addEventListener("click", onClick || (() => openLightbox(rec.place, rec.id)));
     return b;
   }
 
@@ -339,14 +339,15 @@
       <button class="lightbox__nav lb-prev" type="button" aria-label="Previous">&lsaquo;</button>
       <img class="lightbox__img" alt="Trip photograph">
       <button class="lightbox__nav lb-next" type="button" aria-label="Next">&rsaquo;</button>
-      <div class="lightbox__bar"><span class="lightbox__count"></span><button class="lightbox__del" type="button">Remove photo</button></div>`;
+      <div class="lightbox__bar"><span class="lightbox__cap"></span><span class="lightbox__count"></span><button class="lightbox__del" type="button">Remove photo</button></div>`;
     document.body.appendChild(root);
-    lb = { root, img: root.querySelector(".lightbox__img"), count: root.querySelector(".lightbox__count"), rows: [], i: 0, url: null };
+    lb = { root, img: root.querySelector(".lightbox__img"), count: root.querySelector(".lightbox__count"), cap: root.querySelector(".lightbox__cap"), rows: [], i: 0, url: null, onChange: null };
     lb.show = () => {
       if (lb.url) URL.revokeObjectURL(lb.url);
       lb.url = URL.createObjectURL(lb.rows[lb.i].blob);
       lb.img.src = lb.url;
       lb.count.textContent = `${lb.i + 1} / ${lb.rows.length}`;
+      lb.cap.textContent = lb.rows[lb.i]._cap || "";
       root.classList.toggle("is-solo", lb.rows.length < 2);
     };
     const go = (d) => { lb.i = (lb.i + d + lb.rows.length) % lb.rows.length; lb.show(); };
@@ -358,6 +359,7 @@
       const rec = lb.rows[lb.i];
       await PhotoDB.del(rec.id);
       photosChanged(rec.place);
+      if (lb.onChange) lb.onChange();
       lb.rows.splice(lb.i, 1);
       if (!lb.rows.length) return closeLightbox();
       if (lb.i >= lb.rows.length) lb.i = lb.rows.length - 1;
@@ -374,14 +376,18 @@
     });
     return lb;
   }
-  async function openLightbox(place, id) {
+  function openLightboxRows(rows, startId, onChange) {
     const L = ensureLightbox();
-    L.rows = await PhotoDB.byPlace(place);
+    L.rows = rows;
     if (!L.rows.length) return;
-    L.i = Math.max(0, L.rows.findIndex((r) => r.id === id));
+    L.onChange = onChange || null;
+    L.i = Math.max(0, L.rows.findIndex((r) => r.id === startId));
     L.show();
     L.root.setAttribute("aria-hidden", "false");
     document.body.classList.add("lb-open");
+  }
+  async function openLightbox(place, id) {
+    openLightboxRows(await PhotoDB.byPlace(place), id, null);
   }
   function closeLightbox() {
     if (!lb) return;
@@ -1112,12 +1118,16 @@
     tab.addEventListener("click", () => goTo(i));
     spineTrack.appendChild(tab);
   });
-  // passport tab
+  // passport + album tabs
   spineTrack.appendChild(el("span", "spine__sep"));
   const ppTab = el("button", "spine__tab", "✦");
   ppTab.setAttribute("aria-label", "Open passport");
   ppTab.addEventListener("click", openPassport);
   spineTrack.appendChild(ppTab);
+  const albumTab = el("button", "spine__tab", "▦");
+  albumTab.setAttribute("aria-label", "Open album");
+  albumTab.addEventListener("click", openAlbum);
+  spineTrack.appendChild(albumTab);
 
   const tabs = [...spineTrack.querySelectorAll(".spine__tab")].slice(0, pages.length);
 
@@ -1228,6 +1238,62 @@
   function closePassport() { sheet.classList.remove("is-open"); sheet.setAttribute("aria-hidden", "true"); }
   $("#passportClose").addEventListener("click", closePassport);
   addEventListener("keydown", (e) => { if (e.key === "Escape") closePassport(); });
+
+  /* ==========================================================
+     Album — every photograph, gathered by volume and day
+     ========================================================== */
+  const albumSheet = $("#album");
+  const albumBody = $("#albumBody");
+  const albumIntro = $("#albumIntro");
+
+  async function renderAlbum() {
+    const all = await PhotoDB.all();
+    albumBody.innerHTML = "";
+    if (!all.length) {
+      albumIntro.textContent = "";
+      albumBody.appendChild(el("p", "album__empty", "No photographs yet. Add them to any place — press “Add photo” on a stop — and they gather here, and travel with your journal."));
+      return;
+    }
+    albumIntro.textContent = `${all.length} photograph${all.length === 1 ? "" : "s"}, kept.`;
+    const byPlace = {};
+    all.forEach((r) => (byPlace[r.place] = byPlace[r.place] || []).push(r));
+    const flat = []; // whole album in reading order — the lightbox browses this
+    const multi = BOOK.trips.length > 1;
+    BOOK.trips.forEach((trip) => {
+      const daySections = [];
+      (trip.days || []).forEach((d) => {
+        const dayRows = [];
+        (d.stops || []).forEach((s) => {
+          (byPlace[stampKey(d, s)] || []).sort((a, b) => a.at - b.at).forEach((r) => {
+            r._cap = `${s.name.split(/[,&]/)[0].trim()} · ${d.city}`;
+            dayRows.push(r);
+          });
+        });
+        if (dayRows.length) daySections.push({ d, rows: dayRows });
+      });
+      if (!daySections.length) return;
+      if (multi) {
+        const h = el("div", "ppvol");
+        h.innerHTML = `<span class="ppvol__k">${trip.title}</span>${trip.place ? `<span class="ppvol__p">${trip.place}</span>` : ""}`;
+        albumBody.appendChild(h);
+      }
+      daySections.forEach(({ d, rows }) => {
+        const sec = el("section", "album__day");
+        sec.appendChild(el("div", "album__dayhead", `<span class="album__city">${d.city} · ${d.date}</span><span class="album__title">${d.title}</span>`));
+        const grid = el("div", "album__grid");
+        rows.forEach((r) => {
+          flat.push(r);
+          grid.appendChild(photoThumb(r, () => openLightboxRows(flat, r.id, renderAlbum)));
+        });
+        sec.appendChild(grid);
+        albumBody.appendChild(sec);
+      });
+    });
+  }
+  function openAlbum() { renderAlbum(); albumSheet.classList.add("is-open"); albumSheet.setAttribute("aria-hidden", "false"); }
+  function closeAlbum() { albumSheet.classList.remove("is-open"); albumSheet.setAttribute("aria-hidden", "true"); }
+  $("#albumClose").addEventListener("click", closeAlbum);
+  addEventListener("keydown", (e) => { if (e.key === "Escape") closeAlbum(); });
 
   /* ---- back up / restore ---- */
   const kStatus = $("#keepsakeStatus");

@@ -695,6 +695,18 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .photos--mini .pthumb { width: 1.75rem; height: 1.75rem; border-radius: 4px; box-shadow: none; }
 .ppslot { align-content: center; }
 
+/* the album — every photograph, gathered by volume & day */
+.album__empty { font-family: var(--display); font-style: italic; font-size: 1.25rem;
+  line-height: 1.5; color: var(--ink-faint); max-width: 26rem; }
+.album__day { margin-bottom: 2.6rem; }
+.album__dayhead { margin-bottom: 0.9rem; }
+.album__city { display: block; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-faint); }
+.album__title { display: block; font-family: var(--display); font-weight: 500; font-size: 1.5rem;
+  line-height: 1.1; margin-top: 0.2rem; }
+.album__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+.album__grid .pthumb { width: 100%; height: auto; aspect-ratio: 1; box-shadow: none; }
+
 /* full-screen viewer */
 .lightbox { position: fixed; inset: 0; z-index: 200; display: none;
   background: rgba(12, 10, 6, 0.94); align-items: center; justify-content: center;
@@ -713,7 +725,8 @@ body.lb-open { overflow: hidden; }
 .lightbox__nav.lb-next { right: 0.7rem; }
 .lightbox.is-solo .lightbox__nav { display: none; }
 .lightbox__bar { position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom, 0px) + 0.9rem);
-  display: flex; align-items: center; justify-content: center; gap: 1.4rem; }
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.5rem 1.2rem; padding: 0 1rem; }
+.lightbox__cap { font-family: var(--display); font-style: italic; font-size: 0.95rem; color: rgba(255,255,255,.9); width: 100%; text-align: center; }
 .lightbox__count { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; color: rgba(255,255,255,.75); }
 .lightbox__del { border: 1px solid rgba(255,255,255,.3); background: transparent; color: rgba(255,255,255,.85);
   font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
