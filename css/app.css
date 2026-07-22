@@ -639,6 +639,63 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .pp__wait { font-family: var(--display); font-style: italic; color: var(--ink-faint); font-size: 1.1rem; text-align: center; }
 
 /* ============================================================
+   Photographs — your own, kept per place
+   ============================================================ */
+.photos { margin: 1.4rem 0 0.4rem; }
+.photos__cap { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.7rem; }
+.photos__strip { display: flex; gap: 0.6rem; overflow-x: auto; padding-bottom: 0.3rem;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.photos__strip::-webkit-scrollbar { display: none; }
+.pthumb { flex: 0 0 auto; width: 5.4rem; height: 5.4rem; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--paper-2) center/cover no-repeat;
+  box-shadow: 0 1px 3px var(--shadow); padding: 0; transition: transform .2s var(--ease); }
+.pthumb:hover { transform: scale(1.03); }
+.pthumb:active { transform: scale(0.97); }
+.photos__add { flex: 0 0 auto; width: 5.4rem; height: 5.4rem; border-radius: 6px; cursor: pointer;
+  border: 1px dashed var(--ink-faint); background: transparent; color: var(--ink-faint);
+  display: grid; place-items: center; gap: 0.15rem; grid-auto-flow: row; padding: 0.3rem;
+  font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase;
+  line-height: 1.25; text-align: center; transition: border-color .25s var(--ease), color .25s var(--ease); }
+.photos__add svg { width: 1.35rem; height: 1.35rem; }
+.photos__add:hover { border-color: var(--red); color: var(--red); }
+.photos__add.is-busy { opacity: 0.55; pointer-events: none; }
+.photos__add.is-busy svg { animation: pulse 1s var(--ease) infinite; }
+@keyframes pulse { 50% { opacity: 0.35; } }
+
+/* the compact version inside the passport album */
+.photos--mini { margin: 0.5rem 0 0; }
+.photos--mini .photos__strip { gap: 0.3rem; flex-wrap: wrap; }
+.photos--mini .photos__strip:empty { display: none; }
+.photos--mini .pthumb { width: 1.75rem; height: 1.75rem; border-radius: 4px; box-shadow: none; }
+.ppslot { align-content: center; }
+
+/* full-screen viewer */
+.lightbox { position: fixed; inset: 0; z-index: 200; display: none;
+  background: rgba(12, 10, 6, 0.94); align-items: center; justify-content: center;
+  padding: env(safe-area-inset-top, 1rem) 1rem calc(env(safe-area-inset-bottom, 1rem) + 3.4rem); }
+.lightbox[aria-hidden="false"] { display: flex; }
+body.lb-open { overflow: hidden; }
+.lightbox__img { max-width: 100%; max-height: 100%; object-fit: contain;
+  border-radius: 4px; box-shadow: 0 10px 40px rgba(0,0,0,.5); }
+.lightbox__x { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 0.8rem); right: 1rem;
+  width: 2.6rem; height: 2.6rem; border-radius: 50%; border: none; cursor: pointer;
+  background: rgba(255,255,255,.12); color: #fff; font-size: 1.6rem; line-height: 1; }
+.lightbox__nav { position: absolute; top: 50%; transform: translateY(-50%); width: 3rem; height: 3rem;
+  border-radius: 50%; border: none; cursor: pointer; background: rgba(255,255,255,.12); color: #fff;
+  font-size: 2rem; line-height: 1; display: grid; place-items: center; }
+.lightbox__nav.lb-prev { left: 0.7rem; }
+.lightbox__nav.lb-next { right: 0.7rem; }
+.lightbox.is-solo .lightbox__nav { display: none; }
+.lightbox__bar { position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom, 0px) + 0.9rem);
+  display: flex; align-items: center; justify-content: center; gap: 1.4rem; }
+.lightbox__count { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; color: rgba(255,255,255,.75); }
+.lightbox__del { border: 1px solid rgba(255,255,255,.3); background: transparent; color: rgba(255,255,255,.85);
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.45rem 0.9rem; border-radius: 999px; cursor: pointer; }
+.lightbox__del:hover { border-color: var(--red); color: var(--red); }
+
+/* ============================================================
    Hunt list (shopping)
    ============================================================ */
 .hunt { list-style: none; margin: 0; padding: 0; }
@@ -675,5 +732,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .rise { opacity: 1 !important; transform: none !important; transition: none !important; }
   .stamp--animate { animation: none; opacity: 0.92; transform: rotate(-8deg); }
   .postmark__ink.press { animation: none; }
+  .photos__add.is-busy svg { animation: none; }
   .cover__hint .arrow { animation: none; }
 }

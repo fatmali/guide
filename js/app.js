@@ -37,6 +37,7 @@
     apple: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.2 12.9c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3 .9-3.8 2.4-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.2 0 2-1.1 2.8-2.2.9-1.3 1.2-2.5 1.3-2.6-.1 0-2.4-1-2.4-3.7zM14 5.8c.6-.8 1-1.9.9-3-.9 0-2 .6-2.6 1.4-.6.7-1.1 1.8-.9 2.8 1 .1 2-.5 2.6-1.2z"/></svg>',
     map: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 3L3 5.5v15L9 18l6 3 6-2.5v-15L15 6 9 3z"/><path d="M9 3v15M15 6v15"/></svg>',
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+    camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8h3l1.4-2h7.2L18 8h2a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.1"/></svg>',
   };
   const glyphFor = (type) => ({
     coffee: "☕", breakfast: "◷", lunch: "❍", dinner: "✦", bakery: "❊",
@@ -177,6 +178,183 @@
   }
 
   /* ==========================================================
+     Photographs — private, kept on your device (IndexedDB).
+     Step one of the shared travel album: capture here now; a
+     private cloud can sync these between phones later. Nothing
+     in here leaves the device on its own.
+     ========================================================== */
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+  const cssEsc = (s) => (window.CSS && CSS.escape ? CSS.escape(s) : String(s).replace(/["\\]/g, "\\$&"));
+
+  const PhotoDB = (() => {
+    let dbp;
+    const open = () => (dbp || (dbp = new Promise((res, rej) => {
+      const r = indexedDB.open("tlj-photos", 1);
+      r.onupgradeneeded = () => r.result.createObjectStore("photos", { keyPath: "id", autoIncrement: true }).createIndex("place", "place");
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    })));
+    const os = async (mode) => (await open()).transaction("photos", mode).objectStore("photos");
+    const done = (req) => new Promise((res, rej) => { req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error); });
+    return {
+      async add(rec) { return done((await os("readwrite")).add(rec)); },
+      async del(id) { return done((await os("readwrite")).delete(id)); },
+      async countAll() { return done((await os("readonly")).count()); },
+      async byPlace(place) {
+        const store = await os("readonly");
+        return new Promise((res, rej) => {
+          const out = [], r = store.index("place").openCursor(IDBKeyRange.only(place));
+          r.onsuccess = () => { const c = r.result; if (c) { out.push(c.value); c.continue(); } else res(out.sort((a, b) => a.at - b.at)); };
+          r.onerror = () => rej(r.error);
+        });
+      },
+    };
+  })();
+
+  // shrink to a sane size before storing. Modern Safari/Chrome auto-apply the
+  // photo's EXIF rotation when it's drawn, so the canvas comes out upright.
+  const loadImage = (file) => new Promise((res, rej) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => res({ img, url });
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("decode")); };
+    img.src = url;
+  });
+  async function compressImage(file, max = 1600, quality = 0.82) {
+    const { img, url } = await loadImage(file);
+    const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+    const scale = Math.min(1, max / Math.max(iw, ih));
+    const w = Math.max(1, Math.round(iw * scale)), h = Math.max(1, Math.round(ih * scale));
+    const cv = el("canvas"); cv.width = w; cv.height = h;
+    cv.getContext("2d").drawImage(img, 0, 0, w, h);
+    URL.revokeObjectURL(url);
+    const blob = await new Promise((r) => cv.toBlob(r, "image/jpeg", quality));
+    return { blob: blob || file, w, h };
+  }
+
+  function photoThumb(rec) {
+    const b = el("button", "pthumb");
+    b.type = "button";
+    b.style.backgroundImage = `url("${URL.createObjectURL(rec.blob)}")`;
+    b.dataset.id = rec.id;
+    b.setAttribute("aria-label", "View photo");
+    b.addEventListener("click", () => openLightbox(rec.place, rec.id));
+    return b;
+  }
+
+  function fillStrip(strip, place) {
+    strip.querySelectorAll(".pthumb").forEach((t) => t.remove());
+    const add = strip.querySelector(".photos__add"); // null in read-only album view
+    PhotoDB.byPlace(place).then((rows) => rows.forEach((r) => strip.insertBefore(photoThumb(r), add)));
+  }
+
+  // keep every strip for a place (a day page, the album) in sync after a change
+  function photosChanged(place) {
+    document.querySelectorAll(`.photos[data-place="${cssEsc(place)}"] .photos__strip`).forEach((s) => fillStrip(s, place));
+    updatePhotoCount();
+  }
+  async function updatePhotoCount() {
+    const tally = document.getElementById("ppTally");
+    if (!tally) return;
+    const n = await PhotoDB.countAll().catch(() => 0);
+    tally.textContent = n ? ` · ${n} photograph${n === 1 ? "" : "s"} kept` : "";
+  }
+
+  function photosEl(place, opts = {}) {
+    const wrap = el("div", "photos" + (opts.mini ? " photos--mini" : ""));
+    wrap.dataset.place = place;
+    if (opts.label) wrap.appendChild(el("div", "photos__cap", opts.label));
+    const strip = el("div", "photos__strip");
+    if (!opts.readonly) {
+      const add = el("button", "photos__add", `${ICON.camera}<span>Add<br>photo</span>`);
+      add.type = "button";
+      const input = el("input"); input.type = "file"; input.accept = "image/*"; input.multiple = true; input.hidden = true;
+      add.addEventListener("click", () => input.click());
+      input.addEventListener("change", async () => {
+        const files = [...input.files]; input.value = "";
+        add.classList.add("is-busy");
+        for (const f of files) {
+          if (!f.type.startsWith("image/")) continue;
+          try {
+            const c = await compressImage(f);
+            const id = await PhotoDB.add({ place, blob: c.blob, w: c.w, h: c.h, at: Date.now() });
+            strip.insertBefore(photoThumb({ id, place, blob: c.blob }), add);
+          } catch (e) { /* skip an unreadable image */ }
+        }
+        add.classList.remove("is-busy");
+        photosChanged(place);
+      });
+      strip.appendChild(add); strip.appendChild(input);
+    }
+    wrap.appendChild(strip);
+    fillStrip(strip, place);
+    return wrap;
+  }
+
+  /* ---- full-screen viewer ---- */
+  let lb;
+  function ensureLightbox() {
+    if (lb) return lb;
+    const root = el("div", "lightbox");
+    root.setAttribute("aria-hidden", "true");
+    root.innerHTML = `
+      <button class="lightbox__x" type="button" aria-label="Close">&times;</button>
+      <button class="lightbox__nav lb-prev" type="button" aria-label="Previous">&lsaquo;</button>
+      <img class="lightbox__img" alt="Trip photograph">
+      <button class="lightbox__nav lb-next" type="button" aria-label="Next">&rsaquo;</button>
+      <div class="lightbox__bar"><span class="lightbox__count"></span><button class="lightbox__del" type="button">Remove photo</button></div>`;
+    document.body.appendChild(root);
+    lb = { root, img: root.querySelector(".lightbox__img"), count: root.querySelector(".lightbox__count"), rows: [], i: 0, url: null };
+    lb.show = () => {
+      if (lb.url) URL.revokeObjectURL(lb.url);
+      lb.url = URL.createObjectURL(lb.rows[lb.i].blob);
+      lb.img.src = lb.url;
+      lb.count.textContent = `${lb.i + 1} / ${lb.rows.length}`;
+      root.classList.toggle("is-solo", lb.rows.length < 2);
+    };
+    const go = (d) => { lb.i = (lb.i + d + lb.rows.length) % lb.rows.length; lb.show(); };
+    root.querySelector(".lb-prev").addEventListener("click", () => go(-1));
+    root.querySelector(".lb-next").addEventListener("click", () => go(1));
+    root.querySelector(".lightbox__x").addEventListener("click", closeLightbox);
+    root.addEventListener("click", (e) => { if (e.target === root) closeLightbox(); });
+    root.querySelector(".lightbox__del").addEventListener("click", async () => {
+      const rec = lb.rows[lb.i];
+      await PhotoDB.del(rec.id);
+      photosChanged(rec.place);
+      lb.rows.splice(lb.i, 1);
+      if (!lb.rows.length) return closeLightbox();
+      if (lb.i >= lb.rows.length) lb.i = lb.rows.length - 1;
+      lb.show();
+    });
+    let sx = 0;
+    root.addEventListener("touchstart", (e) => { sx = e.touches[0].clientX; }, { passive: true });
+    root.addEventListener("touchend", (e) => { const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1); }, { passive: true });
+    addEventListener("keydown", (e) => {
+      if (lb.root.getAttribute("aria-hidden") === "true") return;
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowRight") go(1);
+      else if (e.key === "ArrowLeft") go(-1);
+    });
+    return lb;
+  }
+  async function openLightbox(place, id) {
+    const L = ensureLightbox();
+    L.rows = await PhotoDB.byPlace(place);
+    if (!L.rows.length) return;
+    L.i = Math.max(0, L.rows.findIndex((r) => r.id === id));
+    L.show();
+    L.root.setAttribute("aria-hidden", "false");
+    document.body.classList.add("lb-open");
+  }
+  function closeLightbox() {
+    if (!lb) return;
+    if (lb.url) { URL.revokeObjectURL(lb.url); lb.url = null; }
+    lb.img.removeAttribute("src");
+    lb.root.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("lb-open");
+  }
+
+  /* ==========================================================
      Build pages
      ========================================================== */
   const pager = $("#pager");
@@ -249,6 +427,7 @@
       </div>`;
     const pm = s.querySelector(".postmark");
     bindTap(pm, () => collectStamp(pm, day, stop));
+    s.appendChild(photosEl(stampKey(day, stop), { label: "Your photographs" }));
     return s;
   }
 
@@ -863,11 +1042,12 @@
     const daysWithStops = J.days.filter((d) => (d.stops || []).length);
     const keys = daysWithStops.flatMap((d) => d.stops.map((s) => stampKey(d, s)));
     const got = keys.filter((k) => stampState[k]).length;
-    ppIntro.innerHTML = got === 0
+    const lead = got === 0
       ? "Empty pages. Press the postmark on any stop and its stamp lands here."
       : got === keys.length
       ? `Every place stamped — all ${got}. The whole line, walked and kept.`
       : `${got} of ${keys.length} places stamped. Keep collecting.`;
+    ppIntro.innerHTML = `${lead}<span id="ppTally"></span>`;
     ppPages.innerHTML = "";
     daysWithStops.forEach((d) => {
       const n = d.stops.filter((s) => stampState[stampKey(d, s)]).length;
@@ -882,11 +1062,15 @@
         </div>
         <div class="ppday__grid">
           ${d.stops.map((s) => stampState[stampKey(d, s)]
-            ? `<div class="ppslot">${placeStampSVG(d, s)}</div>`
+            ? `<div class="ppslot" data-place="${stampKey(d, s)}">${placeStampSVG(d, s)}</div>`
             : `<div class="ppslot is-empty"><span class="ppslot__wait">${s.name.split(/[,&]/)[0].trim()}</span></div>`).join("")}
         </div>`;
+      // hang each stamped place's photographs beneath its stamp
+      section.querySelectorAll(".ppslot[data-place]").forEach((slot) =>
+        slot.appendChild(photosEl(slot.dataset.place, { readonly: true, mini: true })));
       ppPages.appendChild(section);
     });
+    updatePhotoCount();
   }
   function openPassport() { renderPassport(); sheet.classList.add("is-open"); sheet.setAttribute("aria-hidden", "false"); }
   function closePassport() { sheet.classList.remove("is-open"); sheet.setAttribute("aria-hidden", "true"); }
