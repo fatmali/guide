@@ -45,6 +45,13 @@
     set(k, v) { try { localStorage.setItem("tlj." + k, JSON.stringify(v)); } catch {} },
   };
 
+  /* A tiny change bus so an optional sync layer can (a) hear local edits and
+     push them up, and (b) push remote edits down via window.TLJ (below).
+     With no sync configured this is inert — the app stays purely local. */
+  const syncListeners = [];
+  const onLocalChange = (cb) => syncListeners.push(cb);
+  const emitChange = (ev) => syncListeners.forEach((cb) => { try { cb(ev); } catch (e) {} });
+
   /* ---- Underground line colours ---- */
   const LINE = {
     Bakerloo:     ["#8D5A2B", "#fff"],
@@ -129,6 +136,9 @@
   const hashStr = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
   const stampKey = (day, stop) => day.id + "|" + slugify(stop.name);
   const dayComplete = (d) => (d.stops || []).length > 0 && d.stops.every((s) => stampState[stampKey(d, s)]);
+  // placeKey → its day & stop, so a remote stamp can find the right artwork/button
+  const PLACE_INDEX = {};
+  BOOK.trips.forEach((t) => (t.days || []).forEach((d) => (d.stops || []).forEach((s) => { PLACE_INDEX[stampKey(d, s)] = { trip: t, day: d, stop: s }; })));
   const STAMP_INK = ["var(--red)", "var(--brass)", "var(--sage)"];
   const shortDate = (ds) => { const m = String(ds).match(/(\d+)\D+([A-Za-z]{3})/); return m ? `${m[1]} ${m[2].toUpperCase()}` : String(ds).toUpperCase(); };
   function stampLines(name) {
@@ -171,21 +181,43 @@
     }
     return `<svg viewBox="0 0 120 120" fill="none" stroke="${color}" style="transform:rotate(${rot}deg)" aria-hidden="true">${body}</svg>`;
   }
-  function collectStamp(btn, day, stop) {
-    const key = stampKey(day, stop);
-    if (stampState[key]) return;
-    stampState[key] = { at: Date.now() };
+  // Press a stamp — from a tap or from a remote sync. Idempotent; updates any
+  // visible postmark and the passport. Returns true if it was newly set.
+  function setStamped(key, at, opts = {}) {
+    if (stampState[key]) return false;
+    const info = PLACE_INDEX[key];
+    stampState[key] = { at: at || Date.now() };
     store.set("stamps", stampState);
-    const ink = btn.querySelector(".postmark__ink");
-    ink.innerHTML = placeStampSVG(day, stop);
-    btn.classList.add("is-stamped");
-    btn.setAttribute("aria-pressed", "true");
-    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      ink.classList.add("press");
-      if (navigator.vibrate) navigator.vibrate(10);
+    const btn = document.querySelector(`.postmark[data-place="${cssEsc(key)}"]`);
+    if (btn && info) {
+      const ink = btn.querySelector(".postmark__ink");
+      ink.innerHTML = placeStampSVG(info.day, info.stop);
+      btn.classList.add("is-stamped");
+      btn.setAttribute("aria-pressed", "true");
+      if (opts.animate && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        ink.classList.add("press");
+        if (navigator.vibrate) navigator.vibrate(10);
+      }
     }
     markSpineDone();
     renderPassport();
+    return true;
+  }
+  function collectStamp(btn, day, stop) {
+    const key = stampKey(day, stop);
+    if (setStamped(key, Date.now(), { animate: true })) emitChange({ kind: "stamp", place: key, at: stampState[key].at });
+  }
+  // Tick a hunt item — from a tap or a remote sync — and update any visible row.
+  function setHunt(id, checked, opts = {}) {
+    const state = store.get("hunt", {});
+    state[id] = checked;
+    store.set("hunt", state);
+    document.querySelectorAll(`.hunt__item[data-hunt-id="${cssEsc(id)}"]`).forEach((li) => {
+      li.classList.toggle("is-checked", checked);
+      li.setAttribute("aria-checked", checked ? "true" : "false");
+    });
+    if (opts.animate && checked && !matchMedia("(prefers-reduced-motion: reduce)").matches && navigator.vibrate) navigator.vibrate(8);
+    if (opts.emit) emitChange({ kind: "hunt", id, checked });
   }
   // Reliable tap for touch: a scroll-snap pager eats plain clicks on small
   // targets, so handle the raw touch — a stationary touchend fires the action
@@ -314,8 +346,10 @@
           if (!f.type.startsWith("image/")) continue;
           try {
             const c = await compressImage(f);
-            const id = await PhotoDB.add({ place, blob: c.blob, w: c.w, h: c.h, at: Date.now() });
+            const at = Date.now();
+            const id = await PhotoDB.add({ place, blob: c.blob, w: c.w, h: c.h, at });
             strip.insertBefore(photoThumb({ id, place, blob: c.blob }), add);
+            emitChange({ kind: "photo-add", place, at, w: c.w, h: c.h, blob: c.blob });
           } catch (e) { /* skip an unreadable image */ }
         }
         add.classList.remove("is-busy");
@@ -359,6 +393,7 @@
       const rec = lb.rows[lb.i];
       await PhotoDB.del(rec.id);
       photosChanged(rec.place);
+      emitChange({ kind: "photo-del", place: rec.place, at: rec.at });
       if (lb.onChange) lb.onChange();
       lb.rows.splice(lb.i, 1);
       if (!lb.rows.length) return closeLightbox();
@@ -551,7 +586,7 @@
           <h3 class="stop__name">${stop.name}</h3>
           ${stop.kind ? `<span class="stop__kind">${stop.kind}</span>` : ""}
         </div>
-        <button class="postmark${done ? " is-stamped" : ""}" type="button" aria-pressed="${done}" aria-label="Collect the stamp for ${stop.name}">
+        <button class="postmark${done ? " is-stamped" : ""}" type="button" data-place="${stampKey(day, stop)}" aria-pressed="${done}" aria-label="Collect the stamp for ${stop.name}">
           <span class="postmark__hint">press<br>to stamp</span>
           <span class="postmark__ink">${done ? placeStampSVG(day, stop) : ""}</span>
         </button>
@@ -1008,6 +1043,7 @@
     const list = el("ul", "hunt rise");
     ((trip && trip.hunt) || J.hunt).forEach((item) => {
       const li = el("li", "hunt__item");
+      li.dataset.huntId = item.id;
       li.setAttribute("role", "checkbox");
       li.tabIndex = 0;
       li.setAttribute("aria-checked", state[item.id] ? "true" : "false");
@@ -1015,14 +1051,7 @@
       li.innerHTML = `
         <span class="hunt__box">${ICON.check}</span>
         <span><span class="hunt__label">${item.label}</span><span class="hunt__hint">${item.hint}</span></span>`;
-      const toggle = () => {
-        const now = !li.classList.contains("is-checked");
-        li.classList.toggle("is-checked", now);
-        li.setAttribute("aria-checked", now ? "true" : "false");
-        state[item.id] = now;
-        store.set("hunt", state);
-        if (now && !matchMedia("(prefers-reduced-motion: reduce)").matches && navigator.vibrate) navigator.vibrate(8);
-      };
+      const toggle = () => setHunt(item.id, !li.classList.contains("is-checked"), { animate: true, emit: true });
       li.addEventListener("click", toggle);
       li.addEventListener("keydown", (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggle(); } });
       list.appendChild(li);
@@ -1332,9 +1361,49 @@
   });
 
   /* ==========================================================
+     Sync seam — the surface an optional cloud layer plugs into.
+     It can hear local edits (onLocalChange) and apply remote ones
+     (applyStamp / applyHunt / addPhoto / removePhoto). Photos live
+     in IndexedDB; stamps and hunt ticks in localStorage. All of it
+     is a no-op until a sync layer is loaded and configured.
+     ========================================================== */
+  window.TLJ = {
+    onLocalChange,
+    stampKeyList: () => Object.keys(PLACE_INDEX),
+    snapshot: () => ({ stamps: store.get("stamps", {}), hunt: store.get("hunt", {}) }),
+    applyStamp: (key, at) => setStamped(key, at, { animate: false }),
+    applyHunt: (id, checked) => setHunt(id, checked, {}),
+    allPhotos: () => PhotoDB.all(),
+    async addPhoto(rec) { // rec: { place, at, w, h, blob }
+      const rows = await PhotoDB.byPlace(rec.place);
+      if (rows.some((r) => r.at === rec.at)) return null;
+      const id = await PhotoDB.add(rec);
+      photosChanged(rec.place);
+      if (albumSheet && albumSheet.classList.contains("is-open")) renderAlbum();
+      return id;
+    },
+    async removePhoto(place, at) {
+      const rows = await PhotoDB.byPlace(place);
+      const hit = rows.find((r) => r.at === at);
+      if (!hit) return false;
+      await PhotoDB.del(hit.id);
+      photosChanged(place);
+      if (albumSheet && albumSheet.classList.contains("is-open")) renderAlbum();
+      return true;
+    },
+  };
+  // let a sync layer show status in the keepsake footer if it wants
+  window.TLJ.setSyncStatus = (t) => { if (kStatus) kStatus.textContent = t || ""; };
+
+  /* ==========================================================
      Service worker
      ========================================================== */
   if ("serviceWorker" in navigator) {
     addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+  }
+
+  // hand off to the sync layer, if one is present and configured
+  if (window.TLJSync && typeof window.TLJSync.init === "function") {
+    try { window.TLJSync.init(window.TLJ); } catch (e) {}
   }
 })();
