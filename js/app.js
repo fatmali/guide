@@ -1111,12 +1111,13 @@
     return p;
   }
 
-  // Assemble — the book cover, then each volume (title page · days · hunt)
+  // Assemble — the book cover, then each volume (title page · days · hunt).
+  // Every page carries its volume id so the spine can scope to one volume.
   pager.appendChild(coverPage());
   BOOK.trips.forEach((t, i) => {
-    pager.appendChild(volumeCoverPage(t, i));
-    (t.days || []).forEach((d) => pager.appendChild(dayPage(d)));
-    if (t.hunt && t.hunt.length) pager.appendChild(huntPage(t));
+    const vc = volumeCoverPage(t, i); vc.dataset.trip = t.id; pager.appendChild(vc);
+    (t.days || []).forEach((d) => { const dp = dayPage(d); dp.dataset.trip = t.id; pager.appendChild(dp); });
+    if (t.hunt && t.hunt.length) { const hp = huntPage(t); hp.dataset.trip = t.id; pager.appendChild(hp); }
   });
   pages.push(...pager.querySelectorAll(".page"));
 
@@ -1138,45 +1139,69 @@
   const spine = $("#spine");
   const spineTrack = el("div", "spine__track");
   spine.appendChild(spineTrack);
-  pages.forEach((page, i) => {
-    if (i > 0) spineTrack.appendChild(el("span", "spine__sep"));
-    const tab = el("button", "spine__tab", page.dataset.nav);
-    tab.dataset.idx = i;
-    const dd = page.dataset.dayId && J.days.find((x) => x.id === page.dataset.dayId);
-    if (dd && dayComplete(dd)) tab.classList.add("is-done");
-    tab.addEventListener("click", () => goTo(i));
-    spineTrack.appendChild(tab);
-  });
-  // passport + album tabs
-  spineTrack.appendChild(el("span", "spine__sep"));
-  const ppTab = el("button", "spine__tab", "✦");
-  ppTab.setAttribute("aria-label", "Open passport");
-  ppTab.addEventListener("click", openPassport);
-  spineTrack.appendChild(ppTab);
-  const albumTab = el("button", "spine__tab", "▦");
-  albumTab.setAttribute("aria-label", "Open album");
-  albumTab.addEventListener("click", openAlbum);
-  spineTrack.appendChild(albumTab);
+  const shelfPage = pages.find((p) => p.dataset.shelf);
+  const coverForTrip = (id) => pages.find((p) => p.dataset.tripCover === id);
+  const dayPagesForTrip = (id) => pages.filter((p) => p.dataset.trip === id && !p.dataset.tripCover); // days + hunt
+  let spineTabs = [];        // the page-bound tabs currently shown
+  let spineTripId;           // which volume the spine reflects (undefined = not built yet, null = shelf)
 
-  const tabs = [...spineTrack.querySelectorAll(".spine__tab")].slice(0, pages.length);
-
-  function goTo(i) {
-    pages[i].scrollIntoView({ behavior: "smooth", inline: "start" });
-    pages[i].focus?.({ preventScroll: true });
+  function spineTab(label, aria, onClick, cls) {
+    const t = el("button", "spine__tab" + (cls ? " " + cls : ""), label);
+    if (aria) t.setAttribute("aria-label", aria);
+    t.addEventListener("click", onClick);
+    return t;
   }
-  // keep the current tab within view on the scrollable spine
-  function centerSpine(i) {
-    const t = tabs[i];
+  // The spine belongs to the volume you're reading: on the shelf it lists the
+  // volumes; inside a volume it lists that volume's days (+ hunt). Passport and
+  // album are always there. No single volume's dates linger app-wide.
+  function rebuildSpine(tripId) {
+    spineTripId = tripId;
+    spineTrack.innerHTML = "";
+    spineTabs = [];
+    if (!tripId) {
+      BOOK.trips.forEach((t, i) => {
+        if (i) spineTrack.appendChild(el("span", "spine__sep"));
+        const tab = spineTab(toRoman(i + 1), "Open " + t.title, () => goToPage(coverForTrip(t.id)));
+        tab._page = coverForTrip(t.id);
+        spineTrack.appendChild(tab); spineTabs.push(tab);
+      });
+    } else {
+      spineTrack.appendChild(spineTab("❦", "Back to the shelf", () => goToPage(shelfPage), "spine__tab--home"));
+      dayPagesForTrip(tripId).forEach((pg) => {
+        spineTrack.appendChild(el("span", "spine__sep"));
+        const tab = spineTab(pg.dataset.nav, null, () => goToPage(pg));
+        tab._page = pg;
+        const d = pg.dataset.dayId && J.days.find((x) => x.id === pg.dataset.dayId);
+        if (d && dayComplete(d)) tab.classList.add("is-done");
+        spineTrack.appendChild(tab); spineTabs.push(tab);
+      });
+    }
+    spineTrack.appendChild(el("span", "spine__sep"));
+    spineTrack.appendChild(spineTab("✦", "Open passport", openPassport));
+    spineTrack.appendChild(spineTab("▦", "Open album", openAlbum));
+  }
+
+  function goToPage(pageEl) {
+    if (!pageEl) return;
+    pageEl.scrollIntoView({ behavior: "smooth", inline: "start" });
+    pageEl.focus?.({ preventScroll: true });
+  }
+  function goTo(i) { goToPage(pages[i]); }
+  // keep the active tab within view on the scrollable spine
+  function centerSpine(pageEl) {
+    const t = spineTabs.find((x) => x._page === pageEl);
     if (!t || spine.scrollWidth <= spine.clientWidth + 1) return;
     const tr = t.getBoundingClientRect(), sr = spine.getBoundingClientRect();
     spine.scrollBy({ left: (tr.left + tr.width / 2) - (sr.left + sr.width / 2), behavior: "smooth" });
   }
   function markSpineDone() {
-    pages.forEach((page, i) => {
-      const d = page.dataset.dayId && J.days.find((x) => x.id === page.dataset.dayId);
-      if (d) tabs[i].classList.toggle("is-done", dayComplete(d));
+    spineTabs.forEach((t) => {
+      const p = t._page;
+      const d = p && p.dataset.dayId && J.days.find((x) => x.id === p.dataset.dayId);
+      if (d) t.classList.toggle("is-done", dayComplete(d));
     });
   }
+  rebuildSpine(null);
 
   /* ==========================================================
      Active page tracking (reveal + labels)
@@ -1191,8 +1216,10 @@
         current = i;
         currentDayId = e.target.dataset.dayId || null;
         if (currentDayId) activateDayMap(currentDayId);
-        tabs.forEach((t, ti) => t.classList.toggle("is-current", ti === i));
-        centerSpine(i);
+        const tripId = e.target.dataset.shelf ? null : (e.target.dataset.trip || null);
+        if (tripId !== spineTripId) rebuildSpine(tripId);
+        spineTabs.forEach((t) => t.classList.toggle("is-current", t._page === e.target));
+        centerSpine(e.target);
         mastDay.textContent = e.target.dataset.shelf ? "The shelf"
           : e.target.dataset.tripCover ? ((BOOK.trips.find((t) => t.id === e.target.dataset.tripCover) || {}).title || "Volume")
           : e.target.dataset.nav === "Hunt" ? "Hunt list"
@@ -1204,7 +1231,6 @@
   }, { root: pager, threshold: [0.55] });
   pages.forEach((p) => io.observe(p));
   pages[0].classList.add("is-active");
-  tabs[0].classList.add("is-current");
 
   // keyboard: left/right between pages
   addEventListener("keydown", (e) => {
