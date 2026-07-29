@@ -443,6 +443,40 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   text-transform: uppercase; color: var(--ink-faint); margin-top: 0.4rem; }
 .stop__note { color: var(--ink-soft); margin: 0.9rem 0 1.3rem; }
 
+/* places you added yourself */
+.stop--custom { border-left: 2px solid var(--brass); padding-left: 1.1rem; margin-left: -1.1rem; }
+.stop__kind--mine { color: var(--brass); }
+.stop__remove { margin-top: 1.3rem; background: none; border: none; cursor: pointer;
+  font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-faint); padding: 0.2rem 0; border-bottom: 1px solid var(--line); }
+.stop__remove:hover { color: var(--red); border-color: var(--red); }
+
+/* the add-a-place control */
+.addplace { padding: 1.8rem 0 0.5rem; }
+.addplace__toggle { display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer;
+  background: none; border: 1px dashed var(--ink-faint); border-radius: 999px;
+  padding: 0.7rem 1.2rem; color: var(--ink-soft);
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+  transition: border-color .2s var(--ease), color .2s var(--ease); }
+.addplace__toggle svg { width: 1rem; height: 1rem; }
+.addplace__toggle:hover { border-color: var(--brass); color: var(--brass); }
+.addplace__form { display: flex; flex-direction: column; gap: 0.7rem;
+  border: 1px solid var(--line); border-radius: 12px; padding: 1.2rem; background: var(--paper-2); }
+.addplace__toggle[hidden], .addplace__form[hidden] { display: none; }
+.addplace__form input, .addplace__form textarea { width: 100%; font-family: var(--body); font-size: 1rem;
+  color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+  padding: 0.7rem 0.85rem; resize: vertical; -webkit-appearance: none; }
+.addplace__form input:focus, .addplace__form textarea:focus { outline: none; border-color: var(--brass); }
+.addplace__form .addplace__name { font-family: var(--display); font-size: 1.35rem; }
+.addplace__actions { display: flex; gap: 0.6rem; margin-top: 0.2rem; }
+.addplace__save { flex: 1; cursor: pointer; border: none; border-radius: 999px; padding: 0.75rem 1rem;
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.addplace__cancel { cursor: pointer; border: 1px solid var(--line); border-radius: 999px; padding: 0.75rem 1rem;
+  background: transparent; color: var(--ink-soft);
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.addplace__save:hover { opacity: 0.92; }
+
 /* per-place passport postmark */
 .postmark {
   flex: 0 0 auto; width: 74px; height: 74px; position: relative; margin-top: 0.15rem;

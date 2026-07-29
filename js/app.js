@@ -74,6 +74,7 @@
     map: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 3L3 5.5v15L9 18l6 3 6-2.5v-15L15 6 9 3z"/><path d="M9 3v15M15 6v15"/></svg>',
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
     camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8h3l1.4-2h7.2L18 8h2a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.1"/></svg>',
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
   };
   const glyphFor = (type) => ({
     coffee: "☕", breakfast: "◷", lunch: "❍", dinner: "✦", bakery: "❊",
@@ -103,6 +104,16 @@
   const walkMin = (m) => Math.max(1, Math.round(m / 80)); // ~4.8 km/h
   const dirApple = (s) => `https://maps.apple.com/?daddr=${s.lat},${s.lng}&dirflg=w`;
   const dirGoogle = (s) => `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&travelmode=walking`;
+
+  /* Your own added places — kept per day, spliced into the itinerary so they
+     flow through stamps, photos, the passport and the album like any stop. */
+  const customStops = store.get("customStops", {});
+  BOOK.trips.forEach((t) => (t.days || []).forEach((d) => {
+    (customStops[d.id] || []).forEach((s) => {
+      d.stops = d.stops || [];
+      if (!d.stops.some((x) => x.id === s.id)) d.stops.push(Object.assign({ custom: true }, s));
+    });
+  }));
 
   // every stop, flattened in trip order, tagged with its day and city
   const ALL_STOPS = [];
@@ -470,7 +481,16 @@
     if (!data || data.app !== "travel-journal") throw new Error("not a journal backup");
     for (const [k, v] of Object.entries(data.store || {})) {
       if (!k.startsWith("tlj.")) continue;
-      if (BACKUP_MERGE.includes(k)) {
+      if (k === "tlj.customStops") {
+        try {
+          const incoming = JSON.parse(v), cur = JSON.parse(localStorage.getItem(k) || "{}"), merged = Object.assign({}, cur);
+          for (const [dayId, arr] of Object.entries(incoming)) {
+            const have = merged[dayId] || [], ids = new Set(have.map((s) => s.id));
+            merged[dayId] = have.concat(arr.filter((s) => !ids.has(s.id)));
+          }
+          localStorage.setItem(k, JSON.stringify(merged));
+        } catch { localStorage.setItem(k, v); }
+      } else if (BACKUP_MERGE.includes(k)) {
         try {
           const incoming = JSON.parse(v);
           const cur = JSON.parse(localStorage.getItem(k) || (Array.isArray(incoming) ? "[]" : "{}"));
@@ -568,7 +588,7 @@
   }
 
   function stopEl(stop, day) {
-    const s = el("article", "stop rise");
+    const s = el("article", "stop rise" + (stop.custom ? " stop--custom" : ""));
     const facts = [
       transitFact(stop),
       factRow("Walk from previous", stop.walkFromPrev),
@@ -579,28 +599,126 @@
       factRow("Accessibility", stop.access, true),
     ].join("");
     const done = !!stampState[stampKey(day, stop)];
+    const kindTag = stop.custom ? `<span class="stop__kind stop__kind--mine">Your place</span>`
+      : stop.kind ? `<span class="stop__kind">${stop.kind}</span>` : "";
+    const links = (stop.apple && stop.google) ? `
+      <div class="maplinks">
+        <a class="maplink maplink--apple" href="${stop.apple}" target="_blank" rel="noopener">${ICON.apple} Apple&nbsp;Maps</a>
+        <a class="maplink" href="${stop.google}" target="_blank" rel="noopener">${ICON.map} Google&nbsp;Maps</a>
+      </div>` : "";
     s.innerHTML = `
       ${stop.time ? `<div class="stop__time">${stop.time}</div>` : ""}
       <div class="stop__top">
         <div class="stop__head">
           <h3 class="stop__name">${stop.name}</h3>
-          ${stop.kind ? `<span class="stop__kind">${stop.kind}</span>` : ""}
+          ${kindTag}
         </div>
         <button class="postmark${done ? " is-stamped" : ""}" type="button" data-place="${stampKey(day, stop)}" aria-pressed="${done}" aria-label="Collect the stamp for ${stop.name}">
           <span class="postmark__hint">press<br>to stamp</span>
           <span class="postmark__ink">${done ? placeStampSVG(day, stop) : ""}</span>
         </button>
       </div>
-      <p class="stop__note">${stop.note}</p>
-      <div class="facts">${facts}</div>
-      <div class="maplinks">
-        <a class="maplink maplink--apple" href="${stop.apple}" target="_blank" rel="noopener">${ICON.apple} Apple&nbsp;Maps</a>
-        <a class="maplink" href="${stop.google}" target="_blank" rel="noopener">${ICON.map} Google&nbsp;Maps</a>
-      </div>`;
+      ${stop.note ? `<p class="stop__note">${stop.note}</p>` : ""}
+      ${facts ? `<div class="facts">${facts}</div>` : ""}
+      ${links}
+      ${stop.custom ? `<button class="stop__remove" type="button">Remove this place</button>` : ""}`;
     const pm = s.querySelector(".postmark");
     bindTap(pm, () => collectStamp(pm, day, stop));
     s.appendChild(photosEl(stampKey(day, stop), { label: "Your photographs" }));
+    if (stop.custom) {
+      s.querySelector(".stop__remove").addEventListener("click", async () => {
+        if (!confirm(`Remove “${stop.name}” and its stamp and photos?`)) return;
+        await removeCustomPlace(day, stop);
+        s.remove();
+      });
+    }
     return s;
+  }
+
+  /* ---- Add your own places ---- */
+  const tripOf = (day) => BOOK.trips.find((t) => (t.days || []).indexOf(day) >= 0) || null;
+  const customMapLinks = (name, city) => {
+    const q = encodeURIComponent(name + (city ? ", " + city : ""));
+    return { apple: `https://maps.apple.com/?q=${q}`, google: `https://www.google.com/maps/search/?api=1&query=${q}` };
+  };
+  const uniqueStopName = (day, name) => {
+    const taken = (n) => (day.stops || []).some((s) => slugify(s.name) === slugify(n));
+    if (!taken(name)) return name;
+    let i = 2; while (taken(`${name} (${i})`)) i++;
+    return `${name} (${i})`;
+  };
+  function makeCustomStop(day, fields) {
+    const name = uniqueStopName(day, fields.name.trim());
+    return Object.assign(
+      { id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), custom: true, name, at: Date.now() },
+      fields.note && fields.note.trim() ? { note: fields.note.trim() } : {},
+      /^\d{1,2}:\d{2}$/.test((fields.time || "").trim()) ? { time: fields.time.trim() } : {},
+      customMapLinks(name, day.city)
+    );
+  }
+  // insert a stop into the model + indices (shared by local add and remote sync)
+  function attachCustomStop(day, stop) {
+    customStops[day.id] = customStops[day.id] || [];
+    if (!customStops[day.id].some((s) => s.id === stop.id)) customStops[day.id].push(stop);
+    store.set("customStops", customStops);
+    day.stops = day.stops || [];
+    if (!day.stops.some((s) => s.id === stop.id)) day.stops.push(stop);
+    PLACE_INDEX[stampKey(day, stop)] = { trip: tripOf(day), day, stop };
+    if (stop.lat != null) ALL_STOPS.push(Object.assign({ dayId: day.id, city: day.city || "London" }, stop));
+  }
+  function addCustomPlace(day, fields) {
+    const stop = makeCustomStop(day, fields);
+    attachCustomStop(day, stop);
+    emitChange({ kind: "place-add", dayId: day.id, stop });
+    return stop;
+  }
+  async function removeCustomPlace(day, stop, opts = {}) {
+    const key = stampKey(day, stop);
+    customStops[day.id] = (customStops[day.id] || []).filter((s) => s.id !== stop.id);
+    if (!customStops[day.id].length) delete customStops[day.id];
+    store.set("customStops", customStops);
+    if (day.stops) day.stops = day.stops.filter((s) => s.id !== stop.id);
+    delete PLACE_INDEX[key];
+    if (stampState[key]) { delete stampState[key]; store.set("stamps", stampState); }
+    for (const ph of await PhotoDB.byPlace(key)) await PhotoDB.del(ph.id);
+    if (opts.emit !== false) emitChange({ kind: "place-del", dayId: day.id, stopId: stop.id, place: key });
+    markSpineDone();
+    renderPassport();
+  }
+  function addPlaceControl(day) {
+    const wrap = el("div", "addplace rise");
+    const btn = el("button", "addplace__toggle", `${ICON.plus}<span>Add a place</span>`);
+    btn.type = "button";
+    const form = el("form", "addplace__form");
+    form.hidden = true;
+    form.innerHTML = `
+      <input class="addplace__name" type="text" placeholder="Place name" required maxlength="80" autocomplete="off" />
+      <input class="addplace__time" type="text" inputmode="numeric" placeholder="Time — optional, e.g. 14:30" maxlength="5" />
+      <textarea class="addplace__note" rows="2" placeholder="A note — optional" maxlength="400"></textarea>
+      <div class="addplace__actions">
+        <button type="submit" class="addplace__save">Add to the day</button>
+        <button type="button" class="addplace__cancel">Cancel</button>
+      </div>`;
+    const open = () => { form.hidden = false; btn.hidden = true; form.querySelector(".addplace__name").focus(); };
+    const close = () => { form.reset(); form.hidden = true; btn.hidden = false; };
+    btn.addEventListener("click", open);
+    form.querySelector(".addplace__cancel").addEventListener("click", close);
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = form.querySelector(".addplace__name").value.trim();
+      if (!name) return;
+      const stop = addCustomPlace(day, {
+        name,
+        note: form.querySelector(".addplace__note").value,
+        time: form.querySelector(".addplace__time").value,
+      });
+      wrap.parentNode.insertBefore(stopEl(stop, day), wrap);
+      close();
+      renderPassport();
+    });
+    wrap.appendChild(btn);
+    wrap.appendChild(form);
+    return wrap;
   }
 
   // "Worth the hype" — the viral, casual breakfast/lunch picks for the day.
@@ -1089,10 +1207,9 @@
 
     c.appendChild(routeEl(day));
 
-    if (day.stops && day.stops.length) {
-      c.appendChild(el("div", "sectlabel rise", "The stops"));
-      day.stops.forEach((s) => c.appendChild(stopEl(s, day)));
-    }
+    c.appendChild(el("div", "sectlabel rise", "The stops"));
+    (day.stops || []).forEach((s) => c.appendChild(stopEl(s, day)));
+    c.appendChild(addPlaceControl(day));
 
     // group notes: food & find, then the muses
     const order = ["coffee", "breakfast", "lunch", "dinner", "bakery", "shop", "gem", "photo", "design", "slow", "reflection"];
@@ -1415,6 +1532,26 @@
       await PhotoDB.del(hit.id);
       photosChanged(place);
       if (albumSheet && albumSheet.classList.contains("is-open")) renderAlbum();
+      return true;
+    },
+    applyPlace(dayId, stop) {
+      const day = J.days.find((d) => d.id === dayId);
+      if (!day || (day.stops || []).some((s) => s.id === stop.id)) return null;
+      const full = Object.assign({ custom: true }, stop);
+      attachCustomStop(day, full);
+      const ctrl = document.querySelector(`.page[data-day-id="${cssEsc(dayId)}"] .addplace`);
+      if (ctrl) ctrl.parentNode.insertBefore(stopEl(full, day), ctrl);
+      renderPassport();
+      return full;
+    },
+    async removePlace(dayId, stopId) {
+      const day = J.days.find((d) => d.id === dayId);
+      const stop = day && (day.stops || []).find((s) => s.id === stopId);
+      if (!stop) return false;
+      const key = stampKey(day, stop);
+      await removeCustomPlace(day, stop, { emit: false });
+      const pm = document.querySelector(`.stop .postmark[data-place="${cssEsc(key)}"]`);
+      if (pm) pm.closest(".stop").remove();
       return true;
     },
   };
